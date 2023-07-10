@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { api } from "~/utils/api";
-// import { createServerSideHelpers } from '@trpc/react-query/server';
-// import { GetStaticPropsContext } from 'next';
-// import { appRouter } from "~/server/api/root";
-// import { createInnerTRPCContext } from "~/server/api/trpc";
-// import superjson from "superjson";
-// import NavBar from "./components/navBar";
+import { createServerSideHelpers } from '@trpc/react-query/server';
+import { GetStaticPropsContext } from 'next';
+import { appRouter } from "~/server/api/root";
+import { createInnerTRPCContext } from "~/server/api/trpc";
+import superjson from "superjson";
+import NavBar from "./components/navBar";
 
 export default function Home() {
 
@@ -25,23 +25,23 @@ export default function Home() {
   );
 }
 
-// export async function getStaticProps(
-//   context: GetStaticPropsContext
-// ) {
-//   const helpers = createServerSideHelpers({
-//     router: appRouter,
-//     //@ts-ignore
-//     ctx: createInnerTRPCContext({}), 
-//     transformer: superjson
-//   });
+export async function getStaticProps(
+  context: GetStaticPropsContext
+) {
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    //@ts-ignore
+    ctx: createInnerTRPCContext({}), 
+    transformer: superjson
+  });
   
-//   // prefetch `events`
-//   await helpers.events.getAll.prefetch()
+  // prefetch `events`
+  await helpers.events.getAll.prefetch()
 
-//   return {
-//     props: {
-//       trpcState: helpers.dehydrate(),
-//     },
-//     revalidate:300,
-//   };
-// }
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+    },
+    revalidate:300,
+  };
+}
