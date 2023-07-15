@@ -5,11 +5,11 @@ import { GetStaticPropsContext } from 'next';
 import { appRouter } from "~/server/api/root";
 import { createInnerTRPCContext } from "~/server/api/trpc";
 import superjson from "superjson";
-import NavBar from "./components/navBar";
+import UnderNavBar from "./components/underNavBar";
 
 export default function Home() {
 
-  const {data, isLoading} = api.events.getAll.useQuery();
+  const {data, isLoading} = api.events.getAll.useQuery(undefined, {staleTime: 1000*60*5});
   if(isLoading)return <div>Loading...</div>
 
   return (
@@ -20,7 +20,7 @@ export default function Home() {
           <Link href={`/events/${event.id}`} key={event.id}>{event.eventName}</Link>
         </div> 
       ))}
-      
+      <UnderNavBar/>
     </>
   );
 }
@@ -42,6 +42,5 @@ export async function getStaticProps(
     props: {
       trpcState: helpers.dehydrate(),
     },
-    revalidate:300,
   };
 }
