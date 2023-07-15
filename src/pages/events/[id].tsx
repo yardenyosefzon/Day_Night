@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { api } from '~/utils/api';
+import IsLoggedIn from '../components/isLoggedIn';
 
 
 export default function EventPage(){
@@ -14,7 +15,8 @@ export default function EventPage(){
         <div>{event?.artist} :אמן</div>
         <div>{event?.cost} :מחיר</div>
         <div>150 :כרטיסים שנותרו</div>
-        <Link href={`/buyTickets/${event?.eventName as string}`} className='border-2 border-black rounded-lg p-1' >קנה כרטיס</Link>
+        <IsLoggedIn actionA={<Link href={`/buyTickets/${event?.eventName as string}`} className='border-2 border-black rounded-lg p-1' >קנה כרטיס</Link>} actionB={<Link href={`/logInTo/logInToBuyTickets?callBackUrl=${event?.eventName as string}`} className='border-2 border-black rounded-lg p-1' >קנה כרטיס</Link>}/>
+        
       </>
      )
     }

@@ -14,7 +14,7 @@ function NavBar() {
         <div className='flex gap-3'>
             <div>{session.data?.user.name}</div>
             {session.data?
-                <button onClick={()=> signOut()}>sign out</button> 
+                <button onClick={()=> signOut({callbackUrl: "http://localhost:3000/"})}>sign out</button> 
                 :<button onClick={()=> signIn('google')}>signIn</button>
             }
         </div>
