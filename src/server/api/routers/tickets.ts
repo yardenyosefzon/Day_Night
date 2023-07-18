@@ -1,8 +1,5 @@
 import { z } from "zod";
 import { publicProcedure,createTRPCRouter } from "../trpc";
-import { api } from "~/utils/api";
-import { DefaultArgs, GetResult } from "@prisma/client/runtime/library";
-import { Prisma } from "@prisma/client";
 
 export const ticketsRouter = createTRPCRouter({
     create: publicProcedure
