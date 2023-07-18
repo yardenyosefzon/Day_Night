@@ -4,14 +4,18 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 export const usersRouter = createTRPCRouter({
-  update: publicProcedure
+  getById: publicProcedure
+  .query(({ctx}) => {
+    return ctx.prisma.user.findUnique({
+      where: {
+        id: ctx.session?.user.id
+      }
+    })
+  }),
+  updateRememberProp: publicProcedure
   .input(
     z.object({
-      nationalId: z.string(),
-      birthDay: z.string(),
-      gender: z.string(),
-      phoneNumber: z.string(),
-      instaUserName: z.string()
+      rememberMe: z.boolean()
     })
   )
     .query( async ({input, ctx}) => {
@@ -20,11 +24,7 @@ export const usersRouter = createTRPCRouter({
             email: ctx.session?.user.email as string
         },
         data: {
-            nationalId: input.nationalId,
-            birthDay: input.birthDay, 
-            gender: input.gender,
-            phoneNumber: input.phoneNumber,
-            instaUserName: input.instaUserName,
+           rememberMe: input.rememberMe
         }
       });
     })

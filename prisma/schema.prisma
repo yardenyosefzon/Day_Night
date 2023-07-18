@@ -28,12 +28,20 @@ model Event {
 }
 
 model Ticket {
-  id       String  @id @default(cuid())
-  event    Event   @relation(fields: [eventId], references: [id])
-  eventId  String
-  user     User    @relation(fields: [userId], references: [id])
-  userId   String
-  verified Boolean @default(false)
+  id            String  @id @default(cuid())
+  event         Event   @relation(fields: [eventId], references: [id])
+  eventId       String
+  user          User    @relation(fields: [userId], references: [id])
+  userId        String
+  email         String
+  nationalId    String
+  birthDay      String
+  gender        String
+  phoneNumber   String
+  instaUserName String
+  verified      Boolean @default(false)
+  usersTicket   Boolean @default(false)
+  slug          String  @default(uuid())
 
   @@index([userId])
   @@index([eventId])
@@ -75,11 +83,7 @@ model User {
   email         String?   @unique
   image         String?
   emailVerified DateTime?
-  nationalId    String?   @unique
-  birthDay      String?
-  gender        String?
-  phoneNumber   String?
-  instaUserName String?   @unique
+  rememberMe    Boolean   @default(false)
   accounts      Account[]
   sessions      Session[]
   tickets       Ticket[]

@@ -1,3 +1,4 @@
+import { Input } from "postcss";
 import { z } from "zod";
 import {
   createTRPCRouter,
@@ -7,14 +8,36 @@ import {
 export const eventsRouter = createTRPCRouter({
   getAll: publicProcedure
     .query( async ({ctx}) => {
-      return await ctx.prisma.event.findMany();
+      return await ctx.prisma.event.findMany({
+        select: {
+          artist: true,
+          cost: true,
+          eventName: true
+
+        }
+      });
     }),
-  getOne: publicProcedure
+  getOneById: publicProcedure
     .input(z.object({id: z.string()}))
     .query( async ({ input,ctx }) => {
       return await ctx.prisma.event.findUnique({
         where:{
           id: input.id
       }})
+    }),
+    getOneByName: publicProcedure
+    .input(
+      z.object({
+        eventName: z.string(),
+      }))
+    .query(({ctx, input}) => {
+      ctx.prisma.event.findFirst({
+        where: {
+          eventName: input.eventName
+        },
+        select: {
+          id: true
+        }
+      })
     })
 });

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { createServerSideHelpers } from '@trpc/react-query/server';
-import { GetStaticPropsContext } from 'next';
 import { appRouter } from "~/server/api/root";
 import { createInnerTRPCContext } from "~/server/api/trpc";
 import superjson from "superjson";
@@ -16,8 +15,8 @@ export default function Home() {
     <>
       <h1>אירועים קרובים</h1>
       {data?.map(event => (
-        <div key={event.id}>
-          <Link href={`/events/${event.id}`} key={event.id}>{event.eventName}</Link>
+        <div key={event.eventName}>
+          <Link href={`/events/${event.eventName}`} key={event.eventName}>{event.eventName}</Link>
         </div> 
       ))}
       <UnderNavBar/>
@@ -25,9 +24,7 @@ export default function Home() {
   );
 }
 
-export async function getStaticProps(
-  context: GetStaticPropsContext
-) {
+export async function getStaticProps() {
   const helpers = createServerSideHelpers({
     router: appRouter,
     //@ts-ignore

@@ -1,176 +1,443 @@
 import { useRouter } from "next/router";
-import { ChangeEvent, ChangeEventHandler, FormEvent, FormEventHandler, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
+import RememberMePopUp from "../components/rememberMePopUp";
+import BuyTicketsForm from "../components/buyTicketsForm";
 
 function BuyTicketPage() {
-  const { query: { eventName } } = useRouter();
-  const { data, isLoading } = api.events.getAll.useQuery();
-  const event = data?.find((event) => event.eventName === eventName);
-  const {data: sessionData} = useSession()
-
+  const { data: sessionData } = useSession();
+  const { query: { eventName }, replace } = useRouter();
+  const { data: eventsData, isLoading } = api.events.getAll.useQuery();
+  const {data: usersTicketsData} = api.tickets.getFirstByIdAndUsersTicket.useQuery();
+  let   {data: ticketsData} = api.tickets.getFirstById.useQuery();
+  const event = eventsData?.find((event) => event.eventName === eventName);
+  const [showRememberMePopup, setShowRememberMePopup] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [formState, setFormState] = useState({
-    birthDay: "",
-    gender: "",
-    phoneNumber: "",
-    instaUserName: "",
-    nationalId:""
-  });
+    tickets: 
+     [
+      {
+        birthDay: "",
+        gender: " ",
+        phoneNumber: "",
+        instaUserName: "",
+        nationalId: "",
+        email: "",
+        fullName: ""
+      }
+    ]
+  }
+  );
 
-  const [errors, setErrors] = useState({
+  const [constErrors, setConstErrors] = useState({
     birthDay: {
       value: "יש למלא את תאריך הלידה",
-      valid: false
     },
     gender: {
       value: "יש לבחור מגדר",
-      valid: false
     },
     phoneNumber: {
       value: "יש למלא את מספר הטלפון",
-      valid: false
     },
     instaUserName: {
       value: "יש למלא את שם המשתמש באינסטגרם",
-      valid: false
     },
     nationalId: {
       value: "יש למלא את שדה תעודת הזהות",
-      valid: false
-    }
+    },
+    email: {
+      value: "יש למלא כתובת אימייל",
+    },
+    fullName: {
+      value: "יש למלא שם מלא",
+    },
   });
-///////validates form
+  
+  const [validErrors, setValidErrors] = useState(
+    [
+      {
+        birthDay: {
+          valid: true,
+        },
+        gender: {
+          valid: true,
+        },
+        phoneNumber: {
+          valid: true,
+        },
+        instaUserName: {
+          valid: true,
+        },
+        nationalId: {
+          valid: true,
+        },
+        email: {
+          valid: true,
+        },
+        fullName: {
+          valid: true,
+        }
+      }
+    ]
+  )
+  
+  const { refetch: createRefetch } = api.tickets.create.useQuery({ userId: sessionData?.user.id as string, eventName: event?.eventName as string, usersTicket: rememberMe, ticketsArray: formState.tickets}, {enabled: false});
+
+  const { refetch: userRefetch } = api.users.updateRememberProp.useQuery({rememberMe: rememberMe}, {enabled: false})
+
   const validateForm = () => {
     let isValid = true;
   
-    if (formState.birthDay == "") {
-      setErrors((errors) => ({
-        ...errors,
-        birthDay: { ...errors.birthDay, valid: true }
-      }));
-      isValid = false;
+    for (let i = 0; i < formState.tickets.length; i++) {
+      if (formState.tickets[i]?.birthDay === "") {
+        setValidErrors((validErrors) => {
+          const updatedErrors = [...validErrors];
+          updatedErrors[i] = {
+            ...(updatedErrors[i] as {
+              birthDay: { valid: boolean };
+              gender: { valid: boolean };
+              phoneNumber: { valid: boolean };
+              instaUserName: { valid: boolean };
+              nationalId: { valid: boolean };
+              email: { valid: boolean };
+              fullName: { valid: boolean };
+            }),
+            birthDay: { valid: false },
+          };
+          return updatedErrors;
+        });
+        isValid = false;
+      }
+  
+      if (formState.tickets[i]?.gender === "") {
+        setValidErrors((validErrors) => {
+          const updatedErrors = [...validErrors];
+          updatedErrors[i] = {
+            ...(updatedErrors[i] as {
+              birthDay: { valid: boolean };
+              gender: { valid: boolean };
+              phoneNumber: { valid: boolean };
+              instaUserName: { valid: boolean };
+              nationalId: { valid: boolean };
+              email: { valid: boolean };
+              fullName: { valid: boolean };
+            }),
+            gender: { valid: false },
+          };
+          return updatedErrors;
+        });
+        isValid = false;
+      }
+  
+      if (formState.tickets[i]?.nationalId === "") {
+        setValidErrors((validErrors) => {
+          const updatedErrors = [...validErrors];
+          updatedErrors[i] = {
+            ...(updatedErrors[i] as {
+              birthDay: { valid: boolean };
+              gender: { valid: boolean };
+              phoneNumber: { valid: boolean };
+              instaUserName: { valid: boolean };
+              nationalId: { valid: boolean };
+              email: { valid: boolean };
+              fullName: { valid: boolean };
+            }),
+            nationalId: { valid: false },
+          };
+          return updatedErrors;
+        });
+        isValid = false;
+      }
+  
+      if (formState.tickets[i]?.phoneNumber === "") {
+        setValidErrors((validErrors) => {
+          const updatedErrors = [...validErrors];
+          updatedErrors[i] = {
+            ...(updatedErrors[i] as {
+              birthDay: { valid: boolean };
+              gender: { valid: boolean };
+              phoneNumber: { valid: boolean };
+              instaUserName: { valid: boolean };
+              nationalId: { valid: boolean };
+              email: { valid: boolean };
+              fullName: { valid: boolean };
+            }),
+            phoneNumber: { valid: false },
+          };
+          return updatedErrors;
+        });
+        isValid = false;
+      } else if (
+        !/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/.test(formState.tickets[i]?.phoneNumber as string)
+      ) {
+        setValidErrors((validErrors) => {
+          const updatedErrors = [...validErrors];
+          updatedErrors[i] = {
+            ...(updatedErrors[i] as {
+              birthDay: { valid: boolean };
+              gender: { valid: boolean };
+              phoneNumber: { valid: boolean };
+              instaUserName: { valid: boolean };
+              nationalId: { valid: boolean };
+              email: { valid: boolean };
+              fullName: { valid: boolean };
+            }),
+            phoneNumber: {
+              valid: false,
+            },
+          };
+          return updatedErrors;
+        });
+        isValid = false;
+      }
+  
+      if (formState.tickets[i]?.instaUserName === "") {
+        setValidErrors((validErrors) => {
+          const updatedErrors = [...validErrors];
+          updatedErrors[i] = {
+            ...(updatedErrors[i] as {
+              birthDay: { valid: boolean };
+              gender: { valid: boolean };
+              phoneNumber: { valid: boolean };
+              instaUserName: { valid: boolean };
+              nationalId: { valid: boolean };
+              email: { valid: boolean };
+              fullName: { valid: boolean };
+            }),
+            instaUserName: { valid: false },
+          };
+          return updatedErrors;
+        });
+        isValid = false;
+      }
+  
+      if (formState.tickets[i]?.email === "") {
+        setValidErrors((validErrors) => {
+          const updatedErrors = [...validErrors];
+          updatedErrors[i] = {
+            ...(updatedErrors[i] as {
+              birthDay: { valid: boolean };
+              gender: { valid: boolean };
+              phoneNumber: { valid: boolean };
+              instaUserName: { valid: boolean };
+              nationalId: { valid: boolean };
+              email: { valid: boolean };
+              fullName: { valid: boolean };
+            }),
+            email: { valid: false },
+          };
+          return updatedErrors;
+        });
+        isValid = false;
+      } else if (
+        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
+          formState.tickets[i]?.email as string
+        )
+      ) {
+        setValidErrors((validErrors) => {
+          const updatedErrors = [...validErrors];
+          updatedErrors[i] = {
+            ...(updatedErrors[i] as {
+              birthDay: { valid: boolean };
+              gender: { valid: boolean };
+              phoneNumber: { valid: boolean };
+              instaUserName: { valid: boolean };
+              nationalId: { valid: boolean };
+              email: { valid: boolean };
+              fullName: { valid: boolean };
+            }),
+            email: {
+              valid: false,
+            },
+          };
+          return updatedErrors;
+        });
+        isValid = false;
+      }
+  
+      if (formState.tickets[i]?.fullName === "") {
+        setValidErrors((validErrors) => {
+          const updatedErrors = [...validErrors];
+          updatedErrors[i] = {
+            ...(updatedErrors[i] as {
+              birthDay: { valid: boolean };
+              gender: { valid: boolean };
+              phoneNumber: { valid: boolean };
+              instaUserName: { valid: boolean };
+              nationalId: { valid: boolean };
+              email: { valid: boolean };
+              fullName: { valid: boolean };
+            }),
+            fullName: { valid: false },
+          };
+          return updatedErrors;
+        });
+        isValid = false;
+      }
     }
   
-    if (formState.gender == "") {
-      setErrors((errors) => ({
-        ...errors,
-        gender: { ...errors.gender, valid: true }
-      }));
-      isValid = false;
-    }
-
-    if (formState.nationalId == "") {
-      setErrors((errors) => ({
-        ...errors,
-        nationalId: { ...errors.nationalId, valid: true }
-      }));
-      isValid = false;
-    }
-  
-    if (formState.phoneNumber == "") {
-      setErrors((errors) => ({
-        ...errors,
-        phoneNumber: { ...errors.phoneNumber, valid: true }
-      }));
-      isValid = false;
-    } else if (!/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/.test(formState.phoneNumber)) {
-      setErrors((errors) => ({
-        ...errors,
-        phoneNumber: {
-          value: "יש למלא מספר טלפון חוקי בפורמט XXX-XXX-XXXX",
-          valid: true
-        }
-      }));
-
-    } 
-  
-    if (formState.instaUserName == "") {
-      setErrors((errors) => ({
-        ...errors,
-        instaUserName: { ...errors.instaUserName, valid: true}
-      }));
-      isValid = false;
-    } 
-
     return isValid;
   };
 
-  const {refetch: updateRefetch} = api.users.update.useQuery({ nationalId:formState.nationalId , birthDay:formState.birthDay, gender:formState.gender, phoneNumber:formState.phoneNumber, instaUserName: formState.instaUserName }, {enabled:false})
-  const {refetch: createRefetch, data :clg} = api.tickets.create.useQuery({userId: sessionData?.user.id as string, eventId: event?.id as string }, {enabled:false})
+const resetValidation = () => {
+  setValidErrors(validErrors => {
+    let changedState = [];
+    for(let i = 0; i < validErrors.length; i++){
+      changedState.push({
+        birthDay: {
+          valid: true,
+        },
+        gender: {
+          valid: true,
+        },
+        phoneNumber: {
+          valid: true,
+        },
+        instaUserName: {
+          valid: true,
+        },
+        nationalId: {
+          valid: true,
+        },
+        email: {
+          valid: true,
+        },
+        fullName: {
+          valid: true,
+        }
+      })
+    }
+    return changedState;
+  })
+}
 
-  function handleSubmit(e:FormEvent<HTMLFormElement>){
+  const addTicket = () => {
+    setFormState(formState => {
+      const changedState = [...formState.tickets]
+      changedState.push({
+        birthDay: "",
+        gender: "",
+        phoneNumber: "",
+        instaUserName: "",
+        nationalId: "",
+        email: "",
+        fullName: ""
+      })
+      return {tickets: changedState}
+    })
+    setValidErrors(validErrors => {
+      const changedState = [...validErrors]
+      changedState.push(
+        {
+          birthDay: {
+            valid: true,
+          },
+          gender: {
+            valid: true,
+          },
+          phoneNumber: {
+            valid: true,
+          },
+          instaUserName: {
+            valid: true,
+          },
+          nationalId: {
+            valid: true,
+          },
+          email: {
+            valid: true,
+          },
+          fullName: {
+            valid: true,
+          }
+        }
+     )
+      return changedState
+    })
+  }
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    resetValidation()
     e.preventDefault();
     if (validateForm()) {
-      updateRefetch()
-      createRefetch()
+      createRefetch();
+      if(rememberMe)
+      userRefetch();
+      replace('/')
     }
+  }
+
+    function handleRememberMeSubmit(rememberMe: boolean) {
+    setRememberMe(rememberMe);
+    setShowRememberMePopup(false);
   };
 
+  useEffect(() => {
+
+    if (sessionData) {
+      const { email, name } = sessionData.user;
+
+      if(sessionData.user.rememberMe){
+      setFormState(formState => 
+          {
+            const changedState = [...formState.tickets] 
+            changedState[0] = {
+              email: email || "",
+              fullName: name || "",
+              nationalId: "XXXXXXXXX",
+              birthDay: usersTicketsData?.birthDay as string,
+              gender: usersTicketsData?.gender as string,
+              phoneNumber: usersTicketsData?.phoneNumber as string,
+              instaUserName: usersTicketsData?.instaUserName as string
+            }
+            return {tickets: changedState}
+        })
+    }
+      else{
+
+        if(ticketsData) setShowRememberMePopup(false)
+        else if(ticketsData === null) setShowRememberMePopup(true)
+        setFormState(formState => 
+          {
+            const changedState = [...formState.tickets] 
+            changedState[0] = {
+              email: email || "",
+              fullName: name || "",
+              nationalId: "",
+              birthDay: "",
+              gender: "",
+              phoneNumber:"",
+              instaUserName:""
+            }
+            return {tickets: changedState}
+        })
+    }
+  }
+  }, [ticketsData, rememberMe]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+console.log(formState, validErrors)
   return (
     <>
-      <h1>{event?.eventName} :קנה כרטיס עבור</h1>
-      <form onSubmit={handleSubmit}>
-        <label className="block" htmlFor="birthDay">תאריך לידה</label>
-        <input
-          onChange={(e) => setFormState({ ...formState, birthDay: e.currentTarget.value })}
-          name="birthDay"
-          className={`border-2 rounded-md text-right p-1 ${errors.birthDay.valid ? 'border-red-500' : ''}`}
-          type="date"
-          placeholder=""
-        />
-        {errors.birthDay.valid && <p className="text-red-500">{errors.birthDay.value}</p>}
-  
-        <label className="block" htmlFor="gender">מגדר</label>
-        <select
-          onChange={(e) => setFormState({ ...formState, gender: e.currentTarget.value })}
-          name="gender"
-          className={`border-2 rounded-md text-right p-1 ${errors.gender.valid ? 'border-red-500' : ''}`}
-          defaultValue=""
-        >
-          <option value="" disabled hidden>מגדר</option>
-          <option value="נקבה">נקבה</option>
-          <option value="זכר">זכר</option>
-          <option value="אחר">אחר</option>
-          <option value="מעדיף לא לבחור">לא רוצה לבחור</option>
-        </select>
-        {errors.gender.valid && <p className="text-red-500">{errors.gender.value}</p>}
-  
-        <label className="block" htmlFor="phoneNumber">מספר טלפון</label>
-        <input
-          onChange={(e) => setFormState({ ...formState, phoneNumber: e.currentTarget.value })}
-          name="phoneNumber"
-          className={`border-2 rounded-md text-right p-1 ${errors.phoneNumber.valid ? 'border-red-500' : ''}`}
-          type="tel"
-          placeholder=""
-          pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-        />
-        {errors.phoneNumber.valid && <p className="text-red-500">{errors.phoneNumber.value}</p>}
-  
-        <label className="block" htmlFor="instaUserName">שם משתמש באינסטגרם</label>
-        <input
-          onChange={(e) => setFormState({ ...formState, instaUserName: e.currentTarget.value })}
-          name="instaUserName"
-          className={`border-2 rounded-md text-right p-1 ${errors.instaUserName.valid ? 'border-red-500' : ''}`}
-          type="text"
-          placeholder="שם משתמש באינסטגרם"
-        />
-        {errors.instaUserName.valid && <p className="text-red-500">{errors.instaUserName.value}</p>}
-
-        <label className="block" htmlFor="instaUserName">תעודת זהות</label>
-        <input
-          onChange={(e) => setFormState({ ...formState, nationalId: e.currentTarget.value })}
-          name="nationalId"
-          className={`border-2 rounded-md text-right p-1 ${errors.nationalId.valid ? 'border-red-500' : ''}`}
-          type="text"
-          placeholder="תעודת זהות"
-        />
-        {errors.nationalId.valid && <p className="text-red-500">{errors.nationalId.value}</p>}
-  
-        <button className="block" type="submit">המשך</button>
-      </form>
+      <form onSubmit={(e)=>handleSubmit(e)}>
+        <h1>{event?.eventName} :קנה כרטיס עבור</h1>
+        {formState.tickets.map((form, index) => {
+          return <BuyTicketsForm index={index} formState={formState.tickets} setFormState={setFormState} validErrors={validErrors[index]!} errors={constErrors} addTicket={addTicket}/>
+        })}
+        <button type="submit">לרכישה</button>
+        {
+          showRememberMePopup ? (
+          <RememberMePopUp onSubmit={handleRememberMeSubmit} rememberMe={rememberMe} setRememberMe={setRememberMe}/>
+          )
+    :
+          <></>
+        }
+      </form>  
     </>
   );
-  }  
+}
 
 export default BuyTicketPage;
-
