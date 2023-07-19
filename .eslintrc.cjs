@@ -27,7 +27,7 @@ const config = {
         "checksVoidReturn": {
           "attributes": false
         },
-        prefer: "type-imports",
+        prefer: "no-type-imports",
         fixStyle: "inline-type-imports",
       },
     ],
