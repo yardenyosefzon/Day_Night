@@ -4,7 +4,7 @@ import { appRouter } from '~/server/api/root';
 import superjson from "superjson";
 import { api } from '~/utils/api';
 import Link from 'next/link';
-import { createInnerTRPCContext } from '~/server/api/trpc';
+import { createInnerTRPCContext, createTRPCContext } from '~/server/api/trpc';
 
 function MyTickets() {
     const {data: ticketsData, isLoading} = api.tickets.getManyByUserId.useQuery( undefined, { refetchOnMount: false, refetchOnWindowFocus: false })
@@ -25,12 +25,12 @@ export async function getServerSideProps() {
   const helpers = createServerSideHelpers({
     router: appRouter,
     //@ts-ignore
-    ctx: createInnerTRPCContext({}), 
+    ctx: createTRPCContext({}), 
     transformer: superjson
   });
   
   // prefetch `events`
-  await helpers.tickets.getManyByUserId.fetch()
+  await helpers.tickets.getManyByUserId.prefetch()
 
   return {
     props: {

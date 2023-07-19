@@ -25,7 +25,7 @@ export const ticketsRouter = createTRPCRouter({
             nationalId: string;
         } | null
         if(ctx.session?.user.rememberMe){
-           
+            console.log(ctx.session?.user, "//////////////////")
             nationalId = await ctx.prisma.ticket.findFirst({
                 where: {
                     userId: ctx.session?.user.id,
@@ -80,7 +80,7 @@ export const ticketsRouter = createTRPCRouter({
     }),
     getManyByUserId: publicProcedure
     .query(({ctx}) => {
-        console.log(ctx.session?.user.id, "//////////////////")
+        console.log(ctx.session?.user, "//////////////////")
         return ctx.prisma.ticket.findMany({
             where: {
               userId: 
