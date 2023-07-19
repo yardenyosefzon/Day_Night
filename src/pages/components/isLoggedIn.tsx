@@ -1,5 +1,4 @@
 import { useSession } from 'next-auth/react'
-import React from 'react'
 
 function IsLoggedIn({actionA, actionB}:any) {
 

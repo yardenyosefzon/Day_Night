@@ -1,4 +1,4 @@
-import { Input } from "postcss";
+import { error } from "console";
 import { z } from "zod";
 import {
   createTRPCRouter,
@@ -38,6 +38,7 @@ export const eventsRouter = createTRPCRouter({
         select: {
           id: true
         }
-      })
+      }).then(() =>{'foundONE'})
+      .catch((error)=>{return error})
     })
 });
