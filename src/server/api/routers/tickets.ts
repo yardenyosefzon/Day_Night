@@ -59,9 +59,15 @@ export const ticketsRouter = createTRPCRouter({
           where: {
             userId: ctx.session?.user.id,
           },
+          select: {
+            event: {
+                select: {
+                    eventName:true
+                }
+            }
+          }
         });
       }),
-      
     getFirstByIdAndUsersTicket: publicProcedure
     .query(({ctx})=>{
         return ctx.prisma.ticket.findFirst({
@@ -79,6 +85,7 @@ export const ticketsRouter = createTRPCRouter({
     }),
     getManyByUserId: publicProcedure
     .query(({ctx}) => {
+        console.log(ctx.session)
         return ctx.prisma.ticket.findMany({
             where: {
               userId: 
@@ -95,5 +102,58 @@ export const ticketsRouter = createTRPCRouter({
               },
           })
     }),
-    // getOneByEvent
+    getManyByEvent: publicProcedure
+    .input(
+        z.object({
+            eventName: z.string()
+        })
+    )
+    .query(({ctx, input}) => {
+        return ctx.prisma.ticket.findMany({
+            where: {
+                event: {
+                    eventName: input.eventName
+                }
+            },
+            select: {
+                email: true,
+                gender: true,
+                birthDay: true,
+                verified: true,
+                instaUserName: true,
+                phoneNumber: true,
+                rejected: true,
+                slug:true,
+                user: {
+                    select: {
+                        name: true
+                    }
+                }
+            }
+        })
+    }),
+    updateOneBySlug: publicProcedure
+    .input(
+        z.object({
+            action: z.string(),
+            slug: z.string()
+        })
+    )
+    .mutation(async({ctx,input})=> { 
+        let data
+        const ticket = await ctx.prisma.ticket.findFirst({
+            where: {
+                slug: input.slug
+            }
+        })
+        if (input.action == "verified")  data = {verified: true}
+        else data = {rejected: true}
+        return ctx.prisma.ticket.update({
+            where: {
+                slug: input.slug,
+                id: ticket?.id
+              },
+              data: data
+        })
+    })
 })

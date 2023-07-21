@@ -446,7 +446,6 @@ function BuyTicketPage() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-console.log(formState, validErrors)
   return (
     <>
       <form onSubmit={(e)=>handleSubmit(e)}>

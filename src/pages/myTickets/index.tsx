@@ -5,10 +5,8 @@ import superjson from "superjson";
 import { api } from '~/utils/api';
 import Link from 'next/link';
 import { createInnerTRPCContext, createTRPCContext } from '~/server/api/trpc';
-import { getServerSession } from 'next-auth';
 import { getServerAuthSession } from '~/server/auth';
 import { GetServerSidePropsContext } from 'next';
-import { useSession } from 'next-auth/react';
 
 function MyTickets() {
     const {data: ticketsData, isLoading} = api.tickets.getManyByUserId.useQuery( undefined, { refetchOnMount: false, refetchOnWindowFocus: false })
