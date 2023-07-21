@@ -8,7 +8,7 @@ import { createInnerTRPCContext } from '~/server/api/trpc'
 
 function Ticket() {
   const {query: {ticket}} = useRouter()
-  const {data: ticketsData} = api.tickets.getManyByUserId.useQuery( undefined, { refetchOnMount: false, refetchOnWindowFocus: false })
+  const {data: ticketsData} = api.boughtTickets.getManyByUserId.useQuery( undefined, { refetchOnMount: false, refetchOnWindowFocus: false })
   const ticketDet = ticketsData?.find(tickets => tickets.slug == ticket)
   return (
     <div>{ticketDet?.event.eventName}</div>

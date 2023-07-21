@@ -10,8 +10,8 @@ function BuyTicketPage() {
   const { data: sessionData } = useSession();
   const { query: { eventName }, replace } = useRouter();
   const { data: eventsData, isLoading } = api.events.getAll.useQuery();
-  const {data: usersTicketsData} = api.tickets.getFirstByIdAndUsersTicket.useQuery();
-  const   {data: ticketsData} = api.tickets.getFirstById.useQuery();
+  const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery();
+  const   {data: ticketsData} = api.boughtTickets.getFirstById.useQuery();
   const event = eventsData?.find((event) => event.eventName === eventName);
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -84,7 +84,7 @@ function BuyTicketPage() {
     ]
   )
   
-  const { refetch: createRefetch } = api.tickets.create.useQuery({ userId: sessionData?.user.id as string, eventName: event?.eventName as string, usersTicket: rememberMe, ticketsArray: formState.tickets}, {enabled: false});
+  const { refetch: createRefetch } = api.boughtTickets.create.useQuery({ userId: sessionData?.user.id as string, eventName: event?.eventName as string, usersTicket: rememberMe, ticketsArray: formState.tickets}, {enabled: false});
 
   const { refetch: userRefetch } = api.users.updateRememberProp.useQuery({rememberMe: rememberMe}, {enabled: false})
 

@@ -13,21 +13,22 @@ datasource db {
 }
 
 model Event {
-  id             String   @id @default(cuid())
+  id             String         @id @default(cuid())
   eventName      String
-  createdAt      DateTime @default(now())
+  createdAt      DateTime       @default(now())
   date           DateTime
   artist         String
   image          String
   cost           Int
-  eventCreater   User     @relation(fields: [eventCreaterId], references: [id])
+  eventCreater   User           @relation(fields: [eventCreaterId], references: [id])
   eventCreaterId String
-  ticket         Ticket[]
+  boughtTicket   BoughtTicket[]
+  schemaTicket   SchemaTicket[]
 
   @@index([eventCreaterId])
 }
 
-model Ticket {
+model BoughtTicket {
   id            String  @id @default(cuid())
   event         Event   @relation(fields: [eventId], references: [id])
   eventId       String
@@ -46,6 +47,13 @@ model Ticket {
 
   @@index([userId])
   @@index([eventId])
+}
+
+model SchemaTicket {
+  id      String @id @default(cuid())
+  name    String
+  event   Event  @relation(fields: [eventId], references: [id])
+  eventId String
 }
 
 // Necessary for Next auth
@@ -79,15 +87,15 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?        @unique
   image         String?
   emailVerified DateTime?
-  rememberMe    Boolean   @default(false)
+  rememberMe    Boolean        @default(false)
   accounts      Account[]
   sessions      Session[]
-  tickets       Ticket[]
+  tickets       BoughtTicket[]
   events        Event[]
 
   @@map("user")

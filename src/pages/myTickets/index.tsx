@@ -9,7 +9,7 @@ import { getServerAuthSession } from '~/server/auth';
 import { GetServerSidePropsContext } from 'next';
 
 function MyTickets() {
-    const {data: ticketsData, isLoading} = api.tickets.getManyByUserId.useQuery( undefined, { refetchOnMount: false, refetchOnWindowFocus: false })
+    const {data: ticketsData, isLoading} = api.boughtTickets.getManyByUserId.useQuery( undefined, { refetchOnMount: false, refetchOnWindowFocus: false })
 
   if(isLoading) return <h1>Loading...</h1>
   return (
@@ -32,7 +32,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   });
   
   // prefetch `events`
-  await helpers.tickets.getManyByUserId.prefetch()
+  await helpers.boughtTickets.getManyByUserId.prefetch()
 
   return {
     props: {

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { publicProcedure,createTRPCRouter } from "../trpc";
 
-export const ticketsRouter = createTRPCRouter({
+export const boughtTicketsRouter = createTRPCRouter({
     create: publicProcedure
     .input(
         z.object({
@@ -25,7 +25,7 @@ export const ticketsRouter = createTRPCRouter({
             nationalId: string;
         } | null
         if(ctx.session?.user.rememberMe){
-            nationalId = await ctx.prisma.ticket.findFirst({
+            nationalId = await ctx.prisma.boughtTicket.findFirst({
                 where: {
                     userId: ctx.session?.user.id,
                     usersTicket: true
@@ -43,19 +43,19 @@ export const ticketsRouter = createTRPCRouter({
               id: true
             }
           })        
-        const dbArray = input.ticketsArray.map((ticket, index) => ({
-            ...ticket,
+        const dbArray = input.ticketsArray.map((boughtTicket, index) => ({
+            ...boughtTicket,
             nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string ,
             userId: input.userId,
             eventId: eventId?.id as string,
             usersTicket: input.usersTicket,
           }));
-        return ctx.prisma.ticket.createMany({
+        return ctx.prisma.boughtTicket.createMany({
             data: dbArray
         })
     }),
     getFirstById: publicProcedure.query(({ ctx }) => {
-        return ctx.prisma.ticket.findFirst({
+        return ctx.prisma.boughtTicket.findFirst({
           where: {
             userId: ctx.session?.user.id,
           },
@@ -70,7 +70,7 @@ export const ticketsRouter = createTRPCRouter({
       }),
     getFirstByIdAndUsersTicket: publicProcedure
     .query(({ctx})=>{
-        return ctx.prisma.ticket.findFirst({
+        return ctx.prisma.boughtTicket.findFirst({
             where: {
                 userId: ctx.session?.user.id,
                 usersTicket: true
@@ -86,7 +86,7 @@ export const ticketsRouter = createTRPCRouter({
     getManyByUserId: publicProcedure
     .query(({ctx}) => {
         console.log(ctx.session)
-        return ctx.prisma.ticket.findMany({
+        return ctx.prisma.boughtTicket.findMany({
             where: {
               userId: 
                  ctx.session?.user.id
@@ -109,7 +109,7 @@ export const ticketsRouter = createTRPCRouter({
         })
     )
     .query(({ctx, input}) => {
-        return ctx.prisma.ticket.findMany({
+        return ctx.prisma.boughtTicket.findMany({
             where: {
                 event: {
                     eventName: input.eventName
@@ -141,17 +141,17 @@ export const ticketsRouter = createTRPCRouter({
     )
     .mutation(async({ctx,input})=> { 
         let data
-        const ticket = await ctx.prisma.ticket.findFirst({
+        const boughtTicket = await ctx.prisma.boughtTicket.findFirst({
             where: {
                 slug: input.slug
             }
         })
         if (input.action == "verified")  data = {verified: true}
         else data = {rejected: true}
-        return ctx.prisma.ticket.update({
+        return ctx.prisma.boughtTicket.update({
             where: {
                 slug: input.slug,
-                id: ticket?.id
+                id: boughtTicket?.id
               },
               data: data
         })

@@ -5,8 +5,8 @@ import Spinner from "~/pages/components/spinner";
 
 function EventTicketsCreatorPage() {
   const { query: { eventName } } = useRouter();
-  const { data: ticketsData, refetch: eventsRefetch } = api.tickets.getManyByEvent.useQuery({ eventName: eventName as string });
-  const ticketMutation = api.tickets.updateOneBySlug.useMutation();
+  const { data: ticketsData, refetch: eventsRefetch } = api.boughtTickets.getManyByEvent.useQuery({ eventName: eventName as string });
+  const ticketMutation = api.boughtTickets.updateOneBySlug.useMutation();
   const [isLoading, setIsLoading] = useState(false);
   const [ticketCounts, setTicketCounts] = useState({
     verified: 0,
