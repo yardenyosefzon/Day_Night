@@ -19,8 +19,10 @@ model Event {
   date           DateTime
   artist         String
   image          String
-  cost           Int
-  eventCreater   User           @relation(fields: [eventCreaterId], references: [id])
+  address        String
+  description    String        
+  minAge         String   
+  eventCreator   User           @relation(fields: [eventCreaterId], references: [id])
   eventCreaterId String
   boughtTicket   BoughtTicket[]
   schemaTicket   SchemaTicket[]
@@ -52,6 +54,8 @@ model BoughtTicket {
 model SchemaTicket {
   id      String @id @default(cuid())
   name    String
+  price Int
+  numberOfTickets Int
   event   Event  @relation(fields: [eventId], references: [id])
   eventId String
 }
