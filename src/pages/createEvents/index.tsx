@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Stage1 from "../components/examples/example1";
-import Stage2 from "../components/examples/example2";
+// import Stage2 from "../components/examples/example2";
 import Stage3 from "../components/examples/example3";
 import Stage4 from "../components/examples/example4";
 import Stage5 from "../components/examples/example5";
@@ -17,7 +17,7 @@ export type EventData = {
 
 const stageComponents = [
   Stage1,
-  Stage2,
+  // Stage2,
   Stage3,
   Stage4,
   Stage5
