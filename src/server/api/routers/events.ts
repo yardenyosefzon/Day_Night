@@ -1,4 +1,3 @@
-import { error } from "console";
 import { z } from "zod";
 import {
   createTRPCRouter,
@@ -20,7 +19,7 @@ export const eventsRouter = createTRPCRouter({
     .query(({ctx}) => {
       return ctx.prisma.event.findMany({
         where: {
-          eventCreater: {
+          eventCreator: {
             id: ctx.session?.user.id
           }
         },

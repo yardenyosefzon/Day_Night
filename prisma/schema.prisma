@@ -20,14 +20,14 @@ model Event {
   artist         String
   image          String
   address        String
-  description    String        
-  minAge         String   
-  eventCreator   User           @relation(fields: [eventCreaterId], references: [id])
-  eventCreaterId String
+  description    String
+  minAge         String
+  eventCreator   User           @relation(fields: [eventCreatorId], references: [id])
+  eventCreatorId String
   boughtTicket   BoughtTicket[]
   schemaTicket   SchemaTicket[]
 
-  @@index([eventCreaterId])
+  @@index([eventCreatorId])
 }
 
 model BoughtTicket {
@@ -52,12 +52,12 @@ model BoughtTicket {
 }
 
 model SchemaTicket {
-  id      String @id @default(cuid())
-  name    String
-  price Int
+  id              String @id @default(cuid())
+  name            String
+  price           Int
   numberOfTickets Int
-  event   Event  @relation(fields: [eventId], references: [id])
-  eventId String
+  event           Event  @relation(fields: [eventId], references: [id])
+  eventId         String
 }
 
 // Necessary for Next auth
