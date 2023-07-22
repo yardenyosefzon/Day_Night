@@ -45,19 +45,6 @@ const Stage2: React.FC<Stage2Props> = ({ eventsData, setEventsData, setStage }) 
         return ticket;
       })
     );
-
-    // Reset error for the modified input field
-    setValidErrors((prevErrors) =>
-      prevErrors.map((errors, index) => {
-        if (index === ticketIndex) {
-          return {
-            ...errors,
-            [`${inputName}Error`]: true,
-          };
-        }
-        return errors;
-      })
-    );
   };
 
   const resetErrors = (ticketIndex: number) => {

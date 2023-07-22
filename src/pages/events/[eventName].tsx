@@ -12,7 +12,6 @@ export default function EventPage(){
      <>
         <div>{event?.eventName}</div>
         <div>{event?.artist} :אמן</div>
-        <div>{event?.cost} :מחיר</div>
         <div>150 :כרטיסים שנותרו</div>
         <IsLoggedIn actionA={<Link href={`/buyTickets/${event?.eventName as string}`} className='border-2 border-black rounded-lg p-1' >קנה כרטיס</Link>} actionB={<Link href={`/logInTo/logInToBuyTickets?callBackUrl=${event?.eventName as string}`} className='border-2 border-black rounded-lg p-1' >קנה כרטיס</Link>}/>
         
