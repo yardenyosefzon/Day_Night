@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { EventData } from "~/pages/createEvents";
 
 type Stage1Props = {
@@ -17,6 +17,11 @@ type ValidErrors = {
 };
 
 const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) => {
+  useEffect(() => {
+    
+  console.log('this is a csr')
+    
+  }, [])
   
   const [validErrors, setValidErrors] = useState({
     eventNameError: {
