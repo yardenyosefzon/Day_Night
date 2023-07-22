@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import type { EventData } from "~/pages/createEvents";
 
@@ -16,7 +17,7 @@ type ValidErrors = {
   addressError: { message: string; valid: boolean };
 };
 
-const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) => {
+let Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) => {
   
   const [validErrors, setValidErrors] = useState({
     eventNameError: {
@@ -174,22 +175,6 @@ const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) 
     }
   };
 
-  useEffect(() => {
-    
-    setEventsData(
-      {
-        eventName: "",
-        date: "",
-        artist: "",
-        image: "",
-        description: "",
-        minAge: 0,
-        address: ""
-      }
-    )
-      
-    }, [])
-
   return (
     <div className="flex flex-col items-center">
       <form onSubmit={onSubmit} className="w-4/12">
@@ -199,7 +184,7 @@ const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) 
             type="text"
             id="eventName"
             name="eventName"
-            value={eventsData.eventName}
+            value={eventsData.eventName || ""}
             onChange={onChange}
             dir="rtl"
             className={`border ${validErrors.eventNameError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
@@ -212,7 +197,7 @@ const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) 
             type="datetime-local"
             id="date"
             name="date"
-            value={eventsData.date}
+            value={eventsData.date || ""}
             onChange={onChange}
             dir="rtl"
             className={`border ${validErrors.dateError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
@@ -225,7 +210,7 @@ const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) 
             type="text"
             id="artist"
             name="artist"
-            value={eventsData.artist}
+            value={eventsData.artist || ""}
             onChange={onChange}
             dir="rtl"
             className={`border ${validErrors.artistError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
@@ -238,7 +223,7 @@ const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) 
             type="text"
             id="image"
             name="image"
-            value={eventsData.image}
+            value={eventsData.image || ""}
             onChange={onChange}
             dir="rtl"
             className={`border ${validErrors.imageError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
@@ -250,7 +235,7 @@ const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) 
           <textarea
             id="description"
             name="description"
-            value={eventsData.description}
+            value={eventsData.description || ""}
             onChange={onChange}
             dir="rtl"
             className={`border ${validErrors.descriptionError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
@@ -263,7 +248,7 @@ const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) 
             type="number"
             id="minAge"
             name="minAge"
-            value={eventsData.minAge}
+            value={eventsData.minAge || ""}
             onChange={onChange}
             dir="rtl"
             className={`border ${validErrors.minAgeError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
@@ -276,7 +261,7 @@ const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) 
             type="text"
             id="address"
             name="address"
-            value={eventsData.address}
+            value={eventsData.address || ""}
             onChange={onChange}
             dir="rtl"
             className={`border ${validErrors.addressError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
@@ -290,5 +275,8 @@ const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) 
     </div>
   );
 };
-
+//@ts-ignore
+Stage1 = dynamic(() => Promise.resolve(Stage1), {
+  ssr: false,
+})
 export default Stage1;
