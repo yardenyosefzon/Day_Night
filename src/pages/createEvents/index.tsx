@@ -24,9 +24,6 @@ const stageComponents = [
 ];
 
 const CreateEvents: React.FC = () => {
-  useEffect(() => {
-   console.log("this is csr")
-  }, [])
   
   const [stage, setStage] = useState(1);
   const [eventsData, setEventsData] = useState<EventData>({
@@ -45,6 +42,10 @@ const CreateEvents: React.FC = () => {
 
   const CurrentStageComponent = stageComponents[stage - 1]!;
 
+  useEffect(() => {
+    console.log("this is csr")
+   }, [eventsData])
+   
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl mb-4">Current Stage: Stage {stage}</h1>
