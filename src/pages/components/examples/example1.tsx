@@ -17,11 +17,6 @@ type ValidErrors = {
 };
 
 const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) => {
-  useEffect(() => {
-    
-  console.log('this is a csr')
-    
-  }, [])
   
   const [validErrors, setValidErrors] = useState({
     eventNameError: {
@@ -178,6 +173,22 @@ const Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) 
       setStage(2);
     }
   };
+
+  useEffect(() => {
+    
+    setEventsData(
+      {
+        eventName: "",
+        date: "",
+        artist: "",
+        image: "",
+        description: "",
+        minAge: 0,
+        address: ""
+      }
+    )
+      
+    }, [])
 
   return (
     <div className="flex flex-col items-center">
