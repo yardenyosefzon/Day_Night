@@ -17,7 +17,7 @@ type ValidErrors = {
   addressError: { message: string; valid: boolean };
 };
 
-let Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) => {
+let NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) => {
   
   const [validErrors, setValidErrors] = useState({
     eventNameError: {
@@ -276,7 +276,7 @@ let Stage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) =>
   );
 };
 //@ts-ignore
-Stage1 = dynamic(() => Promise.resolve(Stage1), {
+const Stage1 = dynamic(() => Promise.resolve(NoSSRStage1), {
   ssr: false,
 })
 export default Stage1;
