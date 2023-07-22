@@ -4,14 +4,13 @@ import type { FormEvent, ChangeEvent } from "react";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import RememberMePopUp from "../components/rememberMePopUp";
-import { error } from "console";
 
 function BuyTicketPage() {
   const { data: sessionData } = useSession();
   const { query: { eventName }, replace } = useRouter();
   const { data: eventsData, isLoading } = api.events.getAll.useQuery();
   const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery();
-  const   {data: ticketsData} = api.boughtTickets.getFirstById.useQuery();
+  const {data: ticketsData} = api.boughtTickets.getFirstById.useQuery();
   const event = eventsData?.find((event) => event.eventName === eventName);
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -446,6 +445,7 @@ function BuyTicketPage() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+  
   return (
     <>
       <form onSubmit={(e)=>handleSubmit(e)}>

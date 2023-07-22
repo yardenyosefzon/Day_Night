@@ -17,7 +17,7 @@ type ValidErrors = {
   addressError: { message: string; valid: boolean };
 };
 
-let NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) => {
+const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage }) => {
   
   const [validErrors, setValidErrors] = useState({
     eventNameError: {
@@ -54,7 +54,7 @@ let NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage 
     const { name, value } = e.currentTarget;
     setEventsData((eventsData: EventData) => ({
       ...eventsData,
-      [name]: value,
+      [name]: name !== 'minAge' ? value : Number(value),
     }));
   };
 
@@ -275,7 +275,7 @@ let NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStage 
     </div>
   );
 };
-//@ts-ignore
+
 const Stage1 = dynamic(() => Promise.resolve(NoSSRStage1), {
   ssr: false,
 })
