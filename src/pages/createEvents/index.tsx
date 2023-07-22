@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Stage1 from "../components/examples/example1";
 // import Stage2 from "../components/examples/example2";
 import Stage3 from "../components/examples/example3";
@@ -24,6 +24,10 @@ const stageComponents = [
 ];
 
 const CreateEvents: React.FC = () => {
+  useEffect(() => {
+   console.log("this is csr")
+  }, [])
+  
   const [stage, setStage] = useState(1);
   const [eventsData, setEventsData] = useState<EventData>({
     eventName: "",
