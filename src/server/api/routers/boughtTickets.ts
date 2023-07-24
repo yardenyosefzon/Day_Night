@@ -8,6 +8,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             userId: z.string(),
             usersTicket: z.boolean(),
             eventName: z.string(),
+            ticketKind: z.string(),
             ticketsArray: z.array(
                             z.object({
                                 email: z.string(),
@@ -20,7 +21,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             )
         })
     )
-    .query(async({ctx,input}) => {
+    .mutation(async({ctx,input}) => {
         let nationalId: {
             nationalId: string;
         } | null
@@ -46,9 +47,11 @@ export const boughtTicketsRouter = createTRPCRouter({
         const dbArray = input.ticketsArray.map((boughtTicket, index) => ({
             ...boughtTicket,
             nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string ,
+            partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
             userId: input.userId,
             eventId: eventId?.id as string,
-            usersTicket: input.usersTicket,
+            usersTicket: index === 0 ? input.usersTicket : false,
+            ticketKind: input.ticketKind
           }));
         return ctx.prisma.boughtTicket.createMany({
             data: dbArray
@@ -79,7 +82,8 @@ export const boughtTicketsRouter = createTRPCRouter({
               birthDay: true,
               gender: true,
               phoneNumber: true,
-              instaUserName: true
+              instaUserName: true,
+              partialNationalId: true
             }
         })
     }),
@@ -124,6 +128,7 @@ export const boughtTicketsRouter = createTRPCRouter({
                 phoneNumber: true,
                 rejected: true,
                 slug:true,
+                ticketKind:true,
                 user: {
                     select: {
                         name: true
@@ -147,7 +152,8 @@ export const boughtTicketsRouter = createTRPCRouter({
             }
         })
         if (input.action == "verified")  data = {verified: true}
-        else data = {rejected: true}
+        else  if(input.action == "rejected") data = {rejected: true}
+        else data = {rejected: false, verified: false}
         return ctx.prisma.boughtTicket.update({
             where: {
                 slug: input.slug,

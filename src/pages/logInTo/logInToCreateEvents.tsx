@@ -9,7 +9,6 @@ function LogInToBuyTickets(){
       <div>!רוצה ליצור אירועים? התחבר בשנייה עם חשבון גוגל</div>
       <button onClick={()=>signIn('google', { callbackUrl: `http://localhost:3000` }) }>התחבר עם חשבון גוגל</button>
     </>
-
   )
 }
 

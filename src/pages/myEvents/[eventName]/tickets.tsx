@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import Spinner from "~/pages/components/spinner";
+import WaitingTickets from "~/pages/components/eventTicketsButtons/waitingTickets";
+import RejectedOrVerifiedTickets from "~/pages/components/eventTicketsButtons/rejectedOrVerifiedTickets";
 
 function EventTicketsCreatorPage() {
   const { query: { eventName } } = useRouter();
@@ -93,26 +95,10 @@ function EventTicketsCreatorPage() {
           <div className="text-xl text-center my-4">אין מה לראות כאן</div>
         )}
         {filteredTickets?.map((ticket) => (
-          <div key={ticket.slug} className="border border-black p-4 m-2 text-center flex flex-col">
-            <div className="flex flex-row-reverse gap-x-20 justify-center">
-              <div>
-                <p>{ticket.user.name}</p>
-              </div>
-              <div>
-                <a href={`https://www.instagram.com/${ticket.instaUserName}`} target="_blank">קישור לאינסטגרם</a>
-              </div>
-            </div>
-            {currentCategory === "waiting" && (
-              <div className="flex flex-row-reverse gap-x-20 justify-center">
-                <div className="relative">
-                  <button onClick={() => handleButtonClick("verified", ticket.slug)}>אשר כרטיס</button>
-                </div>
-                <div className="relative">
-                  <button onClick={() => handleButtonClick("rejected", ticket.slug)}>דחה כרטיס</button>
-                </div>
-              </div>
-            )}
-          </div>
+          currentCategory === "waiting" ? 
+          <WaitingTickets ticket={ticket} handleButtonClick={handleButtonClick}/> 
+          : 
+          <RejectedOrVerifiedTickets ticket={ticket} handleButtonClick={handleButtonClick}/>
         ))}
       </div>
     </div>

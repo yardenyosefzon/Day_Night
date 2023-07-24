@@ -18,8 +18,8 @@ export const usersRouter = createTRPCRouter({
       rememberMe: z.boolean()
     })
   )
-    .query( async ({input, ctx}) => {
-      return await ctx.prisma.user.update({
+    .mutation(({input, ctx}) => {
+      return ctx.prisma.user.update({
         where: {
             email: ctx.session?.user.email as string
         },

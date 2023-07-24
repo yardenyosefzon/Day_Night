@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Stage1 from "../components/examples/example1";
-import Stage2 from "../components/examples/example2";
+import Stage1 from "../components/forms/create event forms/stage1";
+import Stage2 from "../components/forms/create event forms/stage2";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 // import Stage3 from "../components/examples/example3";

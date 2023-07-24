@@ -14,7 +14,7 @@ datasource db {
 
 model Event {
   id             String         @id @default(cuid())
-  eventName      String
+  eventName      String         @unique
   createdAt      DateTime       @default(now())
   date           String
   artist         String
@@ -31,21 +31,23 @@ model Event {
 }
 
 model BoughtTicket {
-  id            String  @id @default(cuid())
-  event         Event   @relation(fields: [eventId], references: [id])
-  eventId       String
-  user          User    @relation(fields: [userId], references: [id])
-  userId        String
-  email         String
-  nationalId    String
-  birthDay      String
-  gender        String
-  phoneNumber   String
-  instaUserName String
-  verified      Boolean @default(false)
-  rejected      Boolean @default(false)
-  usersTicket   Boolean @default(false)
-  slug          String  @default(uuid())
+  id                String  @id @default(cuid())
+  event             Event   @relation(fields: [eventId], references: [id])
+  eventId           String
+  user              User    @relation(fields: [userId], references: [id])
+  userId            String
+  ticketKind        String
+  email             String
+  nationalId        String
+  partialNationalId String
+  birthDay          String
+  gender            String
+  phoneNumber       String
+  instaUserName     String
+  verified          Boolean @default(false)
+  rejected          Boolean @default(false)
+  usersTicket       Boolean @default(false)
+  slug              String  @default(uuid())
 
   @@index([userId])
   @@index([eventId])
