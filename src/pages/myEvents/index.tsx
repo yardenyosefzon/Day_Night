@@ -9,7 +9,7 @@ import { GetServerSidePropsContext } from 'next';
 import { createInnerTRPCContext } from '~/server/api/trpc';
 
 function MyEvents() {
-    const {data: eventsData, isLoading} = api.events.getManyByUserId.useQuery( undefined, { refetchOnWindowFocus: false })
+    const {data: eventsData, isLoading} = api.events.getManyByUserId.useQuery( undefined, { refetchOnMount: false, refetchOnWindowFocus: false })
 
   if(isLoading) return <h1>Loading...</h1>
   return (
@@ -34,21 +34,21 @@ function MyEvents() {
 
 export default MyEvents
 
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   
-//   const helpers = createServerSideHelpers({
-//     router: appRouter,
-//     ctx: createInnerTRPCContext({session: await getServerAuthSession({req: context.req ,res: context.res}) }), 
-//     transformer: superjson
-//   });
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: createInnerTRPCContext({session: await getServerAuthSession({req: context.req ,res: context.res}) }), 
+    transformer: superjson
+  });
   
-//   // prefetch `events`
-//   await helpers.events.getManyByUserId.prefetch()
+  // prefetch `events`
+  await helpers.events.getManyByUserId.prefetch()
 
-//   return {
-//     props: {
-//       trpcState: helpers.dehydrate(),
-//     },
-//   };
-// }
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+    },
+  };
+}
 
