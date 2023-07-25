@@ -1,10 +1,12 @@
 import { CldUploadWidget } from 'next-cloudinary';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Stage2Props } from './create event forms/stage2';
+import dynamic from 'next/dynamic';
 
 type UploadImagesProps = Stage2Props
 
-export const UploadImage: React.FC<UploadImagesProps> = ({ setStage, setEventsData }) => {
+const NoSSRUploadImage: React.FC<UploadImagesProps> = ({ setStage, setEventsData }) => {
+
   return (
     <>
       <CldUploadWidget
@@ -34,3 +36,9 @@ export const UploadImage: React.FC<UploadImagesProps> = ({ setStage, setEventsDa
     </>
   )
 }
+
+const uploadImage = dynamic(() => Promise.resolve(NoSSRUploadImage), {
+  ssr: false,
+})
+
+export default uploadImage

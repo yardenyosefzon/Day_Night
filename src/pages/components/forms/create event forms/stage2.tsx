@@ -1,5 +1,5 @@
 import React from "react";
-import { UploadImage } from "../uploadImage";
+import UploadImage from "../uploadImage";
 import { EventData } from "~/pages/createEvents";
 import dynamic from "next/dynamic";
 
@@ -20,8 +20,8 @@ const NoSSRStage2: React.FC<Stage2Props> = ({ setStage, setEventsData }) => {
   );
 };
 
-const Stage3 = dynamic(() => Promise.resolve(NoSSRStage2), {
+const Stage2 = dynamic(() => Promise.resolve(NoSSRStage2), {
   ssr: false,
 })
 
-export default Stage3;
+export default Stage2;
