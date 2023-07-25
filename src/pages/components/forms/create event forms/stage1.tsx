@@ -11,7 +11,6 @@ type ValidErrors = {
   eventNameError: { message: string; valid: boolean };
   dateError: { message: string; valid: boolean };
   artistError: { message: string; valid: boolean };
-  imageError: { message: string; valid: boolean };
   descriptionError: { message: string; valid: boolean };
   minAgeError: { message: string; valid: boolean };
   addressError: { message: string; valid: boolean };
@@ -30,10 +29,6 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
     },
     artistError: {
       message: "יש למלא את שם האומן/האמן",
-      valid: true,
-    },
-    imageError: {
-      message: "יש למלא את הקישור לתמונה",
       valid: true,
     },
     descriptionError: {
@@ -91,18 +86,6 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
         ...prevErrors,
         artistError: {
           ...prevErrors.artistError,
-          valid: false,
-        },
-      }));
-      isFormValid = false;
-    }
-
-    // Validate image
-    if (eventsData.image.trim() === "") {
-      setValidErrors((prevErrors) => ({
-        ...prevErrors,
-        imageError: {
-          ...prevErrors.imageError,
           valid: false,
         },
       }));
@@ -216,19 +199,6 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
             className={`border ${validErrors.artistError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
           />
           {!validErrors.artistError.valid && <span className="text-red-500">{validErrors.artistError.message}</span>}
-        </div>
-        <div>
-          <label htmlFor="image">קישור לתמונה</label>
-          <input
-            type="text"
-            id="image"
-            name="image"
-            value={eventsData.image || ""}
-            onChange={onChange}
-            dir="rtl"
-            className={`border ${validErrors.imageError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
-          />
-          {!validErrors.imageError.valid && <span className="text-red-500">{validErrors.imageError.message}</span>}
         </div>
         <div>
           <label htmlFor="description">תיאור האירוע</label>

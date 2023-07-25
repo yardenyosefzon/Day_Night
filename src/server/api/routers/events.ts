@@ -36,8 +36,8 @@ export const eventsRouter = createTRPCRouter({
       return await ctx.prisma.event.findMany({
         select: {
           artist: true,
-          eventName: true
-
+          eventName: true,
+          image: true
         }
       });
     }),

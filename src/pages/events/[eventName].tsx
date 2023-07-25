@@ -6,6 +6,7 @@ import { createServerSideHelpers } from '@trpc/react-query/server';
 import { appRouter } from '~/server/api/root';
 import superjson from "superjson";
 import { createInnerTRPCContext } from '~/server/api/trpc';
+import { CldImage } from 'next-cloudinary';
 
 export default function EventPage(){
   const {query: {eventName}} = useRouter()
@@ -17,6 +18,17 @@ export default function EventPage(){
      <>
         <div>{event?.eventName}</div>
         <div>{event?.artist} :אמן</div>
+        {event?.image?
+        <CldImage
+          className='rounded-lg'
+          width="960"
+          height="600"
+          src={event?.image as string}
+          alt="Description of my image"
+        />
+        :
+        <></>
+        }
         {schemaTicketsLoading?
         <div>Loading...</div>
         :
