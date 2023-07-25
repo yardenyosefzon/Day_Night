@@ -9,7 +9,7 @@ import { GetServerSidePropsContext } from 'next';
 import { createInnerTRPCContext } from '~/server/api/trpc';
 
 function MyEvents() {
-    const {data: eventsData, isLoading} = api.events.getManyByUserId.useQuery( undefined, { refetchOnMount: false, refetchOnWindowFocus: false })
+    const {data: eventsData, isLoading} = api.events.getManyByUserId.useQuery( undefined, { refetchOnWindowFocus: false })
 
   if(isLoading) return <h1>Loading...</h1>
   return (
@@ -21,7 +21,7 @@ function MyEvents() {
             <div className='border-black border-2 w-fit ml-auto flex-col p-2 relative'>
               <div className='flex'>
                 <Link className='block w-fit ml-auto' key={event.eventName} href={`/events/${event.eventName}`}>עבור לדף אירוע</Link>
-                <Link className='block w-fit ml-auto' key={event.eventName} href={`/myEvents/${event.eventName}`}>{event.eventName}</Link>
+                <div>{event.eventName}</div>
               </div>  
                 <Link key={event.eventName} href={`/myEvents/${event.eventName}/tickets`}>כרטיסים עבור אירוע זה</Link>
             </div>
@@ -34,21 +34,21 @@ function MyEvents() {
 
 export default MyEvents
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+// export async function getServerSideProps(context: GetServerSidePropsContext) {
   
-  const helpers = createServerSideHelpers({
-    router: appRouter,
-    ctx: createInnerTRPCContext({session: await getServerAuthSession({req: context.req ,res: context.res}) }), 
-    transformer: superjson
-  });
+//   const helpers = createServerSideHelpers({
+//     router: appRouter,
+//     ctx: createInnerTRPCContext({session: await getServerAuthSession({req: context.req ,res: context.res}) }), 
+//     transformer: superjson
+//   });
   
-  // prefetch `events`
-  await helpers.events.getManyByUserId.prefetch()
+//   // prefetch `events`
+//   await helpers.events.getManyByUserId.prefetch()
 
-  return {
-    props: {
-      trpcState: helpers.dehydrate(),
-    },
-  };
-}
+//   return {
+//     props: {
+//       trpcState: helpers.dehydrate(),
+//     },
+//   };
+// }
 
