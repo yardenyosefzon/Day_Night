@@ -11,6 +11,7 @@ export const schemaTicketsRouter = createTRPCRouter({
                         ticketName: z.string(),
                         price: z.number(),
                         numberOfTickets: z.number(),
+                        notes: z.string()
                 }))               
             })
     )
@@ -42,7 +43,8 @@ export const schemaTicketsRouter = createTRPCRouter({
             select: {
                 numberOfTickets: true,
                 price: true, 
-                ticketName: true
+                ticketName: true,
+                notes: true
             }
         })
     }),
@@ -84,6 +86,43 @@ export const schemaTicketsRouter = createTRPCRouter({
                 numberOfTickets: updatedNumberOfTickets
             }
         });
-    })
+    }),
+    updateDetails: publicProcedure
+    .input(
+        z.object({
+            eventName: z.string(),
+            schemaTicketsData: z.array(
+                z.object({
+                    ticketName: z.string(),
+                    price: z.number(),
+                    numberOfTickets: z.number(),
+                    notes: z.string()
+            }))               
+        })
+)
+    .mutation( async({ctx, input}) => {
+        console.log(input.eventName)
+        const schemaTickets = await ctx.prisma.schemaTicket.findMany({
+            where: {
+                event: {
+                    eventName: input.eventName
+                }
+            }
+        })
+        if(schemaTickets.length == 0) return new Error("no tickets were found")
 
+             schemaTickets.map(async(schemaTicket, index) => {
+             await ctx.prisma.schemaTicket.update({
+                where: {
+                  id: schemaTickets[index]?.id,
+                },
+                data: {
+                    ticketName: input.schemaTicketsData[index]?.ticketName,
+                    price: input.schemaTicketsData[index]?.price,
+                    numberOfTickets: input.schemaTicketsData[index]?.numberOfTickets,
+                    notes: input.schemaTicketsData[index]?.notes
+                },
+              })
+        })
+    })
 })

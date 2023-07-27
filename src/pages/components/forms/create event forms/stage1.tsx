@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
-import type { EventData } from "~/pages/createEvents";
+import type { EventData } from "~/pages/createAndModifyEvents";
 
 type Stage1Props = {
   eventsData: EventData

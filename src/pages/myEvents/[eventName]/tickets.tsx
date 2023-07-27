@@ -13,7 +13,7 @@ function EventTicketsCreatorPage() {
   const [ticketCounts, setTicketCounts] = useState({
     verified: 0,
     waiting: 0,
-    rejected: 0,
+    rejected: 0
   });
 
   // State to track the current ticket category (verified, waiting, rejected)
@@ -94,11 +94,11 @@ function EventTicketsCreatorPage() {
         {filteredTickets?.length === 0 && (
           <div className="text-xl text-center my-4">אין מה לראות כאן</div>
         )}
-        {filteredTickets?.map((ticket) => (
+        {filteredTickets?.map((ticket, index) => (
           currentCategory === "waiting" ? 
-          <WaitingTickets ticket={ticket} handleButtonClick={handleButtonClick}/> 
+          <WaitingTickets key={index} ticket={ticket} handleButtonClick={handleButtonClick}/> 
           : 
-          <RejectedOrVerifiedTickets ticket={ticket} handleButtonClick={handleButtonClick}/>
+          <RejectedOrVerifiedTickets key={index} ticket={ticket} handleButtonClick={handleButtonClick}/>
         ))}
       </div>
     </div>

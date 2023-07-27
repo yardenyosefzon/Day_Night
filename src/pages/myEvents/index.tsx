@@ -16,14 +16,21 @@ function MyEvents() {
     <>
     <h1>האירועים שלי</h1>
     {
-    eventsData?.map(event =>
-        <div className='flex-col' key={event.eventName}>
-            <div className='border-black border-2 w-fit ml-auto flex-col p-2 relative'>
-              <div className='flex'>
-                <Link className='block w-fit ml-auto' key={event.eventName} href={`/events/${event.eventName}`}>עבור לדף אירוע</Link>
-                <div>{event.eventName}</div>
-              </div>  
+    eventsData?.map((event, index) =>
+        <div key={index} className='flex-col'>
+            <div className='border-black border-2 w-fit ml-auto flex-col p-2 relative'>             
+                <div>
+                  <div>{event.eventName}</div>
+                </div>
+                <div>
+                <Link className='block w-fit ml-auto' key={event.eventName} href={`/events/${event.eventName}`}>עבור לדף אירוע</Link> 
+                </div>
+                <div>
                 <Link key={event.eventName} href={`/myEvents/${event.eventName}/tickets`}>כרטיסים עבור אירוע זה</Link>
+                </div>
+                <div>
+                <Link key={event.eventName} href={`/createAndModifyEvents?eventName=${event.eventName}`}>ערוך אירוע</Link>
+                </div>
             </div>
         </div>
     )

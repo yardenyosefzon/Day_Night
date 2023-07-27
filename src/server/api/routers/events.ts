@@ -5,7 +5,7 @@ import {
 } from "~/server/api/trpc";
 
 export const eventsRouter = createTRPCRouter({
-  create: publicProcedure
+  createOrUpdate: publicProcedure
   .input(
     z.object({
       eventName: z.string(),
@@ -15,11 +15,26 @@ export const eventsRouter = createTRPCRouter({
       address: z.string(),
       description: z.string(),
       minAge: z.number(),
+      slug: z.string()
     })
   )
   .mutation(({ctx, input}) => {
-    return ctx.prisma.event.create({
-      data: {
+    return ctx.prisma.event.upsert({
+      where: {
+        slug: input.slug,
+        eventCreatorId: ctx.session?.user.id
+      },
+      update: {
+        eventName: input.eventName,
+        date: input.date,
+        artist: input.artist,
+        image: input.image,
+        address: input.address,
+        description: input.description,
+        minAge: input.minAge,
+        eventCreatorId: ctx.session?.user.id as string
+      },
+      create: {
         eventName: input.eventName,
         date: input.date,
         artist: input.artist,
@@ -29,6 +44,12 @@ export const eventsRouter = createTRPCRouter({
         minAge: input.minAge,
         eventCreatorId: ctx.session?.user.id as string
       }
+    })
+    .then((res) => {
+      return res
+    })
+    .catch((error) => {
+      console.log(error)
     })
   }),
   getAll: publicProcedure
@@ -67,15 +88,25 @@ export const eventsRouter = createTRPCRouter({
       z.object({
         eventName: z.string(),
       }))
-    .query(({ctx, input}) => {
-      ctx.prisma.event.findFirst({
-        where: {
-          eventName: input.eventName
-        },
-        select: {
-          id: true
-        }
-      }).then(() =>{'foundONE'})
-      .catch((error)=>{return error})
+    .query(async ({ctx, input}) => {
+      try {
+        return await ctx.prisma.event.findFirst({
+          where: {
+            eventName: input.eventName
+          },
+          select: {
+            eventName: true,
+            date: true,
+            artist: true,
+            image: true,
+            description: true,
+            minAge: true,
+            address: true,
+            slug: true
+          }
+        });
+      } catch (error) {
+        return error;
+      }
     })
 });

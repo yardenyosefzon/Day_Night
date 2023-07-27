@@ -1,6 +1,6 @@
 import React from "react";
 import UploadImage from "../uploadImage";
-import { EventData } from "~/pages/createEvents";
+import { EventData } from "~/pages/createAndModifyEvents";
 import dynamic from "next/dynamic";
 
 

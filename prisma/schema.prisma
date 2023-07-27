@@ -15,10 +15,10 @@ datasource db {
 model Event {
   id             String         @id @default(cuid())
   eventName      String         @unique
-  createdAt      DateTime       @default(now())
+  slug           String         @unique @default(uuid())
   date           String
   artist         String
-  image          String? 
+  image          String?
   address        String
   description    String
   minAge         Int
@@ -54,11 +54,12 @@ model BoughtTicket {
 }
 
 model SchemaTicket {
-  id              String @id @default(cuid())
+  id              String  @id @default(cuid())
   ticketName      String
   price           Int
   numberOfTickets Int
-  event           Event  @relation(fields: [eventId], references: [id])
+  notes           String?
+  event           Event   @relation(fields: [eventId], references: [id])
   eventId         String
 }
 

@@ -34,10 +34,15 @@ export default function EventPage(){
         :
         schemaTicketsData?.map((_, index) => {
           return(
-        <div className=' border-black border-2 w-fit float-right p-2 rounded-lg'>
+        <div key={index} className=' border-black border-2 w-fit float-right p-2 rounded-lg'>
           <div>{schemaTicketsData[index]?.ticketName}</div>
-          <div>{schemaTicketsData[index]?.price}</div>
-          <div>{schemaTicketsData[index]?.numberOfTickets} :נותרו</div>
+          <div>מחיר: {schemaTicketsData[index]?.price}</div>
+          {
+            schemaTicketsData[index]?.notes === ""?
+            <></>
+            :
+            <div>{schemaTicketsData[index]?.notes}</div>
+          }
           {schemaTicketsData[index]?.numberOfTickets != 0?
           <IsLoggedIn actionA={<Link href={`/buyTickets/${event?.eventName as string}?ticketKind=${schemaTicketsData[index]?.ticketName}`} className='border-2 border-black rounded-lg p-1' >קנה כרטיס</Link>} actionB={<Link href={`/logInTo/logInToBuyTickets?callBackUrl=${event?.eventName as string}`} className='border-2 border-black rounded-lg p-1' >קנה כרטיס</Link>}/>
           :

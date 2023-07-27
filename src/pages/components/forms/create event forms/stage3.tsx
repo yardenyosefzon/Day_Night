@@ -5,16 +5,17 @@ type TicketData = {
   ticketName: string;
   price: number;
   numberOfTickets: number;
+  notes: string;
 };
 
 type Stage3Props = {
   schemaTicketsData: TicketData[];
   setSchemaTicketsData: React.Dispatch<React.SetStateAction<TicketData[]>>;
   setStage: React.Dispatch<React.SetStateAction<number>>;
-  handleCreateEvent: () => void
+  handleCreateOrUpdateEvent: () => void
 };
 
-const NoSSRStage3: React.FC<Stage3Props> = ({ schemaTicketsData, setSchemaTicketsData, setStage, handleCreateEvent }) => {
+const NoSSRStage3: React.FC<Stage3Props> = ({ schemaTicketsData, setSchemaTicketsData, setStage, handleCreateOrUpdateEvent }) => {
   const [validErrors, setValidErrors] = useState<Array<{ nameError: boolean }>>([
     { nameError: false },
   ]);
@@ -29,7 +30,7 @@ const NoSSRStage3: React.FC<Stage3Props> = ({ schemaTicketsData, setSchemaTicket
         if (index === ticketIndex) {
           return {
             ...ticket,
-            [inputName as string]: value,
+            [inputName as string]: inputName?.includes('numberOfTickets') || inputName?.includes('price') ? Number(value) : value,
           };
         }
         return ticket;
@@ -65,7 +66,7 @@ const NoSSRStage3: React.FC<Stage3Props> = ({ schemaTicketsData, setSchemaTicket
     const isFormValid = validateForm();
 
     if (isFormValid) {
-      handleCreateEvent()
+      handleCreateOrUpdateEvent()
     }
   };
 
@@ -79,8 +80,9 @@ const NoSSRStage3: React.FC<Stage3Props> = ({ schemaTicketsData, setSchemaTicket
         ...prevTickets,
         {
           ticketName: "",
-          price: 0,
-          numberOfTickets: 0,
+          price: 80,
+          numberOfTickets: 100,
+          notes: ""
         },
       ]);
 
@@ -112,8 +114,9 @@ const NoSSRStage3: React.FC<Stage3Props> = ({ schemaTicketsData, setSchemaTicket
 
   return (
     <div className="flex flex-col items-center">
-      {schemaTicketsData.map((ticket, index) => (
-        <form key={index} onSubmit={onSubmit} className="w-4/12">
+      <form onSubmit={onSubmit} className="w-4/12">
+        {schemaTicketsData.map((ticket, index) => (
+         <div key={index}> 
           <div>
             <label htmlFor={`name_${index}`}>שם הכרטיס</label>
             <input
@@ -155,6 +158,18 @@ const NoSSRStage3: React.FC<Stage3Props> = ({ schemaTicketsData, setSchemaTicket
               className="border rounded p-2 mb-2 w-11/12"
             />
           </div>
+          <div>
+            <label htmlFor={`numberOfTickets_${index}`}>הערות לדוגמה - כרטיסים אחרונים! אופציונלי</label>
+            <input
+              type="string"
+              id={`notes_${index}`}
+              name={`notes_${index}`}
+              value={ticket.notes}
+              onChange={onChange}
+              dir="rtl"
+              className="border rounded p-2 mb-2 w-11/12"
+            />
+          </div>
           {schemaTicketsData.length < 5 && (
         <button
           onClick={() => onAddRemoveTicket(-1)}
@@ -172,14 +187,15 @@ const NoSSRStage3: React.FC<Stage3Props> = ({ schemaTicketsData, setSchemaTicket
               -
             </button>
           )}
-           <button
+           </div>
+          ))}
+          < button
               onClick={onSubmit}
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4"
             >
               קבע אירוע
             </button>
         </form>
-      ))}
       <button
                 onClick={() => setStage(1)}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"

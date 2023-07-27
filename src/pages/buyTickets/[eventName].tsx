@@ -8,10 +8,10 @@ import BuyTicketsDetailsForm from "../components/forms/buy ticket form/detailsFo
 
 function BuyTicketPage() {
   const { data: sessionData, update } = useSession();
-  const { query: { eventName, ticketKind }, replace, } = useRouter();
-  const { data: eventsData, isLoading } = api.events.getAll.useQuery();
-  const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery();
-  const {data: ticketsData} = api.boughtTickets.getFirstById.useQuery();
+  const { query: { eventName, ticketKind }, replace } = useRouter();
+  const { data: eventsData, isLoading } = api.events.getAll.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false});
+  const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false});
+  const {data: ticketsData} = api.boughtTickets.getFirstById.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false});
   const event = eventsData?.find((event) => event.eventName === eventName);
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -421,7 +421,6 @@ function BuyTicketPage() {
 
     if (sessionData) {
       const { email, name } = sessionData.user;
-      console.log(sessionData.user.rememberMe)
       if(sessionData.user.rememberMe){
       setFormState(formState => 
           {
@@ -468,7 +467,7 @@ function BuyTicketPage() {
       <form onSubmit={(e)=>handleSubmit(e)}>
         <h1>{event?.eventName} :קנה כרטיס עבור</h1>
         {formState.tickets.map((_, index) => 
-          <BuyTicketsDetailsForm formState={formState} constErrors={constErrors} validErrors={validErrors} handleChange={handleChange} index={index} handleDeleteTicket={handleDeleteTicket}/>
+          <BuyTicketsDetailsForm  key={index} formState={formState} constErrors={constErrors} validErrors={validErrors} handleChange={handleChange} index={index} handleDeleteTicket={handleDeleteTicket}/>
         )}
         <button type="submit">לרכישה</button>
       </form>
