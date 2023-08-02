@@ -8,7 +8,7 @@ import UnderNavBar from "./components/underNavBar";
 
 export default function Home() {
 
-  const {data, isLoading} = api.events.getAll.useQuery(undefined, {staleTime: 1000*60*5});
+  const {data, isLoading} = api.events.getAll.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false});
   if(isLoading)return <div>Loading...</div>
 
   return (

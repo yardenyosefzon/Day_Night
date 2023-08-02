@@ -1,4 +1,5 @@
 //http://localhost:3000/api/revalidate?path=/&secret=process.env.MY_SECRET_TOKEN
+//http://localhost:3000/api/revalidate?path=/&secret=HXdxvPEtLGsR6mapUIk5rw==
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function (
