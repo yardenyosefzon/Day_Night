@@ -84,11 +84,11 @@ function BuyTicketPage() {
     ]
   )
   
-  const { mutateAsync: createTickets } = api.boughtTickets.create.useMutation();
+  const { mutateAsync: createBoughtTickets } = api.boughtTickets.create.useMutation();
 
   const { mutateAsync: userRememberMeUpdate } = api.users.updateRememberProp.useMutation()
 
-  const {mutate: changeNumberOfTickets} = api.schemaTickets.changeNumberOfTicketsOfOneByEventAndTicketName.useMutation()
+  const {mutate: changeNumberOfBoughtTickets} = api.schemaTickets.changeNumberOfBoughtTicketsOfOneByEventAndTicketName.useMutation()
 
   const validateForm = () => {
     let isValid = true;
@@ -377,16 +377,37 @@ function BuyTicketPage() {
     resetValidation()
     e.preventDefault();
     if (validateForm()) {
-      createTickets({ userId: sessionData?.user.id as string, eventName: event?.eventName as string, usersTicket: rememberMe, ticketsArray: formState.tickets, ticketKind: ticketKind as string})
-      .then(()=>{changeNumberOfTickets({ticketName: ticketKind as string, eventName: event?.eventName as string})})
+      let emailArray: Array<string>
+      emailArray = formState.tickets.map((ticket) => (
+         ticket.email
+    ))
+      createBoughtTickets({ userId: sessionData?.user.id as string, eventName: event?.eventName as string, usersTicket: rememberMe, ticketsArray: formState.tickets, ticketKind: ticketKind as string})
+      .then(() => {
+        changeNumberOfBoughtTickets({ticketName: ticketKind as string, eventName: event?.eventName as string})
+        fetch('api/email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({usersName: sessionData?.user.name, usersEmails: emailArray, eventName: eventName})
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            console.log(response) // Parse the JSON data returned by the server
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      })
       .catch((error)=>{
         return error
       });
       if(rememberMe)
       userRememberMeUpdate({rememberMe: rememberMe})
       .then(()=>{
-        update()
-        replace('/')})
+        update()})
       .catch((error)=>{
         return error
       });

@@ -1,7 +1,6 @@
 
 import { Resend } from "resend"
-import DayNNightBoughtTicketEmail from "emails/email";
-import { NextResponse } from "next/server";
+import DayNNightBoughtTicketEmail from "emails";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const resend = new Resend(process.env.RESEND_API_KEY)

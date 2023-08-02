@@ -48,7 +48,7 @@ export const schemaTicketsRouter = createTRPCRouter({
             }
         })
     }),
-    changeNumberOfTicketsOfOneByEventAndTicketName: publicProcedure
+    changeNumberOfBoughtTicketsOfOneByEventAndTicketName: publicProcedure
     .input(
         z.object({
             ticketName: z.string(),
