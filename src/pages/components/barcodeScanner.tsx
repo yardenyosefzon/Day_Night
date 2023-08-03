@@ -1,13 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
+import { useRouter } from 'next/router';
 
 function MyQRScannerComponent() {
+  const { replace } = useRouter()
   const qrReaderRef = useRef<HTMLDivElement | null>(null);
   let qrCodeScanner: Html5Qrcode | null = null;
 
   const onScanSuccess = (decodedText: string, decodedResult: unknown) => {
     // handle the scanned code as you like, for example:
     alert(`Code matched = ${decodedText}`);
+    replace(`${decodedText}`)
   };
   
   const onScanFailure = (error: any) => {

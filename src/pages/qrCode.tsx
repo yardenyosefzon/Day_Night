@@ -28,7 +28,7 @@ function QrCode() {
 }
 export default QrCode
 
-export async function GetServerSideProps(context: GetServerSidePropsContext) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
     const {query: {slug}} = context
     const helpers = createServerSideHelpers({
       router: appRouter,
