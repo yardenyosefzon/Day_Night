@@ -9,6 +9,7 @@ import superjson from "superjson";
 import { createInnerTRPCContext } from '~/server/api/trpc';
 import { CldImage } from 'next-cloudinary';
 import { prisma } from '~/server/db';
+import dynamic from 'next/dynamic';
 
 export default function EventPage( props: InferGetStaticPropsType<typeof getStaticProps>){
   const { eventName } = props;
@@ -20,6 +21,7 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
       <>
         <div>{eventsData?.eventName}</div>
         <div>{eventsData?.artist} :אמן</div>
+        <QuillNoSSRWrapper className='float-right' readOnly={true} modules={{toolbar: false}}  value={eventsData?.description}/>
         {eventsData?.image?
         <CldImage
           className='rounded-lg'
@@ -110,3 +112,7 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
     };
   };
   
+  const QuillNoSSRWrapper = dynamic(import('react-quill'), {	
+    ssr: false,
+    loading: () => <p>Loading ...</p>,
+    })

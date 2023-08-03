@@ -1,8 +1,6 @@
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import type { EventData } from "~/pages/createAndModifyEvents";
-import   Quill, { QuillOptionsStatic  } from 'quill';
-import 'react-quill/dist/quill.snow.css';
 
 type Stage1Props = {
   eventsData: EventData
@@ -160,62 +158,17 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
     }
   };
 
-  interface EventDescriptionEditorProps {
-    eventsData: { description: string };
-    onChange: (value: string) => void;
-    validErrors: {
-      descriptionError: { valid: boolean; message: string };
-    };
-  }
-  
-  interface CustomQuillOptionsStatic extends QuillOptionsStatic {
-    direction?: string;
-  }
-  
-  const EventDescriptionEditor: React.FC<EventDescriptionEditorProps> = ({ eventsData, onChange, validErrors }) => {
-    const [editor, setEditor] = useState<Quill | null>(null);
-
-  useEffect(() => {
-    if (!editor) {
-      // Initialize Quill once the component mounts
-      const quillEditor = new Quill("#description-editor", {
-        theme: "snow",
-        direction: "rtl", // Set the initial direction to RTL
-        formats: ["rtl", "ltr", "align", "size", "bold", "underline"], // Custom formats for RTL, LTR, alignment, font size, bold, and underline
-        modules: {
-          toolbar: [
-            // ... toolbar options ...
-          ],
-        },
-      } as CustomQuillOptionsStatic); // Type assertion to CustomQuillOptionsStatic
-      quillEditor.root.innerHTML = eventsData.description || ""; // Set initial content
-      setEditor(quillEditor);
-    }
-  }, [editor, eventsData.description]);
-
-  useEffect(() => {
-    if (editor) {
-      // Custom event handler for Quill editor's text-change event
-      const handleTextChange = () => {
-        // Get the new HTML content of the Quill editor
-        const newContent = editor.root.innerHTML;
-
-        // Replace every <p> and </p> with an empty string
-        const sanitizedContent = newContent.replace(/<\/?p>/g, "");
-
-        // Pass the sanitized content to the onChange function
-        onChange(sanitizedContent);
-      };
-
-      // Add the custom event handler to the Quill editor's text-change event
-      editor.on("text-change", handleTextChange);
-
-      // Cleanup function to remove the event listener when the component unmounts
-      return () => {
-        editor.off("text-change", handleTextChange);
-      };
-    }
-  }, [editor, onChange]);
+  const  modules  = {
+    toolbar: [
+        [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
+        [{ font: [] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        ["bold", "italic", "underline", "strike"],
+        [{ color: [] }, { background: [] }],
+        [{ list:  "ordered" }, { list:  "bullet" }],
+        ["clean"],
+    ],
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -259,14 +212,16 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
           />
           {!validErrors.artistError.valid && <span className="text-red-500">{validErrors.artistError.message}</span>}
         </div>
-        <div>
-      <label htmlFor="description">תיאור האירוע</label>
-      <div
-        id="description-editor"
-        className={`border ${validErrors.descriptionError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
-      />
-      {!validErrors.descriptionError.valid && <span className="text-red-500">{validErrors.descriptionError.message}</span>}
-      </div>
+        <QuillNoSSRWrapper 
+        className="w-96 border-black border-2 rounded-lg text-center float-right"
+        modules={modules}
+        theme="snow" 
+        value={eventsData.description} 
+        onChange={(desc) => 
+          setEventsData((prevData: {}) => ({
+          ...prevData,
+          description: desc
+        }))}/>
         <div>
           <label htmlFor="minAge">גיל מינימלי</label>
           <input
@@ -300,6 +255,10 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
     </div>
   );
 };
+const QuillNoSSRWrapper = dynamic(import('react-quill'), {	
+	ssr: false,
+	loading: () => <p>Loading ...</p>,
+	})
 
 const Stage1 = dynamic(() => Promise.resolve(NoSSRStage1), {
   ssr: false,

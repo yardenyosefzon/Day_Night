@@ -3,6 +3,7 @@ import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
+import "~/styles/quill.snow.css"
 import NavBar from "./components/navBar";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
