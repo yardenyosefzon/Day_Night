@@ -13,18 +13,18 @@ function QrCode() {
     if(typeof(params) === "string"){
     const paramsArray = params.split('_')
     const nationalId = paramsArray[0]
-    const slug = paramsArray[1] as string
-    const {data: ticketsData, isLoading} = api.boughtTickets.getOneBySlug.useQuery( {slug}, { refetchOnMount: false, refetchOnWindowFocus: false })
-    console.log(nationalId, ticketsData, slug)
-    if(!ticketsData){
+    const slug = paramsArray[1]?.trimStart() as string
+    const {data, isLoading} = api.boughtTickets.getOneBySlug.useQuery({slug})
+    console.log(nationalId, data, slug)
+    if(!data){
         return <div>No vialid ticket here</div>
     }
     else
     return (
       <div>
           <div>{nationalId}</div>
-          <div>{ticketsData?.event.eventName}</div>
-          <div>{ticketsData.fullName}</div>
+          <div>{data?.event.eventName}</div>
+          <div>{data.fullName}</div>
       </div>
     )
 }
@@ -43,10 +43,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ctx: createInnerTRPCContext({session: await getServerAuthSession({req: context.req ,res: context.res}) }), 
       transformer: superjson
     });
-
-    if(typeof(slug) === 'string')
+    console.log(typeof(slug) === 'string')
+    if(typeof(slug) === 'string'){
+        slug = slug.trimStart()
         await helpers.boughtTickets.getOneBySlug.prefetch({slug})
-  
+
+    }
     return {
       props: {
         trpcState: helpers.dehydrate(),
