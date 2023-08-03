@@ -32,7 +32,11 @@ function MyQRScannerComponent() {
         qrReaderId,
       );
 //@ts-ignore
-      qrCodeScanner.start({facingMode: "environment"}, {qrbox:500 ,fps: 10, disableFlip: true}, onScanSuccess);
+  const height = document.body.offsetHeight
+  const width = document.body.offsetWidth
+  const minWidth = Math.min(height, width)
+  const config = { fps: 10, qrbox: { width: minWidth * 0.667, height: minWidth * 0.667 }, aspectRatio: Math.ceil(height / width) }
+  qrCodeScanner.start({facingMode: 'environment'}, config, onScanSuccess)
       
     } catch (error) {
       console.error('Error initializing QR scanner:', error);
