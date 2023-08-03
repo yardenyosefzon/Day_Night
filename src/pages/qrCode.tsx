@@ -9,19 +9,22 @@ import { api } from '~/utils/api';
 import { useRouter } from 'next/router';
 
 function QrCode() {
-    const {query: {slug, nationalId, fullName, eventName}} = useRouter()
-
-    if(typeof(slug) === "string"){
+    const {query: {params}} = useRouter()
+    if(typeof(params) === "string"){
+    const paramsArray = params.split('_')
+    const nationalId = paramsArray[0]
+    const slug = paramsArray[1]
     const {data: ticketsData, isLoading} = api.boughtTickets.getOneBySlug.useQuery( {slug}, { refetchOnMount: false, refetchOnWindowFocus: false })
-    if(ticketsData){
+    console.log(nationalId, ticketsData, slug)
+    if(!ticketsData){
         return <div>No vialid ticket here</div>
     }
     else
     return (
       <div>
           <div>{nationalId}</div>
-          <div>{fullName}</div>
-          <div>{eventName}</div>
+          <div>{ticketsData?.event.eventName}</div>
+          <div>{ticketsData.fullName}</div>
       </div>
     )
 }
@@ -29,17 +32,20 @@ function QrCode() {
 export default QrCode
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const {query: {slug}} = context
+    let slug
+    const {query: {params}} = context
+    if(typeof(params) === 'string'){
+    const paramsArray = params.split('_')
+    slug = paramsArray[1]
+    }
     const helpers = createServerSideHelpers({
       router: appRouter,
       ctx: createInnerTRPCContext({session: await getServerAuthSession({req: context.req ,res: context.res}) }), 
       transformer: superjson
     });
 
-    if(typeof(slug) === "string"){
-    
+    if(typeof(slug) === 'string')
         await helpers.boughtTickets.getOneBySlug.prefetch({slug})
-    }
   
     return {
       props: {

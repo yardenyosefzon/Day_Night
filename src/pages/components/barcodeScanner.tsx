@@ -10,7 +10,8 @@ function MyQRScannerComponent() {
   const onScanSuccess = (decodedText: string, decodedResult: unknown) => {
     // handle the scanned code as you like, for example:
     alert(`Code matched = ${decodedText}`);
-    replace(`${decodedText}`)
+    console.log(decodedResult)
+  
   };
   
   const onScanFailure = (error: any) => {
