@@ -34,11 +34,25 @@ function EventTicketsCreatorPage() {
     }
   }, [ticketsData]);
 
-  const handleButtonClick = async (action: string, slug: string) => {
+  const handleButtonClick = async (action: string, slug: string, email: string, qrCode: string) => {
     setIsLoading(true);
 
     try {
       await ticketMutation.mutateAsync({ action: action, slug: slug });
+      if(action === "verified" )
+      fetch('/api/email/aprove', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email, qrCode: qrCode, eventName: eventName })
+    })
+    .then((res)=>{
+    if(res.ok)
+    console.log("mail sent")
+    else
+    console.log("somthing went wrong")
+  })
       eventsRefetch();
     } catch (error) {
       console.log("Something went wrong");

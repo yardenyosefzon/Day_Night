@@ -4,7 +4,7 @@ import { appRouter } from '~/server/api/root';
 import superjson from "superjson";
 import { api } from '~/utils/api';
 import Link from 'next/link';
-import { createInnerTRPCContext, createTRPCContext } from '~/server/api/trpc';
+import { costumSuperJson, createInnerTRPCContext, createTRPCContext } from '~/server/api/trpc';
 import { getServerAuthSession } from '~/server/auth';
 import { GetServerSidePropsContext } from 'next';
 
@@ -28,7 +28,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const helpers = createServerSideHelpers({
     router: appRouter,
     ctx: createInnerTRPCContext({session: await getServerAuthSession({req: context.req ,res: context.res}) }), 
-    transformer: superjson
+    transformer: costumSuperJson
   });
   
   // prefetch `events`

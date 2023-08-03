@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { GetStaticPaths, GetStaticPathsContext, InferGetStaticPropsType } from 'next';
+import type { GetStaticPaths, GetStaticPathsContext, GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/router';
 import { api } from '~/utils/api';
 import IsLoggedIn from '../components/isLoggedIn';
@@ -8,23 +8,24 @@ import { appRouter } from '~/server/api/root';
 import superjson from "superjson";
 import { createInnerTRPCContext } from '~/server/api/trpc';
 import { CldImage } from 'next-cloudinary';
+import { prisma } from '~/server/db';
 
-export default function EventPage(){
-  const {query: {eventName}} = useRouter()
-  const {data: eventsData, isLoading} = api.events.getAll.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false}); 
-  const event = eventsData?.find(event => event.eventName ==  eventName)
-  const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyByEventName.useQuery({eventName: event?.eventName as string})
+export default function EventPage( props: InferGetStaticPropsType<typeof getStaticProps>){
+  const { eventName } = props;
+  const {data: eventsData, isLoading} = api.events.getOneByName.useQuery({ eventName }, {refetchOnMount: false, refetchOnWindowFocus: false}); 
+  // const event = eventsData?.find(event => event.eventName ==  eventName)
+  const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyByEventName.useQuery({eventName: eventsData?.eventName as string})
   if(isLoading) return <div>Loading...</div>
     return (
      <>
-        <div>{event?.eventName}</div>
-        <div>{event?.artist} :אמן</div>
-        {event?.image?
+        <div>{eventsData.eventName}</div>
+        <div>{eventsData?.artist} :אמן</div>
+        {eventsData?.image?
         <CldImage
           className='rounded-lg'
           width="960"
           height="600"
-          src={event?.image as string}
+          src={eventsData?.image as string}
           alt="Description of my image"
         />
         :
@@ -45,7 +46,7 @@ export default function EventPage(){
             <div>{schemaTicketsData[index]?.notes}</div>
           }
           {schemaTicketsData[index]?.numberOfTickets != 0?
-          <IsLoggedIn actionA={<Link href={`/buyTickets/${event?.eventName as string}?ticketKind=${schemaTicketsData[index]?.ticketName}`} className='border-2 border-black rounded-lg p-1' >קנה כרטיס</Link>} actionB={<Link href={`/logInTo/logInToBuyTickets?callBackUrl=${event?.eventName as string}`} className='border-2 border-black rounded-lg p-1' >קנה כרטיס</Link>}/>
+          <IsLoggedIn actionA={<Link href={`/buyTickets/${eventsData?.eventName as string}?ticketKind=${schemaTicketsData[index]?.ticketName}`} className='border-2 border-black rounded-lg p-1' >קנה כרטיס</Link>} actionB={<Link href={`/logInTo/logInToBuyTickets?callBackUrl=${eventsData?.eventName as string}`} className='border-2 border-black rounded-lg p-1' >קנה כרטיס</Link>}/>
           :
           <></>
         }
@@ -57,19 +58,55 @@ export default function EventPage(){
      )
     }
     
-  export function getServerSideProps () {
+  // export function getServerSideProps () {
+  //   const helpers = createServerSideHelpers({
+  //     router: appRouter,
+  //     ctx: createInnerTRPCContext({session: null}), 
+  //     transformer: superjson
+  //   });
+    
+  //   // prefetch `events`
+  //   helpers.events.getAll.prefetch()
+  
+  //   return {
+  //     props: {
+  //       trpcState: helpers.dehydrate(),
+  //     },
+  //   };
+  // }
+  export async function getStaticProps(
+    context: GetStaticPropsContext<{ eventName: string }>,
+  ) {
     const helpers = createServerSideHelpers({
       router: appRouter,
-      ctx: createInnerTRPCContext({session: null}), 
-      transformer: superjson
+      ctx: {session: null, prisma: prisma},
+      transformer: superjson, // optional - adds superjson serialization
     });
-    
-    // prefetch `events`
-    helpers.events.getAll.prefetch()
+    const eventName = context.params?.eventName as string;
   
+    await helpers.events.getOneByName.prefetch({ eventName });
     return {
       props: {
         trpcState: helpers.dehydrate(),
+        eventName,
       },
     };
   }
+
+  export const getStaticPaths: GetStaticPaths = async () => {
+    const posts = await prisma.event.findMany({
+      select: {
+        eventName: true,
+      },
+    });
+    return {
+      paths: posts.map((post) => ({
+        params: {
+          eventName: post.eventName,
+        },
+      })),
+      // https://nextjs.org/docs/pages/api-reference/functions/get-static-paths#fallback-blocking
+      fallback: true
+    };
+  };
+  

@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import React from 'react'
 
 type RejectedOrVerifiedTicketsProps = {
-    handleButtonClick: (action: string, slug: string) => Promise<void>
+    handleButtonClick: (action: string, slug: string, email: string, qrCode: string) => Promise<void>
     ticket: {
         email: string;
         gender: string;
@@ -13,6 +13,7 @@ type RejectedOrVerifiedTicketsProps = {
         rejected: boolean;
         slug: string;
         ticketKind: string;
+        qrCode: string;
         user: {
             name: string | null;
         };
@@ -35,7 +36,7 @@ function NoSSRRejectedOrVerifiedTickets({ticket, handleButtonClick}: RejectedOrV
               </div>
             </div>
               <div className="flex flex-row-reverse gap-x-20 justify-center">
-                <button onClick={() => handleButtonClick("waiting", ticket.slug)}>
+                <button onClick={() => handleButtonClick("waiting", ticket.slug, ticket.email, ticket.qrCode)}>
                     בטל סטטוס זה
                 </button>
               </div>

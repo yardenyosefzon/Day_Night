@@ -9,10 +9,11 @@ import BuyTicketsDetailsForm from "../components/forms/buy ticket form/detailsFo
 function BuyTicketPage() {
   const { data: sessionData, update } = useSession();
   const { query: { eventName, ticketKind }, replace } = useRouter();
-  const { data: eventsData, isLoading } = api.events.getAll.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false});
+  const { data: eventsData, isLoading } = api.events.getAll.useQuery();
   const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false});
   const {data: ticketsData} = api.boughtTickets.getFirstById.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false});
   const event = eventsData?.find((event) => event.eventName === eventName);
+ 
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -384,12 +385,12 @@ function BuyTicketPage() {
       createBoughtTickets({ userId: sessionData?.user.id as string, eventName: event?.eventName as string, usersTicket: rememberMe, ticketsArray: formState.tickets, ticketKind: ticketKind as string})
       .then(() => {
         changeNumberOfBoughtTickets({ticketName: ticketKind as string, eventName: event?.eventName as string})
-        fetch('api/email', {
+        fetch('api/email/bought', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({usersName: sessionData?.user.name, usersEmails: emailArray, eventName: eventName})
+          body: JSON.stringify({userName: sessionData?.user.name, usersEmails: emailArray, eventName: eventName})
         })
           .then(response => {
             if (!response.ok) {

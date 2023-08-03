@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import React from 'react'
 
 type WaitingTicketsProps = {
-    handleButtonClick: (action: string, slug: string) => Promise<void>
+    handleButtonClick: (action: string, slug: string, email: string, qrCode: string) => Promise<void>
     ticket: {
         email: string;
         gender: string;
@@ -13,6 +13,7 @@ type WaitingTicketsProps = {
         rejected: boolean;
         slug: string;
         ticketKind: string;
+        qrCode: string;
         user: {
             name: string | null;
         };
@@ -36,10 +37,10 @@ function NoSSRWaitingTickets({ticket, handleButtonClick}: WaitingTicketsProps) {
             </div>
               <div className="flex flex-row-reverse gap-x-20 justify-center">
                 <div className="relative">
-                  <button onClick={() => handleButtonClick("verified", ticket.slug)}>אשר כרטיס</button>
+                  <button onClick={() => handleButtonClick("verified", ticket.slug, ticket.email, ticket.qrCode)}>אשר כרטיס</button>
                 </div>
                 <div className="relative">
-                  <button onClick={() => handleButtonClick("rejected", ticket.slug)}>דחה כרטיס</button>
+                  <button onClick={() => handleButtonClick("rejected", ticket.slug, ticket.email, ticket.qrCode)}>דחה כרטיס</button>
                 </div>
               </div>
           </div>

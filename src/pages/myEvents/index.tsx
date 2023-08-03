@@ -5,10 +5,12 @@ import superjson from "superjson";
 import { api } from '~/utils/api';
 import Link from 'next/link';
 import { getServerAuthSession } from '~/server/auth';
-import { GetServerSidePropsContext } from 'next';
+import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { createInnerTRPCContext } from '~/server/api/trpc';
+import { DehydratedState } from '@tanstack/react-query';
 
-function MyEvents() {
+function MyEvents(){
+  
     const {data: eventsData, isLoading} = api.events.getManyByUserId.useQuery( undefined, { refetchOnMount: false, refetchOnWindowFocus: false })
 
   if(isLoading) return <h1>Loading...</h1>

@@ -44,10 +44,12 @@ model BoughtTicket {
   gender            String
   phoneNumber       String
   instaUserName     String
+  fullName          String
   verified          Boolean @default(false)
   rejected          Boolean @default(false)
   usersTicket       Boolean @default(false)
-  slug              String  @default(uuid())
+  slug              String
+  qrCode            String  @db.Text
 
   @@index([userId])
   @@index([eventId])

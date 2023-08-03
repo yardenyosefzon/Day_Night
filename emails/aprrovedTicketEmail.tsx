@@ -10,47 +10,41 @@ import { Body } from '@react-email/body';
 import { Hr } from '@react-email/hr';
   import * as React from 'react';
   
-  interface DayNNightBoughtTicketEmailProps {
-    userName: string;
-    eventName: string;
+  interface DayNNightAprovedTicketEmailProps {
+    qrCode: string,
+    eventName: string
   }
   
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : '';
   
-  export const DayNNightBoughtTicketEmail = ({
-    userName,
+  export const AprovedTicketEmail = ({
+    qrCode,
     eventName
-  }: DayNNightBoughtTicketEmailProps) => (
+  }: DayNNightAprovedTicketEmailProps) => (
     <Html>
      <Tailwind>   
       <Head />
       <Preview className='text-right'>
-      !רכשת כרטיס
+      !כרטיסך אושר
       </Preview>
       <Body style={main}>
         <Container style={container} className='flex justify-end text-right'>
-          <Img
-            src={`${baseUrl}/static/koala-logo.png`}
-            width="170"
-            height="50"
-            alt="Koala"
-            style={logo}
-          />
-          <Text style={paragraph}>שלום {userName}</Text>
+          <Text style={paragraph}>שלום</Text>
           <Text style={paragraph}>
-      מייל זה נשלח על ידי אפליקציית Day&Night
-      אנו מודים לכם על רכישת כרטיס לאירוע {eventName}.
-      אתם תקבלו הודעה למייל זה ברגע שהמפיק יאשר או ידחה את כרטיסכם
+      מייל זה נשלח על ידי אפליקציית Day&Night.
+          <Text style={paragraph}>אנו מודים לכם על רכישת כרטיס לאירוע {eventName} ושמחים לעדכן כי המפיק אישר את הכרטיס</Text>
+          <Text style={paragraph}>בתחתית הדף מופיע מופיע קוד שהוא הכרטיס ואותו יסרקו בכניסה לאירוע</Text>
           </Text>
           <Section style={btnContainer}>
           </Section>
           <Text style={paragraph}>
-            תודה
+            בתודה
             <br />
-            Day&Night צוות
+             צוות Day&Night
           </Text>
+          <Img alt='qrCode' src={qrCode} width={150} height={150}></Img>
         </Container>
         <Container className='text-right'>
           <Hr style={hr} />
@@ -61,7 +55,7 @@ import { Hr } from '@react-email/hr';
     </Html>
   );
   
-  export default DayNNightBoughtTicketEmail;
+  export default AprovedTicketEmail;
   
   const main = {
     backgroundColor: '#ffffff',

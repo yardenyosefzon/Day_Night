@@ -1,19 +1,19 @@
-
 import { Resend } from "resend"
-import DayNNightBoughtTicketEmail from "emails";
+import BoughtTicketEmail from "emails/boughtTicketEmail";
 import { NextApiRequest, NextApiResponse } from "next";
+import AprovedTicketEmail from "emails/aprrovedTicketEmail";
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const {userName, usersEmails, eventName} = req.body
+    const {email, qrCode, eventName} = req.body
 try{
 
     await resend.sendEmail({
         from: 'onboarding@resend.dev',
-        to: usersEmails,
-        subject: 'Ticket purchase',
-        react: DayNNightBoughtTicketEmail({userName: userName, eventName:eventName})
+        to: email,
+        subject: 'Ticket aprovel',
+        react: AprovedTicketEmail({qrCode: qrCode, eventName: eventName})
       },
       );
 

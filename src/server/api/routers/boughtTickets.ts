@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { publicProcedure,createTRPCRouter } from "../trpc";
+import { uuid } from "uuidv4";
 
 export const boughtTicketsRouter = createTRPCRouter({
     create: publicProcedure
@@ -17,6 +18,7 @@ export const boughtTicketsRouter = createTRPCRouter({
                                 gender: z.string(),
                                 phoneNumber: z.string(),
                                 instaUserName: z.string(),
+                                fullName: z.string()
                             })
             )
         })
@@ -44,17 +46,25 @@ export const boughtTicketsRouter = createTRPCRouter({
               id: true
             }
           })        
-        const dbArray = input.ticketsArray.map((boughtTicket, index) => ({
-            ...boughtTicket,
-            nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string ,
-            partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
-            userId: input.userId,
-            eventId: eventId?.id as string,
-            usersTicket: index === 0 ? input.usersTicket : false,
-            ticketKind: input.ticketKind
-          }));
-        return ctx.prisma.boughtTicket.createMany({
-            data: dbArray
+          const dbArray = input.ticketsArray.map((boughtTicket, index) => {
+            const slug = uuid(); // Generate a unique slug for each iteration
+          
+            return {
+              ...boughtTicket,
+              nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
+              partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
+              userId: input.userId,
+              eventId: eventId?.id as string,
+              usersTicket: index === 0 ? input.usersTicket : false,
+              ticketKind: input.ticketKind,
+              slug: slug, // Use the generated slug here
+              fullName: input.ticketsArray[index]?.fullName as string,
+              qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://localhost:3000/qrCode/?eventName=${encodeURIComponent(input.eventName)}&nationalId=${encodeURIComponent(nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string)}&fullName=${encodeURIComponent(input.ticketsArray[index]?.fullName as string)}&slug=${encodeURIComponent(slug)}`
+            };
+          });
+          
+         return ctx.prisma.boughtTicket.createMany({
+            data: dbArray,
         })
     }),
     getFirstById: publicProcedure.query(({ ctx }) => {
@@ -97,6 +107,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             },
             select: {
                 slug: true,
+                qrCode: true,
                 event: {
                     select: {
                         eventName: true
@@ -129,6 +140,7 @@ export const boughtTicketsRouter = createTRPCRouter({
                 rejected: true,
                 slug:true,
                 ticketKind:true,
+                qrCode:true,
                 user: {
                     select: {
                         name: true
@@ -160,6 +172,22 @@ export const boughtTicketsRouter = createTRPCRouter({
                 id: boughtTicket?.id
               },
               data: data
+        })
+    }),
+    getOneBySlug: publicProcedure
+    .input(
+        z.object({
+            slug: z.string()
+        })
+    )
+    .query(({ctx, input}) => {
+        return ctx.prisma.boughtTicket.findFirst({
+            where: {
+                slug: input.slug
+            },
+            select: {
+                fullName: true
+            }
         })
     })
 })

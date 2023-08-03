@@ -23,6 +23,15 @@ import { prisma } from "~/server/db";
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
+superjson.registerCustom<Buffer, number[]>(
+  {
+    isApplicable: (v): v is Buffer => v instanceof Buffer,
+    serialize: v => [...v],
+    deserialize: v => Buffer.from(v)
+  },
+  "buffer"
+);
+
 type CreateContextOptions = {
   session: Session | null;
 };
@@ -128,3 +137,6 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+
+export const costumSuperJson = superjson

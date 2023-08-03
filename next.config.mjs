@@ -7,6 +7,16 @@ await import("./src/env.mjs");
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'api.qrserver.com',
+        port: '',
+        pathname: '/v1/create-qr-code/**',
+      },
+    ],
+  },
 
   /**
    * If you have `experimental: { appDir: true }` set, then you must comment the below `i18n` config
