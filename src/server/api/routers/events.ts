@@ -88,9 +88,8 @@ export const eventsRouter = createTRPCRouter({
       z.object({
         eventName: z.string(),
       }))
-    .query(async ({ctx, input}) => {
-      try {
-        return await ctx.prisma.event.findFirst({
+    .query(({ctx, input}) => {
+        return ctx.prisma.event.findFirst({
           where: {
             eventName: input.eventName
           },
@@ -105,8 +104,5 @@ export const eventsRouter = createTRPCRouter({
             slug: true
           }
         });
-      } catch (error) {
-        return error;
-      }
     })
 });

@@ -17,8 +17,8 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
   const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyByEventName.useQuery({eventName: eventsData?.eventName as string})
   if(isLoading) return <div>Loading...</div>
     return (
-     <>
-        <div>{eventsData.eventName}</div>
+      <>
+        <div>{eventsData?.eventName}</div>
         <div>{eventsData?.artist} :אמן</div>
         {eventsData?.image?
         <CldImage
