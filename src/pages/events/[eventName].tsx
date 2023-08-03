@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { GetStaticPaths, GetStaticPathsContext, InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/router';
 import { api } from '~/utils/api';
 import IsLoggedIn from '../components/isLoggedIn';
@@ -56,19 +57,30 @@ export default function EventPage(){
      )
     }
     
-  export function getServerSideProps () {
-    const helpers = createServerSideHelpers({
-      router: appRouter,
-      ctx: createInnerTRPCContext({session: null}), 
-      transformer: superjson
-    });
+  // export function getServerSideProps () {
+  //   const helpers = createServerSideHelpers({
+  //     router: appRouter,
+  //     ctx: createInnerTRPCContext({session: null}), 
+  //     transformer: superjson
+  //   });
     
-    // prefetch `events`
-    helpers.events.getAll.prefetch()
+  //   // prefetch `events`
+  //   helpers.events.getAll.prefetch()
   
+  //   return {
+  //     props: {
+  //       trpcState: helpers.dehydrate(),
+  //     },
+  //   };
+  // }
+
+  export const getStaticProps = async ({params: []}) => {
     return {
-      props: {
-        trpcState: helpers.dehydrate(),
-      },
+      props: {}
     };
-  }
+  },
+  getStaticPaths: GetStaticPaths = () =>
+    Promise.resolve({
+      paths: [],
+      fallback: 'blocking'
+    });

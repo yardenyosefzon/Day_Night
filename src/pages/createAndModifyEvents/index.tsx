@@ -4,6 +4,8 @@ import Stage2 from "../components/forms/create event forms/stage2";
 import Stage3 from "../components/forms/create event forms/stage3";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
+import { env } from "~/env.mjs";
+import Spinner from "../components/spinner";
 
 export type EventData = {
   eventName: string,
@@ -46,21 +48,27 @@ const CreateEvents: React.FC = () => {
     notes: ""
   }])
 
-  const { refetch: eventRefetch } = api.events.getOneByName.useQuery({eventName: eventName as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
-  const { refetch: schemaTicketsRefetch } = api.schemaTickets.getManyByEventName.useQuery({eventName: eventName as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
-  const {mutateAsync: eventMutate, error} = api.events.createOrUpdate.useMutation()
-  const {mutateAsync: schemaTicketCreate} = api.schemaTickets.create.useMutation()
-  const {mutateAsync: schemaTicketUpdate} = api.schemaTickets.updateDetails.useMutation()
+  const { refetch: eventRefetch } = api.events.getOneByName.useQuery({eventName: eventName as string}, {refetchOnMount: false, refetchOnWindowFocus: false, retry: false, enabled: false})
+  const { refetch: schemaTicketsRefetch } = api.schemaTickets.getManyByEventName.useQuery({eventName: eventName as string}, {refetchOnMount: false, refetchOnWindowFocus: false, retry: false, enabled: false})
+  const {mutateAsync: eventMutate, isLoading: eventLoading} = api.events.createOrUpdate.useMutation()
+  const {mutateAsync: schemaTicketCreate, isLoading: schemaTicketCreateLoading} = api.schemaTickets.create.useMutation()
+  const {mutateAsync: schemaTicketUpdate, isLoading: scemaTicketUpdateLoading} = api.schemaTickets.updateDetails.useMutation()
 
   function handleCreateOrUpdateEvent () {
-    console.log(!eventName)
+
     if(!eventName){
     eventMutate(eventsData)
     .then((res) => {
       //@ts-ignore
       schemaTicketCreate({schemaTicketsData: schemaTicketsData, eventId: res.id})
       .then((res) => {
-        console.log(res)
+        fetch(`api/revalidate?path=/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
+        })
         replace('/myEvents')
         
       })
@@ -76,8 +84,14 @@ const CreateEvents: React.FC = () => {
       //@ts-ignore
       schemaTicketUpdate({schemaTicketsData: schemaTicketsData, eventName: res.eventName})
       .then((res) => {
-        console.log(res)
-        
+        fetch(`api/revalidate?path=/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
+        })
+        replace('/myEvents')
       })
       .catch((error) => {
         console.log(error)
@@ -89,7 +103,7 @@ const CreateEvents: React.FC = () => {
 
 useEffect(() => {
 
-  if(eventName){
+  if(typeof(eventName) === "string"){
     eventRefetch()
       .then((res) => {
 
@@ -115,16 +129,19 @@ useEffect(() => {
         address: eventData.address,
         slug: eventData.slug,
       }));
-    });
 
-    schemaTicketsRefetch()
-    .then((res) => {
-      //@ts-ignore
-      setSchemaTicketsData(() => res.data )
+      schemaTicketsRefetch()
+      .then((res) => {
+        //@ts-ignore
+        setSchemaTicketsData(() => res.data )
+    });
     })
   }
 }, [])
-console.log(schemaTicketsData)
+
+  if(eventLoading || schemaTicketCreateLoading || scemaTicketUpdateLoading)
+  return <Spinner/>
+  else
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl mb-4">Current Stage: Stage {stage}</h1>
