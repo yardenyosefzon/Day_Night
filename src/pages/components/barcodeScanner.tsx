@@ -10,6 +10,12 @@ function MyQRScannerComponent() {
     console.log(`Code matched = ${decodedText}`, decodedResult);
   };
   
+  const onScanFailure = (error: any) => {
+    // handle scan failure, usually better to ignore and keep scanning.
+    // for example:
+    console.warn(`Code scan error = ${error}`);
+  };
+
   const initializeScanner = () => {
     try {
     
