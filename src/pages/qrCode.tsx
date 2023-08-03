@@ -13,7 +13,7 @@ function QrCode() {
     if(typeof(params) === "string"){
     const paramsArray = params.split('_')
     const nationalId = paramsArray[0]
-    const slug = paramsArray[1]
+    const slug = paramsArray[1] as string
     const {data: ticketsData, isLoading} = api.boughtTickets.getOneBySlug.useQuery( {slug}, { refetchOnMount: false, refetchOnWindowFocus: false })
     console.log(nationalId, ticketsData, slug)
     if(!ticketsData){
