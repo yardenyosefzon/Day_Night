@@ -57,30 +57,19 @@ export default function EventPage(){
      )
     }
     
-  // export function getServerSideProps () {
-  //   const helpers = createServerSideHelpers({
-  //     router: appRouter,
-  //     ctx: createInnerTRPCContext({session: null}), 
-  //     transformer: superjson
-  //   });
-    
-  //   // prefetch `events`
-  //   helpers.events.getAll.prefetch()
-  
-  //   return {
-  //     props: {
-  //       trpcState: helpers.dehydrate(),
-  //     },
-  //   };
-  // }
-
-  export const getStaticProps = async ({params: []}) => {
-    return {
-      props: {}
-    };
-  },
-  getStaticPaths: GetStaticPaths = () =>
-    Promise.resolve({
-      paths: [],
-      fallback: 'blocking'
+  export function getServerSideProps () {
+    const helpers = createServerSideHelpers({
+      router: appRouter,
+      ctx: createInnerTRPCContext({session: null}), 
+      transformer: superjson
     });
+    
+    // prefetch `events`
+    helpers.events.getAll.prefetch()
+  
+    return {
+      props: {
+        trpcState: helpers.dehydrate(),
+      },
+    };
+  }
