@@ -31,7 +31,7 @@ function MyQRScannerComponent() {
       qrCodeScanner = new Html5Qrcode(
         qrReaderId,
       );
-
+//@ts-ignore
       qrCodeScanner.start({facingMode: "environment"}, {qrbox:500 ,fps: 10, disableFlip: true}, onScanSuccess);
       
     } catch (error) {
