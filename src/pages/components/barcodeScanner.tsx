@@ -36,6 +36,7 @@ function MyQRScannerComponent() {
   const width = document.body.offsetWidth
   const minWidth = Math.min(height, width)
   const config = { fps: 10, qrbox: { width: minWidth * 0.667, height: minWidth * 0.667 }, aspectRatio: Math.ceil(height / width) }
+  //@ts-ignore
   qrCodeScanner.start({facingMode: 'environment'}, config, onScanSuccess)
       
     } catch (error) {
