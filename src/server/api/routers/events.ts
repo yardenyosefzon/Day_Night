@@ -104,5 +104,25 @@ export const eventsRouter = createTRPCRouter({
             slug: true
           }
         });
+    }),
+    updateNumberOfScannedTicketsOfOneByName: publicProcedure
+    .input(
+      z.object({
+        eventName: z.string(),
+        scannedTicketsNumber: z.number()
+      })
+    )
+    .mutation(({input, ctx}) => {
+      return ctx.prisma.event.update({
+        where: {
+          eventName: input.eventName
+        },
+        data: {
+          scannedTicketsNumber: input.scannedTicketsNumber + 1
+        },
+        select: {
+          scannedTicketsNumber: true
+        }
+      })
     })
 });

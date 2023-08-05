@@ -8,7 +8,7 @@ import RejectedOrVerifiedTickets from "~/pages/components/eventTicketsButtons/re
 function EventTicketsCreatorPage() {
   const { query: { eventName } } = useRouter();
   const { data: ticketsData, refetch: eventsRefetch } = api.boughtTickets.getManyByEvent.useQuery({ eventName: eventName as string });
-  const ticketMutation = api.boughtTickets.updateOneBySlug.useMutation();
+  const ticketMutation = api.boughtTickets.updateAprovelOfOneBySlug.useMutation();
   const [isLoading, setIsLoading] = useState(false);
   const [ticketCounts, setTicketCounts] = useState({
     verified: 0,

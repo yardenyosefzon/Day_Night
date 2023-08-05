@@ -13,7 +13,7 @@ function Scan() {
   const { query: {eventName}, replace } = useRouter()
   const {data: eventsData, isLoading} = api.events.getManyByUserId.useQuery( undefined, { refetchOnMount: false, refetchOnWindowFocus: false })
   if(!eventsData?.find(event => event.eventName === eventName)){
-    replace('/')
+   return<div>Go Away</div>
   }
   else
   return (

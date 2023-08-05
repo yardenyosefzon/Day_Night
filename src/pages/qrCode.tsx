@@ -7,6 +7,7 @@ import { getServerAuthSession } from '~/server/auth';
 import { GetServerSidePropsContext } from 'next';
 import { api } from '~/utils/api';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 function QrCode() {
     const {query: {params}} = useRouter()
@@ -25,6 +26,11 @@ function QrCode() {
           <div>{nationalId}</div>
           <div>{data?.event.eventName}</div>
           <div>{data.fullName}</div>
+          {paramsArray[2] === 'true' ?
+          <Link href={`/myEvents/${data?.event.eventName}/scan`}>חזור לסריקה</Link>
+          :
+          <></>
+        }
       </div>
     )
 }

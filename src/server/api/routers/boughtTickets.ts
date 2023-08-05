@@ -149,7 +149,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             }
         })
     }),
-    updateOneBySlug: publicProcedure
+    updateAprovelOfOneBySlug: publicProcedure
     .input(
         z.object({
             action: z.string(),
@@ -190,6 +190,31 @@ export const boughtTicketsRouter = createTRPCRouter({
                 event: {
                     select: {
                         eventName: true
+                    }
+                }
+            }
+        })
+    }),
+    updateScannedOfOneBySlug: publicProcedure
+    .input(
+        z.object({
+            slug: z.string()
+        })
+    )
+    .mutation(({input, ctx}) => {
+        return ctx.prisma.boughtTicket.update({
+            where:{
+                slug: input.slug
+            },
+            data: {
+                scanned: true
+            },
+            select: {
+                scanned: true,
+                event: {
+                    select: {
+                        eventName: true,
+                        scannedTicketsNumber: true
                     }
                 }
             }

@@ -22,6 +22,7 @@ model Event {
   address        String
   description    String
   minAge         Int
+  scannedTicketsNumber Int @default(0)
   eventCreator   User           @relation(fields: [eventCreatorId], references: [id])
   eventCreatorId String
   boughtTicket   BoughtTicket[]
@@ -48,8 +49,9 @@ model BoughtTicket {
   verified          Boolean @default(false)
   rejected          Boolean @default(false)
   usersTicket       Boolean @default(false)
-  slug              String
+  slug              String  @unique
   qrCode            String  @db.Text
+  scanned           Boolean @default(false)
 
   @@index([userId])
   @@index([eventId])

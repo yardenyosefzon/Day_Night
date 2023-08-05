@@ -1,23 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { useRouter } from 'next/router';
+import { api } from '~/utils/api';
 
 function MyQRScannerComponent() {
+
+  const {mutateAsync: boughtTicketsMutate} = api.boughtTickets.updateScannedOfOneBySlug.useMutation()
+  const {mutateAsync: eventsMutate} = api.events.updateNumberOfScannedTicketsOfOneByName.useMutation()
+
   const { replace } = useRouter()
   const qrReaderRef = useRef<HTMLDivElement | null>(null);
   let qrCodeScanner: Html5Qrcode | null = null;
 
   const onScanSuccess = (decodedText: string, decodedResult: unknown) => {
-    // handle the scanned code as you like, for example:
 
-    replace(decodedText)
-  
-  };
-  
-  const onScanFailure = (error: any) => {
-    // handle scan failure, usually better to ignore and keep scanning.
-    // for example:
-    console.warn(`Code scan error = ${error}`);
+    const slugIndex = decodedText.indexOf("_");
+    const slug =  decodedText.substr(slugIndex as number + 1, 18);
+    boughtTicketsMutate({slug})
+    .then((res) => {
+      if(res)
+      eventsMutate({eventName: res?.event.eventName, scannedTicketsNumber: res?.event.scannedTicketsNumber})
+  })
+  .catch(err => {
+    throw new Error(`Message: ${err.message}`)
+  })
+    replace(`${decodedText}+_+true`)
+    
   };
 
   const initializeScanner = () => {
