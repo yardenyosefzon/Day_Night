@@ -70,6 +70,13 @@ const CreateEvents: React.FC = () => {
           },
           body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
         })
+        fetch(`api/revalidate?path=/events/${eventName}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
+        })
         replace('/myEvents')
         
       })
@@ -91,6 +98,13 @@ const CreateEvents: React.FC = () => {
       schemaTicketUpdate({schemaTicketsData: schemaTicketsData, eventName: res.eventName})
       .then((res) => {
         fetch(`api/revalidate?path=/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
+        })
+        fetch(`api/revalidate?path=/events/${eventName}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

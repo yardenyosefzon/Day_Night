@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <div className="w-full h-screen">
-      <div className={`mx-6 mb-8 h-full sm:mx-20 sm:my-20 overflow-scroll ${ibm.className} sm:grid-cols-4 sm:overflow-auto sm:flex sm:justify-between`}>
+      <div className={`mx-6 mb-8 h-full sm:mx-20 sm:my-20 overflow-scroll ${ibm.className} sm:grid-cols-4 sm:overflow-auto sm:grid sm:justify-between`}>
         {data?.map(event => (
           <div className="relative flex flex-col items-end border-2 border-black rounded-b-3xl mx-3 rounded-t-xl my-14 h-2/6 sm:w-1/5 sm:h-2/5" key={event.eventName}>
             <div className="relative w-full h-4/6">
