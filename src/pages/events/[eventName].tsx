@@ -13,7 +13,6 @@ import Image from 'next/image';
 export default function EventPage( props: InferGetStaticPropsType<typeof getStaticProps>){
   const { eventName } = props;
   const {data: eventsData, isLoading} = api.events.getOneByName.useQuery({ eventName }, {refetchOnMount: false, refetchOnWindowFocus: false}); 
-  // const event = eventsData?.find(event => event.eventName ==  eventName)
   const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyByEventName.useQuery({eventName: eventsData?.eventName as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
   if(isLoading) return <div>Loading...</div>
     return (
