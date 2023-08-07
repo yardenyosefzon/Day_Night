@@ -7,7 +7,6 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    NEXT_PUBLIC_SITE_URL: z.string(),
     RESEND_API_KEY: z.string(), 
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string(),
     NEXT_PUBLIC_CLOUDINARY_API_KEY: z.string(),
@@ -36,7 +35,6 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-  NEXT_PUBLIC_SITE_URL: z.string(),
   NEXT_PUBLIC_MY_SECRET_TOKEN: z.string(),
   },
 
@@ -45,7 +43,6 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
-    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     NEXT_PUBLIC_MY_SECRET_TOKEN: process.env.NEXT_PUBLIC_MY_SECRET_TOKEN,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
