@@ -14,7 +14,7 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
   const { eventName } = props;
   const {data: eventsData, isLoading} = api.events.getOneByName.useQuery({ eventName }, {refetchOnMount: false, refetchOnWindowFocus: false}); 
   // const event = eventsData?.find(event => event.eventName ==  eventName)
-  const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyByEventName.useQuery({eventName: eventsData?.eventName as string})
+  const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyByEventName.useQuery({eventName: eventsData?.eventName as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
   if(isLoading) return <div>Loading...</div>
     return (
       <>
@@ -93,22 +93,6 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
      )
     }
     
-  // export function getServerSideProps () {
-  //   const helpers = createServerSideHelpers({
-  //     router: appRouter,
-  //     ctx: createInnerTRPCContext({session: null}), 
-  //     transformer: superjson
-  //   });
-    
-  //   // prefetch `events`
-  //   helpers.events.getAll.prefetch()
-  
-  //   return {
-  //     props: {
-  //       trpcState: helpers.dehydrate(),
-  //     },
-  //   };
-  // }
   export async function getStaticProps(
     context: GetStaticPropsContext<{ eventName: string }>,
   ) {
@@ -120,6 +104,8 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
     const eventName = context.params?.eventName as string;
   
     await helpers.events.getOneByName.prefetch({ eventName });
+    await helpers.schemaTickets.getManyByEventName.prefetch({ eventName: eventName })
+
     return {
       props: {
         trpcState: helpers.dehydrate(),
