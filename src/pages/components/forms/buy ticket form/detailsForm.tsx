@@ -111,7 +111,7 @@ interface FormState {
         }`}
         value={formState.tickets[index]?.gender}
       >
-        <option value="" disabled>
+        <option hidden>
           מגדר
         </option>
         <option value="נקבה">נקבה</option>

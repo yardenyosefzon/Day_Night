@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { publicProcedure,createTRPCRouter } from "../trpc";
+import { publicProcedure,createTRPCRouter, protectedProcedure } from "../trpc";
 import { uuid } from "uuidv4";
 
 export const boughtTicketsRouter = createTRPCRouter({
@@ -24,9 +24,11 @@ export const boughtTicketsRouter = createTRPCRouter({
         })
     )
     .mutation(async({ctx,input}) => {
+
         let nationalId: {
             nationalId: string;
         } | null
+
         if(ctx.session?.user.rememberMe){
             nationalId = await ctx.prisma.boughtTicket.findFirst({
                 where: {
@@ -38,6 +40,7 @@ export const boughtTicketsRouter = createTRPCRouter({
                 }
             })
         }
+
         const eventId = await ctx.prisma.event.findFirst({
             where: {
               eventName: input.eventName
@@ -49,6 +52,7 @@ export const boughtTicketsRouter = createTRPCRouter({
           const dbArray = input.ticketsArray.map((boughtTicket, index) => {
             const slug = uuid(); // Generate a unique slug for each iteration
           
+            if(input.userId === "")
             return {
               ...boughtTicket,
               nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
@@ -61,6 +65,17 @@ export const boughtTicketsRouter = createTRPCRouter({
               fullName: input.ticketsArray[index]?.fullName as string,
               qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://day-night-eight.vercel.app/qrCode/?params=${encodeURIComponent(nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string)}+_+${encodeURIComponent(slug)}`
             };
+            return{
+                ...boughtTicket,
+                nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
+                partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
+                eventId: eventId?.id as string,
+                usersTicket: index === 0 ? input.usersTicket : false,
+                ticketKind: input.ticketKind,
+                slug: slug, // Use the generated slug here
+                fullName: input.ticketsArray[index]?.fullName as string,
+                qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://day-night-eight.vercel.app/qrCode/?params=${encodeURIComponent(nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string)}+_+${encodeURIComponent(slug)}`
+        }
           });
           
          return ctx.prisma.boughtTicket.createMany({
@@ -97,7 +112,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             }
         })
     }),
-    getManyByUserId: publicProcedure
+    getManyByUserId: protectedProcedure
     .query(({ctx}) => {
         console.log(ctx.session)
         return ctx.prisma.boughtTicket.findMany({
@@ -187,6 +202,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             },
             select: {
                 fullName: true,
+                scanned: true,
                 event: {
                     select: {
                         eventName: true
@@ -204,10 +220,11 @@ export const boughtTicketsRouter = createTRPCRouter({
     .mutation(({input, ctx}) => {
         return ctx.prisma.boughtTicket.update({
             where:{
-                slug: input.slug
+                slug: input.slug.trimEnd().trimStart()
             },
             data: {
-                scanned: true
+                scanned: true,
+                // qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://day-night-eight.vercel.app/qrCode/?params=${encodeURIComponent(?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string)}+_+${encodeURIComponent(slug)}+false`
             },
             select: {
                 scanned: true,

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   createTRPCRouter,
+  protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
 
@@ -45,24 +46,19 @@ export const eventsRouter = createTRPCRouter({
         eventCreatorId: ctx.session?.user.id as string
       }
     })
-    .then((res) => {
-      return res
-    })
-    .catch((error) => {
-      console.log(error)
-    })
   }),
   getAll: publicProcedure
     .query( async ({ctx}) => {
       return await ctx.prisma.event.findMany({
         select: {
-          artist: true,
+          address:true,
           eventName: true,
-          image: true
+          image: true,
+          date: true,
         }
       });
     }),
-    getManyByUserId: publicProcedure
+    getManyByUserId: protectedProcedure
     .query(({ctx}) => {
       return ctx.prisma.event.findMany({
         where: {

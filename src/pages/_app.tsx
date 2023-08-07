@@ -6,6 +6,7 @@ import "~/styles/globals.css";
 import "~/styles/quill.snow.css"
 import NavBar from "./components/navBar";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { ThemeProvider } from "next-themes";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -13,9 +14,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <NavBar/>
-      <Component {...pageProps} />
-      <ReactQueryDevtools initialIsOpen = {false}/>
+      <ThemeProvider enableSystem={false} attribute="class">
+        <NavBar/>
+        <Component {...pageProps} />
+        <ReactQueryDevtools initialIsOpen = {false}/>
+      </ThemeProvider>
     </SessionProvider>
   );
 };

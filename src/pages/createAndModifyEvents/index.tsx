@@ -29,6 +29,7 @@ const CreateEvents: React.FC = () => {
   const {replace, query} = useRouter()
   const eventName = query?.eventName
   const [stage, setStage] = useState(1); 
+  const [showErrorPopup, setShowErrorPopup] = useState(false); 
 
   const [eventsData, setEventsData] = useState<EventData>({
     eventName: "",
@@ -55,7 +56,7 @@ const CreateEvents: React.FC = () => {
   const {mutateAsync: schemaTicketUpdate, isLoading: scemaTicketUpdateLoading} = api.schemaTickets.updateDetails.useMutation()
 
   function handleCreateOrUpdateEvent () {
-
+    
     if(!eventName){
     eventMutate(eventsData)
     .then((res) => {
@@ -76,7 +77,12 @@ const CreateEvents: React.FC = () => {
         console.log(error)
       })
     })
-    .catch((error) => console.log(error))
+    .catch((error) => {
+      if (error.message.includes('Unique constraint failed on the')) {
+        setShowErrorPopup(true);
+        setStage(1);
+      }
+    })
   }
   else{
     eventMutate(eventsData)
@@ -94,10 +100,15 @@ const CreateEvents: React.FC = () => {
         replace('/myEvents')
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error, '///////////////')
       })
     })
-    .catch((error) => console.log(error))
+    .catch((error) => {
+      if (error.message.includes('Unique constraint failed on the')) {
+        setShowErrorPopup(true);
+        setStage(1);
+      }
+    })
   }
   }
 
@@ -138,7 +149,7 @@ useEffect(() => {
     })
   }
 }, [])
-
+console.log(schemaTicketsData)
   if(eventLoading || schemaTicketCreateLoading || scemaTicketUpdateLoading)
   return <Spinner/>
   else
@@ -161,7 +172,37 @@ useEffect(() => {
           </div>
         ))}
       </div>
-
+      {/* Pop-up */}
+      {showErrorPopup && (
+                    <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+                      <div className='bg-white rounded shadow-md relative p-14 text-3xl bottom-1/4'>
+                        {/* Close arrow */}
+                        <button
+                          onClick={() => setShowErrorPopup(false)}
+                          className='absolute top-2 right-2 text-gray-400 hover:text-gray-600'
+                        >
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            className='h-6 w-6'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                            stroke='currentColor'
+                          >
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              strokeWidth='2'
+                              d='M6 18L18 6M6 6l12 12'
+                            />
+                          </svg>
+                        </button>
+            
+                        <p className='mb-4'>
+                          .קיים אירוע עם שם זה. אנא בחרו שם אחר                        
+                        </p>
+                      </div>
+                    </div>
+                  )}
       {/* Render the corresponding stage */}
       <div className="border p-4">
         {

@@ -16,7 +16,7 @@ function QrCode() {
     const nationalId = paramsArray[0]
     const slug = paramsArray[1]?.trimStart() as string
     const {data, isLoading} = api.boughtTickets.getOneBySlug.useQuery({slug})
-    console.log(nationalId, data, slug)
+    console.log(paramsArray[2])
     if(!data){
         return <div>No vialid ticket here</div>
     }
@@ -26,7 +26,8 @@ function QrCode() {
           <div>{nationalId}</div>
           <div>{data?.event.eventName}</div>
           <div>{data.fullName}</div>
-          {paramsArray[2] === 'true' ?
+          {/* //space in the string is very important! */}
+          {paramsArray[2] === ' true' ?
           <Link href={`/myEvents/${data?.event.eventName}/scan`}>חזור לסריקה</Link>
           :
           <></>

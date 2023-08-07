@@ -10,8 +10,8 @@ function BuyTicketPage() {
   const { data: sessionData, update } = useSession();
   const { query: { eventName, ticketKind }, replace } = useRouter();
   const { data: eventsData, isLoading } = api.events.getAll.useQuery();
-  const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false});
-  const {data: ticketsData} = api.boughtTickets.getFirstById.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false});
+  const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery(undefined, {refetchOnWindowFocus: false});
+  const {data: ticketsData} = api.boughtTickets.getFirstById.useQuery(undefined, {refetchOnWindowFocus: false});
   const event = eventsData?.find((event) => event.eventName === eventName);
  
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
@@ -22,7 +22,7 @@ function BuyTicketPage() {
      [
       {
         birthDay: "",
-        gender: " ",
+        gender: "",
         phoneNumber: "",
         instaUserName: "",
         nationalId: "",
@@ -373,7 +373,6 @@ function BuyTicketPage() {
       return changedState
     })
   }
-
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     resetValidation()
     e.preventDefault();
@@ -382,7 +381,7 @@ function BuyTicketPage() {
       emailArray = formState.tickets.map((ticket) => (
          ticket.email
     ))
-      createBoughtTickets({ userId: sessionData?.user.id as string, eventName: event?.eventName as string, usersTicket: rememberMe, ticketsArray: formState.tickets, ticketKind: ticketKind as string})
+      createBoughtTickets({ userId: sessionData? sessionData?.user.id as string : '' , eventName: event?.eventName as string, usersTicket: rememberMe, ticketsArray: formState.tickets, ticketKind: ticketKind as string})
       .then(() => {
         changeNumberOfBoughtTickets({ticketName: ticketKind as string, eventName: event?.eventName as string})
         fetch('api/email/bought', {
@@ -444,6 +443,7 @@ function BuyTicketPage() {
     if (sessionData) {
       const { email, name } = sessionData.user;
       if(sessionData.user.rememberMe){
+        console.log(usersTicketsData, ticketsData)
       setFormState(formState => 
           {
             const changedState = [...formState.tickets] 

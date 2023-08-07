@@ -35,8 +35,8 @@ model BoughtTicket {
   id                String  @id @default(cuid())
   event             Event   @relation(fields: [eventId], references: [id])
   eventId           String
-  user              User    @relation(fields: [userId], references: [id])
-  userId            String
+  user              User?    @relation(fields: [userId], references: [id])
+  userId            String?
   ticketKind        String
   email             String
   nationalId        String

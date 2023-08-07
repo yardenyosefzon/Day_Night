@@ -1,8 +1,9 @@
 import { z } from "zod";
-import { publicProcedure,createTRPCRouter } from "../trpc";
+import { publicProcedure,createTRPCRouter, protectedProcedure } from "../trpc";
+import { api } from "~/utils/api";
 
 export const schemaTicketsRouter = createTRPCRouter({
-    create: publicProcedure
+    create: protectedProcedure
     .input(
             z.object({
                 eventId: z.string(),
@@ -15,13 +16,21 @@ export const schemaTicketsRouter = createTRPCRouter({
                 }))               
             })
     )
-    .mutation(async({ctx,input}) => {  
+    .mutation(({ctx,input}) => {  
         const dbArray = input.schemaTicketsData.map((schemaTicket) => ({
             ...schemaTicket,
             eventId: input.eventId
         }))
-        return ctx.prisma.schemaTicket.createMany({
+        ctx.prisma.schemaTicket.createMany({
             data: dbArray
+        })
+        .then((res) => {
+            console.log( res.count )
+            return res
+        })
+        .catch((err) => {
+            console.log(err)
+            return err
         })
     }),
     getManyByEventName: publicProcedure
@@ -101,7 +110,6 @@ export const schemaTicketsRouter = createTRPCRouter({
         })
 )
     .mutation( async({ctx, input}) => {
-        console.log(input.eventName)
         const schemaTickets = await ctx.prisma.schemaTicket.findMany({
             where: {
                 event: {
@@ -109,20 +117,47 @@ export const schemaTicketsRouter = createTRPCRouter({
                 }
             }
         })
+
         if(schemaTickets.length == 0) return new Error("no tickets were found")
 
-             schemaTickets.map(async(schemaTicket, index) => {
-             await ctx.prisma.schemaTicket.update({
+        if(input.schemaTicketsData.length < schemaTickets.length){
+            const deleteArr: string[] = []
+            for(let i = 0; i < input.schemaTicketsData.length ; i++){
+                for(let j = 0; j < schemaTickets.length ; j++){
+                    if (input.schemaTicketsData[j]?.notes === schemaTickets[i]?.notes && input.schemaTicketsData[j]?.numberOfTickets === schemaTickets[i]?.numberOfTickets && input.schemaTicketsData[j]?.price === schemaTickets[i]?.price && input.schemaTicketsData[i]?.ticketName === schemaTickets[i]?.ticketName)
+                    return
+                    else if(j === input.schemaTicketsData.length - 1)
+                    deleteArr.push(schemaTickets[i]?.id as string)
+                }
+            }
+            deleteArr.map(async(_, index) =>
+            await ctx.prisma.schemaTicket.delete(
+                {
+                    where: {
+                        id: deleteArr[index]
+                    }
+                }) 
+            )
+        }
+             return input.schemaTicketsData.map(async(_, index) => 
+              await ctx.prisma.schemaTicket.upsert({
                 where: {
-                  id: schemaTickets[index]?.id,
+                  id: schemaTickets[index]?.id ? schemaTickets[index]?.id : "s" 
                 },
-                data: {
+                update: {
                     ticketName: input.schemaTicketsData[index]?.ticketName,
                     price: input.schemaTicketsData[index]?.price,
                     numberOfTickets: input.schemaTicketsData[index]?.numberOfTickets,
                     notes: input.schemaTicketsData[index]?.notes
                 },
+                create: {
+                    eventId: schemaTickets[0]?.eventId as string,
+                    ticketName: input.schemaTicketsData[index]?.ticketName as string,
+                    price: input.schemaTicketsData[index]?.price as number,
+                    numberOfTickets: input.schemaTicketsData[index]?.numberOfTickets as number,
+                    notes: input.schemaTicketsData[index]?.notes as string
+                }
               })
-        })
+        )
     })
 })

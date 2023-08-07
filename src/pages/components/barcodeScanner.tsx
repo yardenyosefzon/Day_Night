@@ -5,27 +5,36 @@ import { api } from '~/utils/api';
 
 function MyQRScannerComponent() {
 
-  const {mutateAsync: boughtTicketsMutate} = api.boughtTickets.updateScannedOfOneBySlug.useMutation()
-  const {mutateAsync: eventsMutate} = api.events.updateNumberOfScannedTicketsOfOneByName.useMutation()
-
+  const [slug, setSlug] = useState("")
   const { replace } = useRouter()
   const qrReaderRef = useRef<HTMLDivElement | null>(null);
   let qrCodeScanner: Html5Qrcode | null = null;
+  const {mutateAsync: boughtTicketsMutate} = api.boughtTickets.updateScannedOfOneBySlug.useMutation()
+  const {mutateAsync: eventsMutate} = api.events.updateNumberOfScannedTicketsOfOneByName.useMutation()
+  const {refetch: boughtTicketRefetch} = api.boughtTickets.getOneBySlug.useQuery({slug: slug}, {refetchOnMount: false, refetchOnWindowFocus: false})
 
   const onScanSuccess = (decodedText: string, decodedResult: unknown) => {
 
+    qrCodeScanner?.pause()
     const slugIndex = decodedText.indexOf("_");
-    const slug =  decodedText.substr(slugIndex as number + 1, 18);
-    boughtTicketsMutate({slug})
+    setSlug(decodedText.substr(slugIndex as number + 1))
+    if(slug !== ""){
+    boughtTicketRefetch()
     .then((res) => {
-      if(res)
-      eventsMutate({eventName: res?.event.eventName, scannedTicketsNumber: res?.event.scannedTicketsNumber})
-  })
-  .catch(err => {
-    throw new Error(`Message: ${err.message}`)
-  })
-    replace(`${decodedText}+_+true`)
-    
+      console.log(res)
+      if(!res.data?.scanned){
+        boughtTicketsMutate({slug: slug})
+          .then((res) => {
+            eventsMutate({eventName: res?.event.eventName, scannedTicketsNumber: res?.event.scannedTicketsNumber})
+            replace(`${decodedText}+_+true`)
+          })
+          .catch(err => {
+            throw new Error(`Message: ${err.message}`)
+          }) 
+      }
+
+    })
+  }
   };
 
   const initializeScanner = () => {
@@ -64,11 +73,11 @@ function MyQRScannerComponent() {
 
     // Cleanup function to stop scanning when the component unmounts
     return () => {
-      if (qrCodeScanner) {
-        qrCodeScanner.clear();
+      if (!qrCodeScanner?.isScanning) {
+        qrCodeScanner?.clear();
       }
     };
-  }, []);
+  }, [slug]);
 
   return (
     <div>
