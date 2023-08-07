@@ -14,9 +14,7 @@ type RejectedOrVerifiedTicketsProps = {
         slug: string;
         ticketKind: string;
         qrCode: string;
-        user: {
-            name: string | null;
-        };
+        fullName: string;
     }
 }
 
@@ -26,7 +24,7 @@ function NoSSRRejectedOrVerifiedTickets({ticket, handleButtonClick}: RejectedOrV
         <div key={ticket.slug} className="border border-black p-4 m-2 text-center flex flex-col">
             <div className="flex flex-row-reverse gap-x-20 justify-center">
               <div>
-                <p>{ticket.user.name}</p>
+                <p>{ticket.fullName}</p>
               </div>
               <div>
               סוג הכרטיס: {ticket.ticketKind}

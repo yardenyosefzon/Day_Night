@@ -153,14 +153,10 @@ export const boughtTicketsRouter = createTRPCRouter({
                 instaUserName: true,
                 phoneNumber: true,
                 rejected: true,
-                slug:true,
-                ticketKind:true,
-                qrCode:true,
-                user: {
-                    select: {
-                        name: true
-                    }
-                }
+                slug: true,
+                ticketKind: true,
+                qrCode: true,
+                fullName: true
             }
         })
     }),
