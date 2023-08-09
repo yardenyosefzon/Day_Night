@@ -2,7 +2,8 @@ import React from "react";
 import UploadImage from "../uploadImage";
 import { EventData } from "~/pages/createAndModifyEvents";
 import dynamic from "next/dynamic";
-
+import { faImage } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export type Stage3Props = {
   setStage: React.Dispatch<React.SetStateAction<number>>;
@@ -14,7 +15,10 @@ const NoSSRStage3: React.FC<Stage3Props> = ({ setStage, setEventsData }) => {
     
     <div className="flex flex-col items-center">
       <UploadImage setStage={setStage} setEventsData={setEventsData}/>
-      <button onClick={() => setStage(4)}>Next Stage</button>
+      <div className="">
+        <FontAwesomeIcon icon={faImage}/>
+      </div>
+        <button onClick={() => setStage(4)}>Next Stage</button>
     </div>
     
   );

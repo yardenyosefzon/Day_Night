@@ -1,6 +1,8 @@
 import dynamic from 'next/dynamic'
 import React from 'react'
 import { EventData } from '~/pages/createAndModifyEvents';
+import { faImage } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Stage2Props = {
     eventsData: EventData
@@ -24,7 +26,7 @@ const NoSSRStage2 : React.FC<Stage2Props> = ({ eventsData, setEventsData, setSta
   return (
     <div>
         <div className="flex flex-col items-center my-1">
-          <label>תיאור</label>
+          <label className='text-xl'>תיאור</label>
           <QuillNoSSRWrapper 
           style={{minHeight: '70vh',}}
           className="bg-white border-black border-2 rounded-lg text-center float-right overflow-hidden"

@@ -7,6 +7,9 @@ import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import { env } from "~/env.mjs";
 import Spinner from "../components/spinner";
+import { Noto_Sans_Hebrew } from "next/font/google";
+
+const noto = Noto_Sans_Hebrew({subsets:['hebrew'], weight:"400"})
 
 export type EventData = {
   eventName: string,
@@ -158,12 +161,12 @@ useEffect(() => {
     })
   }
 }, [])
-console.log(schemaTicketsData)
+
   if(eventLoading || schemaTicketCreateLoading || scemaTicketUpdateLoading)
   return <Spinner/>
   else
   return (
-    <div className="absolute flex flex-col justify-center w-full h-screen bg-emerald-200">
+    <div className={`absolute flex flex-col justify-center w-full h-screen bg-emerald-200 ${noto.className}`}>
        {/* Interactive Indication (Bubbles with Numbers) */}
        <div className="flex flex-col h-full mt-14 ">
         <div className="relative flex self-center space-x-4">
