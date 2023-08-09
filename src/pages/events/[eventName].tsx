@@ -24,7 +24,7 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
     return (
       <>
       <div className='flex flex-col bg-orange-100 min-h-screen bg-gradient-to-b pb-3 from-neutral-50 sm:items-center'>
-        <div className='h-full sm:flex sm:bg-gradient-to-b sm:from-orange-50 sm:via-orange-300 sm:w-full sm:justify-center sm:bg-opacity-30 sm:pb-6 sm:pt-3 sm:rounded-md sm:p-4 sm:mt-14'>
+        <div className='h-full sm:flex sm:bg-gradient-to-b sm:from-sky-50 sm:via-sky-300 sm:w-full sm:justify-center sm:bg-opacity-30 sm:pb-6 sm:pt-3 sm:rounded-md sm:p-4 sm:mt-14'>
           <Image
             className='sm:rounded-lg sm:shadow-md sm:shadow-black'
             width={720}

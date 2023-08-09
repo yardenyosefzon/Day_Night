@@ -1,8 +1,6 @@
 import dynamic from 'next/dynamic'
 import React from 'react'
 import { EventData } from '~/pages/createAndModifyEvents';
-import { faImage } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type Stage2Props = {
     eventsData: EventData

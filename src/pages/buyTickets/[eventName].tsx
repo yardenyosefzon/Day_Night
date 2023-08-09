@@ -488,7 +488,7 @@ function BuyTicketPage() {
     return <div>Loading...</div>;
   }
     return (
-    <div className="absolute w-full min-h-screen bg-amber-100 bg-gradient-to-tr from-amber-200">
+    <div className="absolute w-full min-h-screen bg-violet-200 bg-gradient-to-tr from-amber-200">
       <div className={`flex flex-col mt-16 h-fit ${noto.className}`}>
         <div className="flex justify-center mt-10 text-3xl">
           <h1 className="">{eventName}</h1>
@@ -503,10 +503,9 @@ function BuyTicketPage() {
             <button className="bg-yellow-500 p-2 -my-3 rounded-lg shadow-lg mb-2 text-white text-lg font-extralight" type="submit">לרכישה</button>
           </div>
         </form>
-      </div>
-          
+      </div> 
         
-        {/* {showRememberMePopup ? (
+        {showRememberMePopup ? (
           <RememberMePopUp
             onSubmit={handleRememberMeSubmit}
             rememberMe={rememberMe}
@@ -514,7 +513,7 @@ function BuyTicketPage() {
           />
         ) : (
           <></>
-        )} */}
+        )}
     </div>
   );
 }
