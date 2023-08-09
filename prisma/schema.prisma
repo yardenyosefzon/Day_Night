@@ -13,20 +13,20 @@ datasource db {
 }
 
 model Event {
-  id             String         @id @default(cuid())
-  eventName      String         @unique
-  slug           String         @unique @default(uuid())
-  date           String
-  artist         String
-  image          String?
-  address        String
-  description    String
-  minAge         Int
-  scannedTicketsNumber Int @default(0)
-  eventCreator   User           @relation(fields: [eventCreatorId], references: [id])
-  eventCreatorId String
-  boughtTicket   BoughtTicket[]
-  schemaTicket   SchemaTicket[]
+  id                   String         @id @default(cuid())
+  eventName            String         @unique
+  slug                 String         @unique @default(uuid())
+  date                 String
+  artist               String
+  image                String?
+  address              String         
+  description          String         @db.LongText
+  minAge               Int
+  scannedTicketsNumber Int            @default(0)
+  eventCreator         User           @relation(fields: [eventCreatorId], references: [id])
+  eventCreatorId       String
+  boughtTicket         BoughtTicket[]
+  schemaTicket         SchemaTicket[]
 
   @@index([eventCreatorId])
 }
@@ -35,7 +35,7 @@ model BoughtTicket {
   id                String  @id @default(cuid())
   event             Event   @relation(fields: [eventId], references: [id])
   eventId           String
-  user              User?    @relation(fields: [userId], references: [id])
+  user              User?   @relation(fields: [userId], references: [id])
   userId            String?
   ticketKind        String
   email             String

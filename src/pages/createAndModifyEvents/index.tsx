@@ -165,7 +165,7 @@ console.log(schemaTicketsData)
   return (
     <div className="absolute flex flex-col justify-center w-full h-screen bg-emerald-200">
        {/* Interactive Indication (Bubbles with Numbers) */}
-       <div className="flex flex-col h-full mt-28 ">
+       <div className="flex flex-col h-full mt-14 ">
         <div className="relative flex self-center space-x-4">
                   {[1, 2, 3, 4].map((number) => (
                     <div

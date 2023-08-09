@@ -26,7 +26,8 @@ const NoSSRStage2 : React.FC<Stage2Props> = ({ eventsData, setEventsData, setSta
         <div className="flex flex-col items-center my-1">
           <label>תיאור</label>
           <QuillNoSSRWrapper 
-          className="bg-white border-black border-2 rounded-lg text-center float-right"
+          style={{minHeight: '70vh',}}
+          className="bg-white border-black border-2 rounded-lg text-center float-right overflow-hidden"
           modules={modules}
           theme="snow" 
           value={eventsData.description} 

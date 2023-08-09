@@ -114,7 +114,7 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
     const eventName = context.params?.eventName as string;
   
     await helpers.events.getOneByName.prefetch({ eventName });
-    await helpers.schemaTickets.getManyByEventName.prefetch({ eventName: eventName })
+    await helpers.schemaTickets.getManyByEventName.prefetch({ eventName })
 
     return {
       props: {
