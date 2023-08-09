@@ -488,7 +488,7 @@ function BuyTicketPage() {
     return <div>Loading...</div>;
   }
     return (
-    <div className="absolute w-full min-h-screen bg-violet-200 bg-gradient-to-tr from-amber-200">
+    <div className="absolute w-full min-h-screen bg-orange-200 bg-gradient-to-tr from-orange-100">
       <div className={`flex flex-col mt-16 h-fit ${noto.className}`}>
         <div className="flex justify-center mt-10 text-3xl">
           <h1 className="">{eventName}</h1>

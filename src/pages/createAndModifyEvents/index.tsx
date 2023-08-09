@@ -166,7 +166,7 @@ useEffect(() => {
   return <Spinner/>
   else
   return (
-    <div className={`absolute flex flex-col justify-center w-full h-screen bg-emerald-200 ${noto.className}`}>
+    <div className={`absolute flex flex-col justify-center w-full min-h-screen bg-orange-100 ${noto.className}`}>
        {/* Interactive Indication (Bubbles with Numbers) */}
        <div className="flex flex-col h-full mt-14 ">
         <div className="relative flex self-center space-x-4">
@@ -184,7 +184,7 @@ useEffect(() => {
                   ))}
           </div>
             {/* Pop-up */}
-          <div className="flex flex-col items-center h-4/5 mt-6">
+          <div className="flex flex-col items-center h-full mt-6">
             {showErrorPopup && (
                           <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
                             <div className='bg-white rounded shadow-md relative p-14 text-3xl bottom-1/4'>
@@ -216,7 +216,7 @@ useEffect(() => {
                           </div>
                         )}
               {/* Render the corresponding stage */}
-              <div className="bg-emerald-100 shadow-lg w-11/12 h-5-6 p-4 rounded-xl">
+              <div className="bg-white shadow-lg w-11/12 h-full p-4 rounded-xl mb-3">
                   {
                       stage === 1?
                     <Stage1
@@ -232,7 +232,7 @@ useEffect(() => {
                     setEventsData={setEventsData}/>
                     :
                     stage === 3?
-                    <Stage3 setStage={setStage} setEventsData={setEventsData}/>
+                    <Stage3 setStage={setStage} setEventsData={setEventsData} eventsData={eventsData}/>
                     :
                     <Stage4 schemaTicketsData = {schemaTicketsData} setSchemaTicketsData = {setSchemaTicketsData} setStage = {setStage} handleCreateOrUpdateEvent = {handleCreateOrUpdateEvent}/>
                   }

@@ -1,3 +1,5 @@
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dynamic from 'next/dynamic'
 import React from 'react'
 import { EventData } from '~/pages/createAndModifyEvents';
@@ -23,10 +25,13 @@ const  modules  = {
 const NoSSRStage2 : React.FC<Stage2Props> = ({ eventsData, setEventsData, setStage}) => {
   return (
     <div>
-        <div className="flex flex-col items-center my-1">
+        <div className="flex flex-col items-center">
+          <div className="flex justify-start w-full ml-1">
+            <FontAwesomeIcon icon={faChevronLeft} onClick={() => setStage(1)}/>
+          </div>
           <label className='text-xl'>תיאור</label>
           <QuillNoSSRWrapper 
-          style={{minHeight: '70vh',}}
+          style={{minHeight: '60vh',}}
           className="bg-white border-black border-2 rounded-lg text-center float-right overflow-hidden"
           modules={modules}
           theme="snow" 

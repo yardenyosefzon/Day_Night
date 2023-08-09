@@ -1,5 +1,7 @@
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
+import { faChevronLeft, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type TicketData = {
   ticketName: string;
@@ -114,9 +116,12 @@ const NoSSRStage4: React.FC<Stage4Props> = ({ schemaTicketsData, setSchemaTicket
 
   return (
     <div className="flex flex-col items-center">
-      <form onSubmit={onSubmit} className="w-4/12">
+      <div className="flex justify-start w-full">
+        <FontAwesomeIcon icon={faChevronLeft} onClick={() => setStage(3)} className="flex justify-start m-3"/>
+      </div>
+      <form onSubmit={onSubmit} className="flex flex-col items-center w-10/12">
         {schemaTicketsData.map((ticket, index) => (
-         <div key={index}> 
+        <div key={index} className={`${index < schemaTicketsData.length-1? `border-b-2 border-black mb-8 border-dotted` : ""} pb-6`}> 
           <div>
             <label htmlFor={`name_${index}`}>שם הכרטיס</label>
             <input
@@ -130,9 +135,9 @@ const NoSSRStage4: React.FC<Stage4Props> = ({ schemaTicketsData, setSchemaTicket
                 validErrors[index]?.nameError ? "border-red-500" : "border-black"
               } rounded p-2 mb-2 w-11/12`}
             />
-            {validErrors[index]?.nameError && (
+            {/* {validErrors[index]?.nameError && (
               <span className="text-red-500">יש למלא את שם הכרטיס</span>
-            )}
+            )} */}
           </div>
           <div>
             <label htmlFor={`price_${index}`}>מחיר</label>
@@ -169,39 +174,24 @@ const NoSSRStage4: React.FC<Stage4Props> = ({ schemaTicketsData, setSchemaTicket
               dir="rtl"
               className="border rounded p-2 mb-2 w-11/12"
             />
+          </div>  
+          <div className="flex justify-center gap-5 mt-4">
+          {schemaTicketsData.length !== 1 && (
+            <FontAwesomeIcon icon={faMinus} onClick={() => onAddRemoveTicket(index)} className="bg-red-500 text-white font-bold p-3 rounded"/>
+            )}
+            {schemaTicketsData.length < 5 && index === schemaTicketsData.length-1 && (
+            <FontAwesomeIcon icon={faPlus} onClick={() => onAddRemoveTicket(-1)} className="bg-orange-300 text-white font-bold p-3 rounded "/>
+            )}
           </div>
-          {schemaTicketsData.length < 5 && (
-        <button
-          onClick={() => onAddRemoveTicket(-1)}
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4"
-        >
-          +
-        </button>
-      )}
-              
-          {index > 0 && (
-            <button
-              onClick={() => onAddRemoveTicket(index)}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4"
-            >
-              -
-            </button>
-          )}
-           </div>
+        </div>
           ))}
           < button
               onClick={onSubmit}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4"
+              className="bg-orange-50 text-orange-900 text-xl font-extrabold py-2 px-4 rounded border shadow-lg"
             >
               קבע אירוע
             </button>
         </form>
-      <button
-                onClick={() => setStage(1)}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-              >
-                Previous Stage
-      </button>
     </div>
     
   );
