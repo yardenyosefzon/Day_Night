@@ -23,12 +23,12 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
   if(isLoading) return <div>Loading...</div>
     return (
       <>
-      <div className='flex flex-col bg-orange-100 min-h-screen bg-gradient-to-b pb-3 from-neutral-50 sm:items-center sm:p-4'>
-        <div className='sm:flex sm:bg-gradient-to-r sm:from-orange-50 sm:via-orange-300  sm:w-full sm:justify-center sm:bg-opacity-30 sm:pb-6 sm:pt-3 sm:rounded-md'>
+      <div className='flex flex-col bg-orange-100 min-h-screen bg-gradient-to-b pb-3 from-neutral-50 sm:items-center'>
+        <div className='h-full sm:flex sm:bg-gradient-to-b sm:from-orange-50 sm:via-orange-300 sm:w-full sm:justify-center sm:bg-opacity-30 sm:pb-6 sm:pt-3 sm:rounded-md sm:p-4 sm:mt-14'>
           <Image
             className='sm:rounded-lg sm:shadow-md sm:shadow-black'
-            width={960}
-            height={600}
+            width={720}
+            height={480}
             src={eventsData?.image? eventsData.image : "/images/event_place_holder.jpg"}
             alt="Description of my image"
           />
