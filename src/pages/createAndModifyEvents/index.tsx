@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Stage1 from "../components/forms/create event forms/stage1";
 import Stage2 from "../components/forms/create event forms/stage2";
 import Stage3 from "../components/forms/create event forms/stage3";
+import Stage4 from "../components/forms/create event forms/stage4";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import { env } from "~/env.mjs";
@@ -17,12 +18,6 @@ export type EventData = {
     address: string,
     slug: string
 };
-
-const stageComponents = [
-  Stage1,
-  Stage2,
-  Stage3
-];
 
 const CreateEvents: React.FC = () => {
 
@@ -168,70 +163,78 @@ console.log(schemaTicketsData)
   return <Spinner/>
   else
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl mb-4">Current Stage: Stage {stage}</h1>
-
-      {/* Interactive Indication (Bubbles with Numbers) */}
-      <div className="flex justify-center mb-4 space-x-4">
-        {[1, 2, 3].map((number) => (
-          <div
-            key={number}
-            onClick={() => {
-              if(number < stage)
-               setStage(number)
-            }}
-            className={`stage-bubble ${number === stage ? "active" : ""}`}
-          >
-            {number}
-          </div>
-        ))}
-      </div>
-      {/* Pop-up */}
-      {showErrorPopup && (
-                    <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
-                      <div className='bg-white rounded shadow-md relative p-14 text-3xl bottom-1/4'>
-                        {/* Close arrow */}
-                        <button
-                          onClick={() => setShowErrorPopup(false)}
-                          className='absolute top-2 right-2 text-gray-400 hover:text-gray-600'
-                        >
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            className='h-6 w-6'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            stroke='currentColor'
-                          >
-                            <path
-                              strokeLinecap='round'
-                              strokeLinejoin='round'
-                              strokeWidth='2'
-                              d='M6 18L18 6M6 6l12 12'
-                            />
-                          </svg>
-                        </button>
-            
-                        <p className='mb-4'>
-                          .קיים אירוע עם שם זה. אנא בחרו שם אחר                        
-                        </p>
-                      </div>
+    <div className="absolute flex flex-col justify-center w-full h-screen bg-emerald-200">
+       {/* Interactive Indication (Bubbles with Numbers) */}
+       <div className="flex flex-col h-full mt-28 ">
+        <div className="relative flex self-center space-x-4">
+                  {[1, 2, 3, 4].map((number) => (
+                    <div
+                      key={number}
+                      onClick={() => {
+                        if(number < stage)
+                        setStage(number)
+                      }}
+                      className={`stage-bubble ${number === stage ? "active" : ""}`}
+                    >
+                      {number}
                     </div>
-                  )}
-      {/* Render the corresponding stage */}
-      <div className="border p-4">
-        {
-          stage === 1?
-        <Stage1
-          eventsData={eventsData}
-          setEventsData={setEventsData}
-          setStage={setStage}
-        />
-        :
-        stage === 2?
-        <Stage2 setStage={setStage} setEventsData={setEventsData}/>
-        :
-        <Stage3 schemaTicketsData = {schemaTicketsData} setSchemaTicketsData = {setSchemaTicketsData} setStage = {setStage} handleCreateOrUpdateEvent = {handleCreateOrUpdateEvent}/>
-      }
+                  ))}
+          </div>
+            {/* Pop-up */}
+          <div className="flex flex-col items-center h-4/5 mt-6">
+            {showErrorPopup && (
+                          <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+                            <div className='bg-white rounded shadow-md relative p-14 text-3xl bottom-1/4'>
+                              {/* Close arrow */}
+                              <button
+                                onClick={() => setShowErrorPopup(false)}
+                                className='absolute top-2 right-2 text-gray-400 hover:text-gray-600'
+                              >
+                                <svg
+                                  xmlns='http://www.w3.org/2000/svg'
+                                  className='h-6 w-6'
+                                  fill='none'
+                                  viewBox='0 0 24 24'
+                                  stroke='currentColor'
+                                >
+                                  <path
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    strokeWidth='2'
+                                    d='M6 18L18 6M6 6l12 12'
+                                  />
+                                </svg>
+                              </button>
+                  
+                              <p className='mb-4'>
+                                .קיים אירוע עם שם זה. אנא בחרו שם אחר                        
+                              </p>
+                            </div>
+                          </div>
+                        )}
+              {/* Render the corresponding stage */}
+              <div className="bg-emerald-100 shadow-lg w-11/12 h-5-6 p-4 rounded-xl">
+                  {
+                      stage === 1?
+                    <Stage1
+                      eventsData={eventsData}
+                      setEventsData={setEventsData}
+                      setStage={setStage}
+                    />
+                    :
+                    stage === 2?
+                    <Stage2 
+                    setStage={setStage}
+                    eventsData={eventsData}
+                    setEventsData={setEventsData}/>
+                    :
+                    stage === 3?
+                    <Stage3 setStage={setStage} setEventsData={setEventsData}/>
+                    :
+                    <Stage4 schemaTicketsData = {schemaTicketsData} setSchemaTicketsData = {setSchemaTicketsData} setStage = {setStage} handleCreateOrUpdateEvent = {handleCreateOrUpdateEvent}/>
+                  }
+              </div>
+          </div>
       </div>
     </div>
   );

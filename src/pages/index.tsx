@@ -20,13 +20,13 @@ export default function Home() {
   if(isLoading)return <div>Loading...</div>
 
   return (
-    <div className="w-full h-screen">
-      <div className={`mx-6 mb-8 h-full sm:mx-20 sm:my-20 overflow-scroll ${ibm.className} sm:grid-cols-4 sm:overflow-auto sm:grid sm:justify-between`}>
-        {data?.map(event => (
-          <div className="relative flex flex-col items-end border-2 border-black rounded-b-3xl mx-3 rounded-t-xl my-14 h-2/6 sm:w-1/5 sm:h-2/5" key={event.eventName}>
+    <div className="absolute w-full min-h-screen">
+      <div className={`flex flex-col mt-28 mx-9 ${ibm.className} sm:grid sm:grid-cols-4`}>
+        {data?.map((event, index) => (
+          <div key={index} className="mb-14 h-72 flex flex-col items-end border-2 border-black rounded-b-3xl rounded-t-xl sm:w-9/12 sm:h-80 sm:place-self-center">
             <div className="relative w-full h-4/6">
             <Link href={`/events/${event.eventName}`} key={event.eventName}>
-              <Image className="rounded-t-lg" src={event.image? event.image : "/images/event_place_holder.jpg"} alt="eventImage" fill={true} objectFit="fill"></Image>
+              <Image className="rounded-t-lg" src={event.image? event.image : "/images/event_place_holder.jpg"} alt="eventImage" fill={true} objectFit="cover"></Image>
             </Link>
             </div>
             <div className="flex flex-col p-2">

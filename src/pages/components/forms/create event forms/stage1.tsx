@@ -7,11 +7,11 @@ type Stage1Props = {
   setEventsData: React.Dispatch<React.SetStateAction<any>>;
   setStage: React.Dispatch<React.SetStateAction<number>>;
 };
+
 type ValidErrors = {
   eventNameError: { message: string; valid: boolean };
   dateError: { message: string; valid: boolean };
   artistError: { message: string; valid: boolean };
-  descriptionError: { message: string; valid: boolean };
   minAgeError: { message: string; valid: boolean };
   addressError: { message: string; valid: boolean };
 };
@@ -29,10 +29,6 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
     },
     artistError: {
       message: "יש למלא את שם האומן/האמן",
-      valid: true,
-    },
-    descriptionError: {
-      message: "יש למלא תיאור לאירוע",
       valid: true,
     },
     minAgeError: {
@@ -86,18 +82,6 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
         ...prevErrors,
         artistError: {
           ...prevErrors.artistError,
-          valid: false,
-        },
-      }));
-      isFormValid = false;
-    }
-
-    // Validate description
-    if (eventsData.description.trim() === "") {
-      setValidErrors((prevErrors) => ({
-        ...prevErrors,
-        descriptionError: {
-          ...prevErrors.descriptionError,
           valid: false,
         },
       }));
@@ -158,22 +142,10 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
     }
   };
 
-  const  modules  = {
-    toolbar: [
-        [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
-        [{ font: [] }],
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ["bold", "italic", "underline", "strike"],
-        [{ color: [] }, { background: [] }],
-        [{ list:  "ordered" }, { list:  "bullet" }],
-        ["clean"],
-    ],
-  };
-
   return (
-    <div className="flex flex-col items-center">
-      <form onSubmit={onSubmit} className="w-4/12">
-        <div>
+    <div className="flex flex-col items-center h-full">
+      <form className="flex flex-col justify-center w-5/6 h-full" onSubmit={onSubmit}>
+        <div className="flex flex-col items-center">
           <label htmlFor="eventName">שם האירוע</label>
           <input
             type="text"
@@ -184,9 +156,9 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
             dir="rtl"
             className={`border ${validErrors.eventNameError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
           />
-          {!validErrors.eventNameError.valid && <span className="text-red-500">{validErrors.eventNameError.message}</span>}
+          {/* {!validErrors.eventNameError.valid && <span className="text-red-500">{validErrors.eventNameError.message}</span>} */}
         </div>
-        <div>
+        <div className="flex flex-col items-center">
           <label htmlFor="date">תאריך</label>
           <input
             type="datetime-local"
@@ -197,9 +169,9 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
             dir="rtl"
             className={`border ${validErrors.dateError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
           />
-          {!validErrors.dateError.valid && <span className="text-red-500">{validErrors.dateError.message}</span>}
+          {/* {!validErrors.dateError.valid && <span className="text-red-500">{validErrors.dateError.message}</span>} */}
         </div>
-        <div>
+        <div className="flex flex-col items-center">
           <label htmlFor="artist">שם האומן/האמן</label>
           <input
             type="text"
@@ -210,19 +182,9 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
             dir="rtl"
             className={`border ${validErrors.artistError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
           />
-          {!validErrors.artistError.valid && <span className="text-red-500">{validErrors.artistError.message}</span>}
+          {/* {!validErrors.artistError.valid && <span className="text-red-500">{validErrors.artistError.message}</span>} */}
         </div>
-        <QuillNoSSRWrapper 
-        className="w-96 border-black border-2 rounded-lg text-center float-right"
-        modules={modules}
-        theme="snow" 
-        value={eventsData.description} 
-        onChange={(desc) => 
-          setEventsData((prevData: {}) => ({
-          ...prevData,
-          description: desc
-        }))}/>
-        <div>
+        <div className="flex flex-col items-center">
           <label htmlFor="minAge">גיל מינימלי</label>
           <input
             type="number"
@@ -233,9 +195,9 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
             dir="rtl"
             className={`border ${validErrors.minAgeError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
           />
-          {!validErrors.minAgeError.valid && <span className="text-red-500">{validErrors.minAgeError.message}</span>}
+          {/* {!validErrors.minAgeError.valid && <span className="text-red-500">{validErrors.minAgeError.message}</span>} */}
         </div>
-        <div>
+        <div className="flex flex-col items-center">
           <label htmlFor="address">כתובת האירוע</label>
           <input
             type="text"
@@ -246,19 +208,17 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
             dir="rtl"
             className={`border ${validErrors.addressError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
           />
-          {!validErrors.addressError.valid && <span className="text-red-500">{validErrors.addressError.message}</span>}
+          {/* {!validErrors.addressError.valid && <span className="text-red-500">{validErrors.addressError.message}</span>} */}
         </div>
-      <button onClick={onSubmit} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 self-end ">
-        Next Stage
+        
+      <button onClick={onSubmit} className="text-emerald-950 font-bold rounded mt-4">
+        השלב הבא
       </button>
+
       </form>
     </div>
   );
 };
-const QuillNoSSRWrapper = dynamic(import('react-quill'), {	
-	ssr: false,
-	loading: () => <p>Loading ...</p>,
-	})
 
 const Stage1 = dynamic(() => Promise.resolve(NoSSRStage1), {
   ssr: false,

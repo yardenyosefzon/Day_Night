@@ -5,6 +5,9 @@ import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import RememberMePopUp from "../components/rememberMePopUp";
 import BuyTicketsDetailsForm from "../components/forms/buy ticket form/detailsForm";
+import { Noto_Sans_Hebrew } from 'next/font/google';
+
+const noto = Noto_Sans_Hebrew({subsets: ["hebrew"], weight:"400"})
 
 function BuyTicketPage() {
   const { data: sessionData, update } = useSession();
@@ -485,33 +488,34 @@ function BuyTicketPage() {
     return <div>Loading...</div>;
   }
     return (
-    <>
-      <form onSubmit={(e)=>handleSubmit(e)}>
-        <h1>{event?.eventName} :קנה כרטיס עבור</h1>
-        {formState.tickets.map((_, index) => 
-          <BuyTicketsDetailsForm  key={index} formState={formState} constErrors={constErrors} validErrors={validErrors} handleChange={handleChange} index={index} handleDeleteTicket={handleDeleteTicket}/>
-        )}
-        <button type="submit">לרכישה</button>
-      </form>
-        {
-          formState.tickets.length == 5 ?
-         null
-         :
-         <button onClick={addTicket}>
-         הוסף כרטיס
-       </button>  
-        }
-      
-      {showRememberMePopup ? (
-        <RememberMePopUp
-          onSubmit={handleRememberMeSubmit}
-          rememberMe={rememberMe}
-          setRememberMe={setRememberMe}
-        />
-      ) : (
-        <></>
-      )}
-    </>
+    <div className="absolute w-full min-h-screen bg-amber-100 bg-gradient-to-tr from-amber-200">
+      <div className={`flex flex-col mt-16 h-fit ${noto.className}`}>
+        <div className="flex justify-center mt-10 text-3xl">
+          <h1 className="">{eventName}</h1>
+        </div>
+        <form className="flex flex-col w-full mt-4" onSubmit={(e)=>handleSubmit(e)}>
+          <div className="flex flex-col justify-center w-full items-center my-4">
+          {formState.tickets.map((_, index) => 
+            <BuyTicketsDetailsForm  key={index} formState={formState} constErrors={constErrors} validErrors={validErrors} handleChange={handleChange} index={index} handleDeleteTicket={handleDeleteTicket} addTicket={addTicket}/>
+          )}
+          </div>
+          <div className="flex justify-center">
+            <button className="bg-yellow-500 p-2 -my-3 rounded-lg shadow-lg mb-2 text-white text-lg font-extralight" type="submit">לרכישה</button>
+          </div>
+        </form>
+      </div>
+          
+        
+        {/* {showRememberMePopup ? (
+          <RememberMePopUp
+            onSubmit={handleRememberMeSubmit}
+            rememberMe={rememberMe}
+            setRememberMe={setRememberMe}
+          />
+        ) : (
+          <></>
+        )} */}
+    </div>
   );
 }
 
