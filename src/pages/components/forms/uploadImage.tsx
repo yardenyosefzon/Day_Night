@@ -1,9 +1,9 @@
 import { CldUploadWidget } from 'next-cloudinary';
 import { useEffect, useState } from 'react';
-import { Stage2Props } from './create event forms/stage3';
+import { Stage3Props } from './create event forms/stage3';
 import dynamic from 'next/dynamic';
 
-type UploadImagesProps = Stage2Props
+type UploadImagesProps = Stage3Props
 
 const NoSSRUploadImage: React.FC<UploadImagesProps> = ({ setStage, setEventsData }) => {
 
