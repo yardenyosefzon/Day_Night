@@ -166,57 +166,29 @@ useEffect(() => {
   return <Spinner/>
   else
   return (
-    <div className={`absolute flex flex-col justify-center w-full min-h-screen bg-orange-100 ${noto.className}`}>
+    <div className={`absolute flex flex-col w-full min-h-screen bg-orange-100 ${noto.className}`}>
+      <div className="flex flex-col items-center justify-center mt-48 h-full">
        {/* Interactive Indication (Bubbles with Numbers) */}
-       <div className="flex flex-col h-full mt-14 ">
-        <div className="relative flex self-center space-x-4">
+          <div className="absolute flex w-full top-20 justify-center space-x-4">
                   {[1, 2, 3, 4].map((number) => (
-                    <div
-                      key={number}
-                      onClick={() => {
-                        if(number < stage)
-                        setStage(number)
-                      }}
-                      className={`stage-bubble ${number === stage ? "active" : ""}`}
-                    >
-                      {number}
+                    <div className={`flex ${number === stage ? "pt-2" : "" } `}>
+                      <p
+                        key={number}
+                        onClick={() => {
+                          if(number < stage)
+                          setStage(number)
+                        }}
+                        className={`h-11 text-xl font-bold my-3 ${number === stage ? "bg-orange-400" : "bg-orange-200"} py-2 px-4 rounded-full`}
+                      >
+                        {number}
+                      </p>
                     </div>
                   ))}
           </div>
-            {/* Pop-up */}
-          <div className="flex flex-col items-center h-full mt-6">
-            {showErrorPopup && (
-                          <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
-                            <div className='bg-white rounded shadow-md relative p-14 text-3xl bottom-1/4'>
-                              {/* Close arrow */}
-                              <button
-                                onClick={() => setShowErrorPopup(false)}
-                                className='absolute top-2 right-2 text-gray-400 hover:text-gray-600'
-                              >
-                                <svg
-                                  xmlns='http://www.w3.org/2000/svg'
-                                  className='h-6 w-6'
-                                  fill='none'
-                                  viewBox='0 0 24 24'
-                                  stroke='currentColor'
-                                >
-                                  <path
-                                    strokeLinecap='round'
-                                    strokeLinejoin='round'
-                                    strokeWidth='2'
-                                    d='M6 18L18 6M6 6l12 12'
-                                  />
-                                </svg>
-                              </button>
-                  
-                              <p className='mb-4'>
-                                .קיים אירוע עם שם זה. אנא בחרו שם אחר                        
-                              </p>
-                            </div>
-                          </div>
-                        )}
+
+         
               {/* Render the corresponding stage */}
-              <div className="bg-white shadow-lg w-11/12 h-full p-4 rounded-xl mb-3">
+              <div className="bg-white shadow-lg w-11/12 p-4 rounded-xl mb-3 sm:w-2/5">
                   {
                       stage === 1?
                     <Stage1
@@ -237,7 +209,42 @@ useEffect(() => {
                     <Stage4 schemaTicketsData = {schemaTicketsData} setSchemaTicketsData = {setSchemaTicketsData} setStage = {setStage} handleCreateOrUpdateEvent = {handleCreateOrUpdateEvent}/>
                   }
               </div>
-          </div>
+        
+
+          {showErrorPopup && (
+                          <div className='absolute flex h-full inset-0 items-center justify-center bg-black bg-opacity-50 z-50'>
+                            <div className='bg-white shadow-md p-4 text-3xl bottom-1/4 w-11/12 rounded sm:w-2/5'>
+                              {/* Close arrow */}
+                              <button
+                                onClick={() => setShowErrorPopup(false)}
+                                className=' text-gray-400 hover:text-gray-600'
+                              >
+                                <svg
+                                  xmlns='http://www.w3.org/2000/svg'
+                                  className='h-6 w-6'
+                                  fill='none'
+                                  viewBox='0 0 24 24'
+                                  stroke='currentColor'
+                                >
+                                  <path
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    strokeWidth='2'
+                                    d='M6 18L18 6M6 6l12 12'
+                                  />
+                                </svg>
+                              </button>
+                  
+                              <p dir="rtl" className='text-5xl mb-4 text-right sm:text-center'>
+                                קיים אירוע עם שם זה...                      
+                              </p>
+
+                              <p dir="rtl" className='mb-4 text-center'>
+                                אנא בחרו שם אחר                       
+                              </p>
+                            </div>
+                          </div>
+                        )}
       </div>
     </div>
   );

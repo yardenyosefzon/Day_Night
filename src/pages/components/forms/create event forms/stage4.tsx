@@ -116,10 +116,10 @@ const NoSSRStage4: React.FC<Stage4Props> = ({ schemaTicketsData, setSchemaTicket
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex justify-start w-full">
+      <div className="flex w-full">
         <FontAwesomeIcon icon={faChevronLeft} onClick={() => setStage(3)} className="flex justify-start m-3"/>
       </div>
-      <form onSubmit={onSubmit} className="flex flex-col items-center w-10/12">
+      <form onSubmit={onSubmit} className="flex flex-col w-10/12">
         {schemaTicketsData.map((ticket, index) => (
         <div key={index} className={`${index < schemaTicketsData.length-1? `border-b-2 border-black mb-8 border-dotted` : ""} pb-6`}> 
           <div>

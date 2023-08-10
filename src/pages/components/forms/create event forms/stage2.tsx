@@ -29,9 +29,9 @@ const NoSSRStage2 : React.FC<Stage2Props> = ({ eventsData, setEventsData, setSta
           <div className="flex justify-start w-full ml-1">
             <FontAwesomeIcon icon={faChevronLeft} onClick={() => setStage(1)}/>
           </div>
-          <label className='text-xl'>תיאור</label>
+          <label className='text-xl mb-3'>תיאור</label>
           <QuillNoSSRWrapper 
-          style={{minHeight: '60vh',}}
+          style={{minHeight: '40vh',}}
           className="bg-white border-black border-2 rounded-lg text-center float-right overflow-hidden"
           modules={modules}
           theme="snow" 

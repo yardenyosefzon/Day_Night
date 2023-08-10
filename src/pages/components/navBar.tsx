@@ -11,7 +11,7 @@ function NavBar() {
     const { pathname, replace } = useRouter()
     if(pathname == '')return <></>
   return (
-    <div className='absolute flex w-full border-b-4 border-orange-300 bg-gradient-to-b from-orange-50 via-white to-orange-50 h-11 items-center p-2 z-50 sm:p-6'>
+    <div className='absolute flex w-full border-b-4 border-orange-300 bg-gradient-to-b from-orange-50 via-white to-orange-50 h-11 items-center p-2 z-40 sm:p-6'>
         <div className='w-1/3 text-left text-sm font-semibold mt-2'>{session.data?.user.name}</div>
         <button onClick={() => {replace('/')}} className={`w-1/3 text-center text-2xl ${secular.className} mt-2`}><label className='text-orange-300 font-extrabold'>Day</label>∞Night</button>
         <div className='w-1/3 text-right font-semibold mt-2'>

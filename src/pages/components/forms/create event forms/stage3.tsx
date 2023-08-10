@@ -17,11 +17,11 @@ const NoSSRStage3: React.FC<Stage3Props> = ({ setStage, setEventsData, eventsDat
     
     <div className="flex flex-col items-center h-96">
       <div className="flex justify-start w-full ml-1">
-        <FontAwesomeIcon className="pb-1" icon={faChevronLeft} onClick={() => setStage(3)}/>
+        <FontAwesomeIcon className="pb-1" icon={faChevronLeft} onClick={() => setStage(2)}/>
       </div>
-      <div className=" relative flex flex-col justify-center items-center border w-full rounded-lg h-full">
+      <div className="relative flex flex-col justify-center items-center border w-full rounded-lg h-full">
         {eventsData.image !== "" ?
-        <Image className="rounded-lg" src={eventsData.image} alt="uploaded Photo" fill objectFit="cover"></Image>
+        <Image className="rounded-lg" src={eventsData.image} alt="uploaded Photo" fill objectFit="cover"  blurDataURL="/images/pexels-photo-1242348.webp" placeholder="blur"></Image>
         :
         <UploadImage setStage={setStage} setEventsData={setEventsData}/>
       }
