@@ -24,9 +24,9 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
     return (
       <>
       <div className='flex flex-col bg-orange-100 min-h-screen bg-gradient-to-b pb-3 from-neutral-50 sm:items-center'>
-        <div className='h-full sm:flex sm:bg-gradient-to-b sm:from-sky-50 sm:via-sky-300 sm:w-full sm:justify-center sm:bg-opacity-30 sm:pb-6 sm:pt-3 sm:rounded-md sm:p-4 sm:mt-14'>
+        <div className='h-full sm:flex bg-gradient-to-b from-sky-50 via-sky-300 mt-11 w-full sm:justify-center bg-opacity-30 pb-6 sm:pt-3 sm:rounded-md p-4 sm:mt-14'>
           <Image
-            className='sm:rounded-lg sm:shadow-md sm:shadow-black'
+            className='rounded-lg shadow-md shadow-black'
             width={720}
             height={480}
             src={eventsData?.image? eventsData.image : "/images/event_place_holder.jpg"}
@@ -53,14 +53,14 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
         <div className='flex justify-center text-6xl'>
           <FontAwesomeIcon icon={faTicket}/>
         </div>
-        <div className={schemaTicketsData?.length === 1 ? `flex justify-center mt-10 ` : `grid grid-cols-2 mx-8 mt-10`}>
+        <div className={schemaTicketsData?.length === 1 ? `flex justify-center mt-10 ` : `grid grid-cols-2 w-full mt-10 sm:w-1/3`}>
           {schemaTicketsLoading?
             <div>Loading...</div>
             :
               schemaTicketsData?.map((_, index) => {
                 return(
-                  <div key={index} className="flex flex-col items-center justify-center mx-10">
-                  <div className="max-w-md  mx-auto z-10 bg-orange-300 rounded-3xl">
+                  <div key={index} className="flex flex-col items-center justify-center w-full">
+                  <div className="mx-auto z-10 bg-orange-300 rounded-3xl">
                     <div className="flex flex-col ">
                       <div className="bg-white relative drop-shadow-2xl rounded-3xl p-5 m-2">
                         <div className="flex-none sm:flex">
@@ -82,7 +82,7 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
                                 <div className="absolute rounded-full w-4 h-4 bg-orange-300 -mt-2 -right-2"></div>
                               </div>
                               <div className="flex justify-center">
-                                <Link className={`${notoSans.className} underline`} href={`/buyTickets/${eventName}`}>
+                                <Link className={`${notoSans.className} underline`} href={`/buyTickets/${eventName}?ticketKind=${schemaTicketsData[index]?.ticketName}`}>
                                   לרכישה
                                 </Link>
                               </div>

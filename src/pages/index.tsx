@@ -23,7 +23,7 @@ export default function Home() {
     <div className="absolute w-full min-h-screen bg-orange-50">
       <div className={`flex flex-col mt-28 mx-9 ${ibm.className} sm:grid sm:grid-cols-4`}>
         {data?.map((event, index) => (
-          <div key={index} className="mb-14 h-72 flex flex-col items-end border-2 border-black rounded-b-3xl rounded-t-xl w-full sm:w-11/12 sm:h-72 sm:place-self-center shadow-lg p-1 2xl:w-8/12 bg-white">
+          <div key={index} className="mb-14 h-72 flex flex-col items-end  rounded-b-3xl rounded-t-xl w-full sm:w-11/12 sm:h-72 sm:place-self-center shadow-xl p-1 2xl:w-8/12 bg-white">
             <div className="relative w-full h-4/6">
             <Link href={`/events/${event.eventName}`} key={event.eventName}>
               <Image className="rounded-lg" src={event.image? event.image : "/images/event_place_holder.jpg"} alt="eventImage" fill={true} objectFit="cover"></Image>
@@ -40,7 +40,7 @@ export default function Home() {
                 <div className="mx-2">{event.address}</div>
                 <FontAwesomeIcon className="mt-1" icon={faMap}/>
               </div>
-              <Link className="text-2xl underline hover:text-gray-500" href={`/events/${event.eventName}`} key={event.eventName}>{event.eventName}</Link>
+              <Link className="text-2xl hover:text-gray-500" href={`/events/${event.eventName}`} key={event.eventName}>{event.eventName}</Link>
             </div>
           </div> 
         ))}

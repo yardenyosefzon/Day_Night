@@ -57,7 +57,6 @@ export const boughtTicketsRouter = createTRPCRouter({
               ...boughtTicket,
               nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
               partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
-              userId: input.userId,
               eventId: eventId?.id as string,
               usersTicket: index === 0 ? input.usersTicket : false,
               ticketKind: input.ticketKind,
@@ -70,6 +69,7 @@ export const boughtTicketsRouter = createTRPCRouter({
                 nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
                 partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
                 eventId: eventId?.id as string,
+                userId: input.userId,
                 usersTicket: index === 0 ? input.usersTicket : false,
                 ticketKind: input.ticketKind,
                 slug: slug, // Use the generated slug here
@@ -114,22 +114,26 @@ export const boughtTicketsRouter = createTRPCRouter({
     }),
     getManyByUserId: protectedProcedure
     .query(({ctx}) => {
-        console.log(ctx.session)
+        console.log(ctx.session?.user.id)
         return ctx.prisma.boughtTicket.findMany({
             where: {
               userId: 
                  ctx.session?.user.id
             },
             select: {
+                verified: true,
                 slug: true,
                 qrCode: true,
+                fullName: true,
+                email: true,
+                phoneNumber: true,
                 event: {
                     select: {
                         eventName: true
                     }
                 }
-                
               },
+              
           })
     }),
     getManyByEvent: publicProcedure
@@ -197,6 +201,8 @@ export const boughtTicketsRouter = createTRPCRouter({
                 slug: input.slug
             },
             select: {
+                verified: true,
+                qrCode:true,
                 fullName: true,
                 scanned: true,
                 event: {

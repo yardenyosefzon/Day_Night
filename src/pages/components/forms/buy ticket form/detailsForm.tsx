@@ -96,7 +96,47 @@ interface FormState {
         }
        
       </div>
-      <div className={`flex flex-col justify-center mt-5`}>
+        <div className={`flex flex-col justify-center mt-5`}>
+          <label className="block" htmlFor="fullName">
+            שם מלא
+          </label>
+          <input
+            onChange={(e) => {
+              handleChange(e, index);
+            }}
+            name="fullName"
+            className={`border-2 rounded-md text-right p-1 ${
+              !validErrors[index]?.fullName.valid ? 'border-red-500' : ''
+            }`}
+            type="text"
+            placeholder="שם מלא"
+            value={formState.tickets[index]?.fullName}
+          />
+          {/* {!validErrors[index]?.fullName.valid && (
+            <p className="text-red-500">{constErrors.fullName.value}</p>
+          )} */}
+        </div>
+        <div className={`flex flex-col justify-center`}>
+                <label className="block" htmlFor="email">
+                  כתובת אימייל
+                </label>
+                <input
+                  onChange={(e) => {
+                    handleChange(e, index);
+                  }}
+                  name="email"
+                  className={`border-2 rounded-md text-right p-1 ${
+                    !validErrors[index]?.email.valid ? 'border-red-500' : ''
+                  }`}
+                  type="email"
+                  placeholder="כתובת אימייל"
+                  value={formState.tickets[index]?.email}
+                />
+                {/* {!validErrors[index]?.email.valid && (
+                  <p className="text-red-500">{constErrors.email.value}</p>
+                )} */}
+        </div>
+      <div className={`flex flex-col justify-center`}>
         <label className="block" htmlFor="birthDay">
           תאריך לידה
         </label>
@@ -199,46 +239,6 @@ interface FormState {
                 {/* {!validErrors[index]?.nationalId.valid && (
                   <p className="text-red-500">{constErrors.nationalId.value}</p>
                 )} */}
-        </div>
-        <div className={`flex flex-col justify-center`}>
-                <label className="block" htmlFor="email">
-                  כתובת אימייל
-                </label>
-                <input
-                  onChange={(e) => {
-                    handleChange(e, index);
-                  }}
-                  name="email"
-                  className={`border-2 rounded-md text-right p-1 ${
-                    !validErrors[index]?.email.valid ? 'border-red-500' : ''
-                  }`}
-                  type="email"
-                  placeholder="כתובת אימייל"
-                  value={formState.tickets[index]?.email}
-                />
-                {/* {!validErrors[index]?.email.valid && (
-                  <p className="text-red-500">{constErrors.email.value}</p>
-                )} */}
-        </div>
-        <div className={`flex flex-col justify-center`}>
-          <label className="block" htmlFor="fullName">
-            שם מלא
-          </label>
-          <input
-            onChange={(e) => {
-              handleChange(e, index);
-            }}
-            name="fullName"
-            className={`border-2 rounded-md text-right p-1 ${
-              !validErrors[index]?.fullName.valid ? 'border-red-500' : ''
-            }`}
-            type="text"
-            placeholder="שם מלא"
-            value={formState.tickets[index]?.fullName}
-          />
-          {/* {!validErrors[index]?.fullName.valid && (
-            <p className="text-red-500">{constErrors.fullName.value}</p>
-          )} */}
         </div>
       </div>
     </>
