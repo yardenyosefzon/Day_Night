@@ -21,6 +21,7 @@ function QrCode() {
         return <div>No vialid ticket here</div>
     }
     else
+    console.log(nationalId, data?.event.eventName)
     return (
       <div>
           <div>{nationalId}</div>
@@ -34,7 +35,7 @@ function QrCode() {
         }
       </div>
     )
-}
+    }
 }
 export default QrCode
 
