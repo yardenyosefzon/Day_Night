@@ -73,8 +73,8 @@ function MyQRScannerComponent() {
 
     // Cleanup function to stop scanning when the component unmounts
     return () => {
-      if (!qrCodeScanner?.isScanning) {
-        qrCodeScanner?.clear();
+      if (qrCodeScanner?.isScanning) {
+
       }
     };
   }, [slug]);

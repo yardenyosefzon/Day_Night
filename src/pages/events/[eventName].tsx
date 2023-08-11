@@ -4,7 +4,7 @@ import { api } from '~/utils/api';
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import { appRouter } from '~/server/api/root';
 import superjson from "superjson";
-import { faTicket } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faTicket } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Noto_Serif_Hebrew, Noto_Sans_Hebrew, IBM_Plex_Sans_Hebrew } from 'next/font/google';
 import { prisma } from '~/server/db';
@@ -24,7 +24,12 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
     return (
       <>
       <div className='flex flex-col bg-orange-100 min-h-screen bg-gradient-to-b pb-3 from-neutral-50 sm:items-center'>
-        <div className='h-full sm:flex bg-gradient-to-b from-sky-50 via-sky-300 mt-11 w-full sm:justify-center bg-opacity-30 pb-6 sm:pt-3 sm:rounded-md p-4 sm:mt-14'>
+      <div className="absolute top-0 right-0 mt-16 pr-1 z-40 sm:p-12 sm:pr-20 sm:mt-12">
+          <Link href={'/'}>
+            <FontAwesomeIcon icon={faChevronRight} className="text-xl sm:text-2xl"/>
+          </Link>
+        </div>
+        <div className='h-full sm:flex bg-gradient-to-b from-sky-50 via-sky-300 mt-11 w-full p-5 sm:justify-center bg-opacity-30 pb-6 sm:pt-3 sm:rounded-md sm:mt-14'>
           <Image
             className='rounded-lg shadow-md shadow-black'
             width={720}

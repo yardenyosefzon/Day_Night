@@ -8,7 +8,9 @@ import { GetServerSidePropsContext } from 'next';
 import { Noto_Sans_Hebrew } from 'next/font/google';
 import { faTicket } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const noto = Noto_Sans_Hebrew({subsets:["hebrew"], weight:"300"})
 
@@ -57,6 +59,11 @@ function MyTickets() {
       </div>
       }
       <div className='flex flex-col gap-5 grow items-center my-24'>
+        <div className='absolute top-0 right-0 mt-14 p-3 sm:p-10 sm:pt-6'>
+          <Link href={'/'}>
+            <FontAwesomeIcon icon={faChevronRight} className='text-2xl'/>
+          </Link>
+        </div>
         <div className='flex w-full justify-center'>
           <h1 className='text-3xl font-bold'>הכרטיסים שלי</h1>
         </div>

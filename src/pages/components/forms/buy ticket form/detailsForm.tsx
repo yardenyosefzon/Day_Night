@@ -86,17 +86,25 @@ interface FormState {
     
   return (
     <>
-    <div className={`relative flex flex-col border-black w-4/5 justify-between gap-2 p-6 pt-3 rounded-lg shadow shadow-black my-3 bg-white opacity-95 sm:w-2/5`}>
-    <div className='absolute t-0 l-0'>
+    <div className={`relative flex flex-col border-black w-4/5 justify-between gap-2 p-6 pt-3 rounded-lg shadow shadow-black my-2 bg-white opacity-95 sm:w-2/5`}>
+    <div className='absolute flex gap-3 t-0 l-0'>
         {
-          formState.tickets.length == 5 || index < formState.tickets.length-1 ?
-          <FontAwesomeIcon icon={faPersonCircleMinus} className='text-3xl text-yellow-600' onClick={() => handleDeleteTicket(index)}></FontAwesomeIcon>
-         :
-         <FontAwesomeIcon icon={faPersonCirclePlus} className='text-3xl text-yellow-600' onClick={() => addTicket()}></FontAwesomeIcon> 
+          formState.tickets.length !== 1 &&
+          <div className='flex flex-col items-center'>
+            <FontAwesomeIcon icon={faPersonCircleMinus} className='text-3xl text-yellow-600' onClick={() => handleDeleteTicket(index)}></FontAwesomeIcon>
+            <p className='text-sm text-yellow-600'>הורד כרטיס</p>
+          </div>
+        }
+        {
+         formState.tickets.length !== 5 && index === formState.tickets.length-1 &&
+         <div className='flex flex-col items-center'>
+           <FontAwesomeIcon icon={faPersonCirclePlus} className='text-3xl text-yellow-600' onClick={() => addTicket()}></FontAwesomeIcon> 
+           <p className='text-sm text-yellow-600'>הוסף כרטיס</p>
+         </div>
         }
        
       </div>
-        <div className={`flex flex-col justify-center mt-5`}>
+        <div className={`flex flex-col justify-center mt-7`}>
           <label className="block" htmlFor="fullName">
             שם מלא
           </label>

@@ -8,6 +8,9 @@ import { useRouter } from "next/router";
 import { env } from "~/env.mjs";
 import Spinner from "../components/spinner";
 import { Noto_Sans_Hebrew } from "next/font/google";
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Link from "next/link";
 
 const noto = Noto_Sans_Hebrew({subsets:['hebrew'], weight:"400"})
 
@@ -168,6 +171,11 @@ useEffect(() => {
   return (
     <div className={`absolute flex flex-col w-full min-h-screen bg-orange-100 ${noto.className}`}>
       <div className="flex flex-col items-center justify-center mt-48 h-full">
+        <div className="absolute top-0 right-0 mt-12 p-4 z-40 sm:p-12 sm:pr-20">
+          <Link href={'/'}>
+            <FontAwesomeIcon icon={faChevronRight} className="text-2xl"/>
+          </Link>
+        </div>
        {/* Interactive Indication (Bubbles with Numbers) */}
           <div className="absolute flex w-full top-20 justify-center space-x-4">
                   {[1, 2, 3, 4].map((number) => (

@@ -17,11 +17,13 @@ export default function RememberMePopup({ onSubmit, rememberMe, setRememberMe }:
 
   return (
     <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-violet-200 bg-opacity-95 text-md">
-      <div className="bg-purple-50 p-6 pb-2 rounded shadow shadow-black drop-shadow-sm w-2/3 sm:w-1/3">
+      <div className="bg-purple-50 p-6 pb-2 rounded shadow shadow-black drop-shadow-sm w-2/3 sm:w-2/5">
         <h2 className={`text-lg font-medium mb-4 ${noto.className}`}>?לזכור אותך</h2>
         <div className={`mb-4 ${noto.className}`}>
-          <p> אם תבחרו לא להזכר על ידי המערכת, המידע עדיין ישמר אך לזמן מוגבל. בנוסף המערכת לא תשלים באופן אוטומאטי את פרטיכם ותאלצו למלא אותם מחדש בכל פעם שתרצו לרכוש כרטיס</p>
-          <p className={`my-2`}>תמיד ניתן לשנות זאת בהגדרות</p>
+          <p className="text-right" dir="rtl">לזכור אותך?
+            פרטיכם ישמרו וימולאו אוטומטית לקניה הבאה שלכם :)
+          </p>
+          <p className={`my-2 sm:my-4`}>תמיד ניתן לשנות זאת בהגדרות</p>
           <div className={`flex sm:justify-end`}>
             <label className={`my-5 mr-3`}>
             זכור את המידע שלי כדי לבצע רכישות עתידיות
