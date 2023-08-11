@@ -16,9 +16,9 @@ function Ticket() {
   const {query: {ticket}} = useRouter()
   const {data: ticketsData} = api.boughtTickets.getOneBySlug.useQuery({slug: ticket as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
   
- if(ticketsData?.verified)
+ if(!ticketsData?.verified)
   return (<></>)
-  
+  else
   return (
     <div className={`absolute h-screen w-full bg-gradient-to-bl from-orange-200 to-orange-800 ${noto.className}`}>
       <div className='flex flex-col h-full justify-center items-center'>
