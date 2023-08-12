@@ -1,3 +1,6 @@
+import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { faLink, faTicket } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dynamic from 'next/dynamic';
 import React from 'react'
 
@@ -21,19 +24,32 @@ type RejectedOrVerifiedTicketsProps = {
 function NoSSRRejectedOrVerifiedTickets({ticket, handleButtonClick}: RejectedOrVerifiedTicketsProps) {
   return (
     <>
-        <div key={ticket.slug} className="border border-black p-4 m-2 text-center flex flex-col">
-            <div className="flex flex-row-reverse gap-x-20 justify-center">
+        <div className="flex flex-col w-10/12 items-center border-b border-dotted border-black p-4 px-0 bg-white shadow-lg rounded">
+        <div className='flex flex-row-reverse gap-3 w-4/6 text-right'>
+                <div>
+                  <FontAwesomeIcon icon={faUser}/>
+                </div>
+                <div>
+                  <p>{ticket.fullName}</p>
+                </div>
+             </div>
+             <div className='flex flex-row-reverse gap-3 w-4/6 text-right'>
+                <div>
+                  <FontAwesomeIcon icon={faTicket}/>
+                </div>
+                <div>
+                  <p>{ticket.ticketKind}</p>
+                </div>
+             </div>
+             <div className='flex flex-row-reverse gap-3 w-4/6 text-right'>
               <div>
-                <p>{ticket.fullName}</p>
+                <FontAwesomeIcon icon={faLink}/>
               </div>
               <div>
-              סוג הכרטיס: {ticket.ticketKind}
+               <a href={`https://www.instagram.com/${ticket.instaUserName}`} target="_blank" className='underline'>קישור לאינסטגרם</a>
               </div>
-              <div>
-                <a href={`https://www.instagram.com/${ticket.instaUserName}`} target="_blank">קישור לאינסטגרם</a>
-              </div>
-            </div>
-              <div className="flex flex-row-reverse gap-x-20 justify-center">
+             </div>
+              <div className="flex flex-row-reverse justify-center mt-3 p-2 bg-gradient-to-r from-red-100 to-green-100 rounded">
                 <button onClick={() => handleButtonClick("waiting", ticket.slug, ticket.email, ticket.qrCode)}>
                     בטל סטטוס זה
                 </button>

@@ -91,7 +91,7 @@ function MyTickets() {
             ))}
           </div>
           <div className='flex h-52 bg-white rounded-xl w-full items-center justify-center shadow-lg mr-1 p-2 sm:h-auto'>
-            <div className='flex flex-col-reverse gap-2 rounded border w-full bg-orange-50 p-2 py-4 overflow-scroll sm:overflow-auto sm:h-full sm:justify-end'>
+            <div className='flex flex-col-reverse gap-2 rounded border w-full bg-orange-50 p-2 py-4 overflow-scroll sm:overflow-auto h-full sm:justify-end'>
               {
               Object.entries(ticketCount).map((yo) => (
                 <button className='flex justify-between bg-white p-2 w-full rounded shadow-md' onClick={() => setSelectedTickets(yo[0])}>

@@ -4,6 +4,10 @@ import { api } from "~/utils/api";
 import Spinner from "~/pages/components/spinner";
 import WaitingTickets from "~/pages/components/eventTicketsButtons/waitingTickets";
 import RejectedOrVerifiedTickets from "~/pages/components/eventTicketsButtons/rejectedOrVerifiedTickets";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faThumbsUp } from "@fortawesome/free-regular-svg-icons";
+import { faThumbsDown } from "@fortawesome/free-regular-svg-icons";
+import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 
 function EventTicketsCreatorPage() {
   const { query: { eventName } } = useRouter();
@@ -74,46 +78,73 @@ function EventTicketsCreatorPage() {
   });
 
   return (
-    <div>
-      {isLoading && <Spinner />}
-      <div className="text-2xl mb-4">{eventName} כרטיסים עבור</div>
-      <div className="border-black border-2 w-fit flex flex-wrap justify-center mx-auto sm:flex-col sm:mr-0">
-        <div
-          className={`relative text-xs p-1 m-2 flex-auto text-center sm:text-base sm:text-right cursor-pointer ${
-            currentCategory === "verified" ? "text-blue-500" : ""
-          }`}
-          onClick={() => setCurrentCategory("verified")}
-        >
-          כרטיסים שאושרו ({ticketCounts.verified})
+    <div className="absolute h-screen w-full bg-orange-50">
+      <div className="flex flex-col h-full items-center mt-16 pb-3">
+        {isLoading && <Spinner />}
+        <div className="flex justify-center">
+          <p dir="rtl" className="text-2xl mb-4">
+             כרטיסים עבור {eventName} 
+          </p>
         </div>
-        <div
-          className={`relative text-xs p-1 border-l m-2 flex-auto text-center sm:border-0 sm:text-base sm:text-right cursor-pointer ${
-            currentCategory === "waiting" ? "text-blue-500" : ""
-          }`}
-          onClick={() => setCurrentCategory("waiting")}
-        >
-          כרטיסים שמחכים לאישור ({ticketCounts.waiting})
-        </div>
-        <div
-          className={`relative text-xs p-1 border-l m-2 flex-auto text-center sm:border-0 sm:text-base sm:text-right cursor-pointer ${
-            currentCategory === "rejected" ? "text-blue-500" : ""
-          }`}
-          onClick={() => setCurrentCategory("rejected")}
-        >
-          כרטיסים שלא אושרו ({ticketCounts.rejected})
-        </div>
-      </div>
+        <div className="flex flex-col h-1/5 w-11/12 bg-white rounded justify-center items-center shadow-xl py-2 sm:flex-col sm:mr-0">
+          <div className={`flex flex-row-reverse h-full justify-between text-md p-1 text-center w-7/12 cursor-pointer sm:text-base sm:text-right`}onClick={() => setCurrentCategory("waiting")}>
+                <div className={`${currentCategory === "waiting" ? "text-orange-400" : ""}`}>
+                  <FontAwesomeIcon icon={faQuestion}/>
+                </div>
+                <div className={`${currentCategory === "waiting" ? "text-orange-400" : ""}`}>
+                  <p>
+                    כרטיסים ממתינים
+                  </p>
+                </div>
+                <div className="bg-orange-100 p-1 px-3 rounded-full">
+                  <p>
+                {ticketCounts.waiting}
+                  </p>
+              </div>
+            </div>
+            <div className={`flex flex-row-reverse justify-between text-md p-1 text-center w-7/12 sm:text-base sm:text-right cursor-pointer`}onClick={() => setCurrentCategory("verified")}>
+              <div className={`${currentCategory === "verified" ? "text-orange-400" : ""}`}>
+                <FontAwesomeIcon icon={faThumbsUp}/>
+              </div>
+              <div className={`${currentCategory === "verified" ? "text-orange-400" : ""}`}>
+                <p>
+                כרטיסים שאושרו 
+                </p>
+              </div>
+              <div className="bg-orange-100 p-1 px-3 rounded-full">
+                <p>
+                {ticketCounts.verified}
+                </p>
+              </div>
+            </div>
+            <div className={`flex flex-row-reverse justify-between text-md p-1 text-center w-7/12 sm:text-base sm:text-right cursor-pointer`}onClick={() => setCurrentCategory("rejected")}>
+              <div className={`${currentCategory === "rejected" ? "text-orange-400" : ""}`}>
+                <FontAwesomeIcon icon={faThumbsDown}/>
+              </div>
+              <div className={`${currentCategory === "rejected" ? "text-orange-600" : ""}`}>
+                <p>
+                    כרטיסים שנדחו   
+                </p>
+              </div>
+              <div className="bg-orange-100 p-1 px-3 rounded-full">
+                <p>
+                {ticketCounts.rejected}
+                </p>
+              </div>
+            </div>
+          </div>
 
-      <div className="mt-6">
-        {filteredTickets?.length === 0 && (
-          <div className="text-xl text-center my-4">אין מה לראות כאן</div>
-        )}
-        {filteredTickets?.map((ticket, index) => (
-          currentCategory === "waiting" ? 
-          <WaitingTickets key={index} ticket={ticket} handleButtonClick={handleButtonClick}/> 
-          : 
-          <RejectedOrVerifiedTickets key={index} ticket={ticket} handleButtonClick={handleButtonClick}/>
-        ))}
+        <div className="flex flex-col h-3/5 items-center mt-6 w-full overflow-scroll">
+          {filteredTickets?.length === 0 && (
+            <div className="text-xl text-center my-4">אין מה לראות כאן</div>
+          )}
+          {filteredTickets?.map((ticket, index) => (
+            currentCategory === "waiting" ? 
+            <WaitingTickets key={index} ticket={ticket} handleButtonClick={handleButtonClick}/> 
+            : 
+            <RejectedOrVerifiedTickets key={index} ticket={ticket} handleButtonClick={handleButtonClick}/>
+          ))}
+        </div>
       </div>
     </div>
   );

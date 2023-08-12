@@ -27,5 +27,21 @@ export const usersRouter = createTRPCRouter({
            rememberMe: input.rememberMe
         }
       });
+    }),
+    updateHideQrExProp: publicProcedure
+  .input(
+    z.object({
+      hideQrEx: z.boolean()
     })
+  )
+    .mutation(({input, ctx}) => {
+      return ctx.prisma.user.update({
+        where: {
+            email: ctx.session?.user.email as string
+        },
+        data: {
+          hideQrEx: input.hideQrEx
+        }
+      });
+    }),
 })
