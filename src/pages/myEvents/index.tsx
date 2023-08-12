@@ -59,7 +59,7 @@ function MyEvents(){
   if(isLoading) return <h1>Loading...</h1>
 
   return (
-    <div className='absolute w-full min-h-screen h-screen bg-gradient-to-b from-orange-50 to-orange-100'>
+    <div className='absolute w-full min-h-screen h-fit bg-gradient-to-b from-orange-50 to-orange-100'>
        {/* Pop-up */}
        {showPopup && (
                       <div className='absolute w-full h-screen flex bg-gray-400 items-center justify-center bg-opacity-70 z-40'>
@@ -113,7 +113,7 @@ function MyEvents(){
                         </div>
                       </div>
                     )}
-      <div className='flex items-center h-fit mt-24'>
+      <div className='flex items-center h-fit mt-24 pb-2'>
        
           <div className='flex flex-col w-full  items-center min-h-5/6 h-5/6 mx-3 rounded gap-9'>
             {
