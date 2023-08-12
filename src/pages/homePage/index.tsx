@@ -3,7 +3,7 @@ import { api } from "~/utils/api";
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import { appRouter } from "~/server/api/root";
 import superjson from "superjson";
-import UnderNavBar from "./components/underNavBar";
+import UnderNavBar from "../components/underNavBar";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";

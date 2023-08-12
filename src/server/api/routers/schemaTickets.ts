@@ -57,6 +57,30 @@ export const schemaTicketsRouter = createTRPCRouter({
             }
         })
     }),
+    getManyBySlug: publicProcedure
+    .input(
+        z.object({
+            slug: z.string()
+        })
+    )
+    .query(async ({ctx, input}) => {
+        const event = await ctx.prisma.event.findFirst({
+            where: {
+                slug: input.slug
+            }
+        })
+        return ctx.prisma.schemaTicket.findMany({
+            where: {
+                eventId: event?.id
+            },
+            select: {
+                numberOfTickets: true,
+                price: true, 
+                ticketName: true,
+                notes: true
+            }
+        })
+    }),
     changeNumberOfBoughtTicketsOfOneByEventAndTicketName: publicProcedure
     .input(
         z.object({

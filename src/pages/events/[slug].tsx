@@ -17,8 +17,8 @@ const notoSans = Noto_Sans_Hebrew({subsets: ['hebrew'], weight: '300'})
 const ibm = IBM_Plex_Sans_Hebrew({subsets: ['hebrew'], weight: '600'})
 
 export default function EventPage( props: InferGetStaticPropsType<typeof getStaticProps>){
-  const { eventName } = props;
-  const {data: eventsData, isLoading} = api.events.getOneByName.useQuery({ eventName }, {refetchOnMount: false, refetchOnWindowFocus: false}); 
+  const { slug } = props;
+  const {data: eventsData, isLoading} = api.events.getOneBySlug.useQuery({ slug: slug }, {refetchOnMount: false, refetchOnWindowFocus: false}); 
   const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyByEventName.useQuery({eventName: eventsData?.eventName as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
   if(isLoading) return <div>Loading...</div>
     return (
@@ -87,7 +87,7 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
                                 <div className="absolute rounded-full w-4 h-4 bg-orange-300 -mt-2 -right-2"></div>
                               </div>
                               <div className="flex justify-center">
-                                <Link className={`${notoSans.className} underline`} href={`/buyTickets/${eventName}?ticketKind=${schemaTicketsData[index]?.ticketName}`}>
+                                <Link className={`${notoSans.className} underline`} href={`/buyTickets/${eventsData?.eventName}?ticketKind=${schemaTicketsData[index]?.ticketName}`}>
                                   לרכישה
                                 </Link>
                               </div>
@@ -109,22 +109,22 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
     }
     
   export async function getStaticProps(
-    context: GetStaticPropsContext<{ eventName: string }>,
+    context: GetStaticPropsContext<{ slug: string }>,
   ) {
     const helpers = createServerSideHelpers({
       router: appRouter,
       ctx: {session: null, prisma: prisma},
       transformer: superjson, // optional - adds superjson serialization
     });
-    const eventName = context.params?.eventName as string;
+    const slug = context.params?.slug as string;
   
-    await helpers.events.getOneByName.prefetch({ eventName });
-    await helpers.schemaTickets.getManyByEventName.prefetch({ eventName })
+    await helpers.events.getOneBySlug.prefetch({ slug });
+    await helpers.schemaTickets.getManyBySlug.prefetch({ slug })
 
     return {
       props: {
         trpcState: helpers.dehydrate(),
-        eventName,
+        slug,
       },
     };
   }
@@ -132,13 +132,13 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
   export const getStaticPaths: GetStaticPaths = async () => {
     const posts = await prisma.event.findMany({
       select: {
-        eventName: true,
+        slug: true,
       },
     });
     return {
-      paths: posts.map((post) => ({
+      paths: posts.map((event) => ({
         params: {
-          eventName: post.eventName,
+          slug: event.slug,
         },
       })),
       // https://nextjs.org/docs/pages/api-reference/functions/get-static-paths#fallback-blocking

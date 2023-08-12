@@ -51,6 +51,7 @@ export const eventsRouter = createTRPCRouter({
     .query( async ({ctx}) => {
       return await ctx.prisma.event.findMany({
         select: {
+          slug: true,
           address:true,
           eventName: true,
           image: true,
@@ -93,6 +94,28 @@ export const eventsRouter = createTRPCRouter({
         return ctx.prisma.event.findFirst({
           where: {
             eventName: input.eventName
+          },
+          select: {
+            eventName: true,
+            date: true,
+            artist: true,
+            image: true,
+            description: true,
+            minAge: true,
+            address: true,
+            slug: true
+          }
+        });
+    }),
+    getOneBySlug: publicProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+      }))
+      .query(({ctx, input}) => {
+        return ctx.prisma.event.findFirst({
+          where: {
+            slug: input.slug
           },
           select: {
             eventName: true,

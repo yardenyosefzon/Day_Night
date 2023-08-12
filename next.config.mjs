@@ -6,6 +6,15 @@ await import("./src/env.mjs");
 
 /** @type {import("next").NextConfig} */
 const config = {
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/homePage',
+        permanent: true,
+      }
+    ]
+  },
   reactStrictMode: true,
   images: {
     domains: ['res.cloudinary.com'],

@@ -11,8 +11,15 @@ export default async function (
         return res.status(401).json({message: 'Invalid token'})
     }
     const path = req.query.path as string
-    
-    await res.revalidate(path)
+    try{
+        await res.revalidate(path)
 
-    return res.json({ revalidated: true  })
-}
+        return res.json({ revalidated: true  })
+    }
+    catch(err){
+        console.log(err)
+        //@ts-ignore
+        return res.status(500).json({error: err.message})
+    }
+
+}   

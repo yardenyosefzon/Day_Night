@@ -27,7 +27,7 @@ export type EventData = {
 
 const CreateEvents: React.FC = () => {
 
-  const {push, reload, query} = useRouter()
+  const {replace, query} = useRouter()
   const eventName = query?.eventName
   const [stage, setStage] = useState(1); 
   const [showErrorPopup, setShowErrorPopup] = useState(false); 
@@ -64,21 +64,21 @@ const CreateEvents: React.FC = () => {
       //@ts-ignore
       schemaTicketCreate({schemaTicketsData: schemaTicketsData, eventId: res.id})
       .then((res) => {
-        fetch(`api/revalidate?path=/`, {
+        fetch(`api/revalidate?path=/homePage`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
         })
-        fetch(`api/revalidate?path=/events/${eventName}`, {
+        fetch(`api/revalidate?path=/events/${encodeURIComponent(eventsData.slug as string)}`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
         })
-        push('/', undefined, {shallow:false})
+        replace('/homePage', undefined, {shallow:false})
         
       })
       .catch((error) => {
@@ -98,21 +98,21 @@ const CreateEvents: React.FC = () => {
       //@ts-ignore
       schemaTicketUpdate({schemaTicketsData: schemaTicketsData, eventName: res.eventName})
       .then((res) => {
-        fetch(`api/revalidate?path=/`, {
+        fetch(`api/revalidate?path=/homePage`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
         })
-        fetch(`api/revalidate?path=/events/${eventName}`, {
+        fetch(`api/revalidate?path=/events/${encodeURIComponent(eventsData.slug as string)}`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
           },
           body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
         })
-        push('/', undefined, {shallow:false})
+        replace('/homePage', undefined, {shallow:false})
       })
       .catch((error) => {
         console.log(error, '///////////////')
