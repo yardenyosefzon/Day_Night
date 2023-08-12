@@ -69,6 +69,7 @@ export const eventsRouter = createTRPCRouter({
         },
         select: {
           eventName:true,
+          slug: true,
           eventCreator: {
             select: {
               hideQrEx: true

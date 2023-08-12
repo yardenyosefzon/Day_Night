@@ -133,7 +133,7 @@ function MyEvents(){
                         </div>
                         <div className={`flex flex-col w-full ${showDrop === index ? '' : "h-0"} items-center text-center overflow-hidden transition-transform gap-1`}>
                         <div className='w-11/12 mt-2 hover:shadow-sm hover:bg-orange-100 sm:w-3/12'>
-                          <Link className='w-full p-1 px-2 rounded' href={`/events/${event.eventName}`}>עבור לדף אירוע</Link> 
+                          <Link className='w-full p-1 px-2 rounded' href={`/events/${event.slug}`}>עבור לדף אירוע</Link> 
                         </div>
                         <div className='w-11/12 hover:shadow-sm hover:bg-orange-100 sm:w-3/12'>
                           <Link className='w-full p-1 px-2 rounded' href={`/myEvents/${event.eventName}/tickets`}>כרטיסים</Link>
