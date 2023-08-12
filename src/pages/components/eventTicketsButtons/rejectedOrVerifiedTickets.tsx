@@ -24,7 +24,7 @@ type RejectedOrVerifiedTicketsProps = {
 function NoSSRRejectedOrVerifiedTickets({ticket, handleButtonClick}: RejectedOrVerifiedTicketsProps) {
   return (
     <>
-        <div className="flex flex-col w-10/12 items-center border-b border-dotted border-black p-4 px-0 bg-white shadow-lg rounded">
+        <div className="flex flex-col items-center border-b border-dotted border-black p-2 sm:flex-row-reverse sm:p-3">
         <div className='flex flex-row-reverse gap-3 w-4/6 text-right'>
                 <div>
                   <FontAwesomeIcon icon={faUser}/>
@@ -49,7 +49,7 @@ function NoSSRRejectedOrVerifiedTickets({ticket, handleButtonClick}: RejectedOrV
                <a href={`https://www.instagram.com/${ticket.instaUserName}`} target="_blank" className='underline'>קישור לאינסטגרם</a>
               </div>
              </div>
-              <div className="flex flex-row-reverse justify-center mt-3 p-2 bg-gradient-to-r from-red-100 to-green-100 rounded">
+              <div className="flex flex-row-reverse justify-center mt-3 p-2 bg-gradient-to-r from-red-100 to-green-100 rounded sm:w-2/5 sm:mt-0">
                 <button onClick={() => handleButtonClick("waiting", ticket.slug, ticket.email, ticket.qrCode)}>
                     בטל סטטוס זה
                 </button>

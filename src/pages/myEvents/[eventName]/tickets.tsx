@@ -78,16 +78,16 @@ function EventTicketsCreatorPage() {
   });
 
   return (
-    <div className="absolute h-screen w-full bg-orange-50">
-      <div className="flex flex-col h-full items-center mt-16 pb-3">
+    <div className="absolute h-screen w-full bg-orange-50 overflow-hidden">
+      <div className="flex flex-col w-full h-full items-center mt-16 pb-3">
         {isLoading && <Spinner />}
         <div className="flex justify-center">
           <p dir="rtl" className="text-2xl mb-4">
              כרטיסים עבור {eventName} 
           </p>
         </div>
-        <div className="flex flex-col h-1/5 w-11/12 bg-white rounded justify-center items-center shadow-xl py-2 sm:flex-col sm:mr-0">
-          <div className={`flex flex-row-reverse h-full justify-between text-md p-1 text-center w-7/12 cursor-pointer sm:text-base sm:text-right`}onClick={() => setCurrentCategory("waiting")}>
+        <div className="flex flex-col h-1/5 w-11/12 bg-white rounded justify-center items-center shadow-xl py-2 sm:flex-col sm:mr-0 sm:w-3/12">
+            <div className={`flex flex-row-reverse justify-between text-md p-1 text-center w-7/12 cursor-pointer sm:text-base sm:text-right sm:w-7/12`}onClick={() => setCurrentCategory("waiting")}>
                 <div className={`${currentCategory === "waiting" ? "text-orange-400" : ""}`}>
                   <FontAwesomeIcon icon={faQuestion}/>
                 </div>
@@ -102,7 +102,7 @@ function EventTicketsCreatorPage() {
                   </p>
               </div>
             </div>
-            <div className={`flex flex-row-reverse justify-between text-md p-1 text-center w-7/12 sm:text-base sm:text-right cursor-pointer`}onClick={() => setCurrentCategory("verified")}>
+            <div className={`flex flex-row-reverse justify-between text-md p-1 text-center w-7/12 sm:text-base sm:text-right cursor-pointer sm:w-7/12`}onClick={() => setCurrentCategory("verified")}>
               <div className={`${currentCategory === "verified" ? "text-orange-400" : ""}`}>
                 <FontAwesomeIcon icon={faThumbsUp}/>
               </div>
@@ -117,7 +117,7 @@ function EventTicketsCreatorPage() {
                 </p>
               </div>
             </div>
-            <div className={`flex flex-row-reverse justify-between text-md p-1 text-center w-7/12 sm:text-base sm:text-right cursor-pointer`}onClick={() => setCurrentCategory("rejected")}>
+            <div className={`flex flex-row-reverse justify-between text-md p-1 text-center w-7/12 sm:text-base sm:text-right cursor-pointer sm:w-7/12`}onClick={() => setCurrentCategory("rejected")}>
               <div className={`${currentCategory === "rejected" ? "text-orange-400" : ""}`}>
                 <FontAwesomeIcon icon={faThumbsDown}/>
               </div>
@@ -134,16 +134,20 @@ function EventTicketsCreatorPage() {
             </div>
           </div>
 
-        <div className="flex flex-col h-3/5 items-center mt-6 w-full overflow-scroll">
-          {filteredTickets?.length === 0 && (
+        <div className="flex flex-col items-center my-3 w-full h-3/5 rounded-lg overflow-y-auto">
+          {filteredTickets?.length === 0 ? (
             <div className="text-xl text-center my-4">אין מה לראות כאן</div>
-          )}
+          )
+          :
+          <div className="flex flex-col bg-white p-2 pb-0 shadow-lg w-3/4 rounded-2xl sm:w-7/12">
           {filteredTickets?.map((ticket, index) => (
             currentCategory === "waiting" ? 
             <WaitingTickets key={index} ticket={ticket} handleButtonClick={handleButtonClick}/> 
             : 
             <RejectedOrVerifiedTickets key={index} ticket={ticket} handleButtonClick={handleButtonClick}/>
           ))}
+          </div>
+          }
         </div>
       </div>
     </div>

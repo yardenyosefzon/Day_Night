@@ -25,8 +25,8 @@ type WaitingTicketsProps = {
 function NoSSRWaitingTickets({ticket, handleButtonClick}: WaitingTicketsProps) {
   return (
     <>
-        <div className="flex flex-col w-10/12 items-center border-b border-dotted border-black p-4 px-0 bg-white shadow-lg rounded">
-             <div className='flex flex-row-reverse gap-3 w-4/6 text-right'>
+        <div className="flex flex-col items-center border-b border-dotted border-black p-2 sm:flex-row-reverse sm:p-3">
+             <div className='flex flex-row-reverse gap-3 w-4/6 text-right sm:w-full'>
                 <div>
                   <FontAwesomeIcon icon={faUser}/>
                 </div>
@@ -34,7 +34,7 @@ function NoSSRWaitingTickets({ticket, handleButtonClick}: WaitingTicketsProps) {
                   <p>{ticket.fullName}</p>
                 </div>
              </div>
-             <div className='flex flex-row-reverse gap-3 w-4/6 text-right'>
+             <div className='flex flex-row-reverse gap-3 w-4/6 text-right sm:w-full'>
                 <div>
                   <FontAwesomeIcon icon={faTicket}/>
                 </div>
@@ -42,7 +42,7 @@ function NoSSRWaitingTickets({ticket, handleButtonClick}: WaitingTicketsProps) {
                   <p>{ticket.ticketKind}</p>
                 </div>
              </div>
-             <div className='flex flex-row-reverse gap-3 w-4/6 text-right'>
+             <div className='flex flex-row-reverse gap-3 w-4/6 text-right sm:w-full'>
               <div>
                 <FontAwesomeIcon icon={faLink}/>
               </div>
@@ -50,12 +50,12 @@ function NoSSRWaitingTickets({ticket, handleButtonClick}: WaitingTicketsProps) {
                <a href={`https://www.instagram.com/${ticket.instaUserName}`} target="_blank" className='underline'>קישור לאינסטגרם</a>
               </div>
              </div>
-              <div className="flex flex-row-reverse gap-6 mt-4">
+              <div className="flex flex-row-reverse gap-6 mt-4 sm:mt-0 sm:mr-2">
                 <div className="flex flex-row-reverse gap-2 bg-gradient-to-l from-white to-green-50 p-1 rounded-md">
                   <div>
                     <FontAwesomeIcon icon={faThumbsUp} className='text-green-400'/>
                   </div>
-                  <div>
+                  <div className='sm:w-20'>
                     <button onClick={() => handleButtonClick("verified", ticket.slug, ticket.email, ticket.qrCode)}>אשר כרטיס</button>
                   </div>
                 </div>
@@ -63,7 +63,7 @@ function NoSSRWaitingTickets({ticket, handleButtonClick}: WaitingTicketsProps) {
                 <div>
                     <FontAwesomeIcon icon={faThumbsDown} className='text-red-400'/>
                   </div>
-                  <div>
+                  <div className='sm:w-20'>
                     <button onClick={() => handleButtonClick("rejected", ticket.slug, ticket.email, ticket.qrCode)}>דחה כרטיס</button>
                   </div>
                 </div>
