@@ -27,7 +27,7 @@ export type EventData = {
 
 const CreateEvents: React.FC = () => {
 
-  const {replace, query} = useRouter()
+  const {push, reload, query} = useRouter()
   const eventName = query?.eventName
   const [stage, setStage] = useState(1); 
   const [showErrorPopup, setShowErrorPopup] = useState(false); 
@@ -78,7 +78,7 @@ const CreateEvents: React.FC = () => {
           },
           body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
         })
-        replace('/myEvents')
+        push('/', undefined, {shallow:false})
         
       })
       .catch((error) => {
@@ -112,7 +112,7 @@ const CreateEvents: React.FC = () => {
           },
           body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
         })
-        replace('/myEvents')
+        push('/', undefined, {shallow:false})
       })
       .catch((error) => {
         console.log(error, '///////////////')
