@@ -19,7 +19,7 @@ const ibm = IBM_Plex_Sans_Hebrew({subsets: ['hebrew'], weight: '600'})
 export default function EventPage( props: InferGetStaticPropsType<typeof getStaticProps>){
   const { slug } = props;
   const {data: eventsData, isLoading} = api.events.getOneBySlug.useQuery({ slug: slug }, {refetchOnMount: false, refetchOnWindowFocus: false}); 
-  const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyByEventName.useQuery({eventName: eventsData?.eventName as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
+  const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyBySlug.useQuery({slug: slug as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
   if(isLoading) return <div>Loading...</div>
     return (
       <>

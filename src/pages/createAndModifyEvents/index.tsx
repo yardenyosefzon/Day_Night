@@ -71,13 +71,6 @@ const CreateEvents: React.FC = () => {
           },
           body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
         })
-        fetch(`api/revalidate?path=/events/${encodeURIComponent(eventsData.slug as string)}`, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
-        })
         replace('/myEvents', undefined, {shallow:false})
         
       })
