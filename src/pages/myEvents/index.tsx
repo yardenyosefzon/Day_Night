@@ -10,7 +10,9 @@ import { createInnerTRPCContext } from '~/server/api/trpc';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useRouter } from 'next/router';
+import { Noto_Sans_Hebrew } from 'next/font/google';
 
+const noto = Noto_Sans_Hebrew({subsets:["hebrew"],weight:"300"})
 
 function MyEvents(){
     const {replace} = useRouter()
@@ -58,8 +60,17 @@ function MyEvents(){
     
   if(isLoading) return <h1>Loading...</h1>
 
+  else if(eventsData?.length === 0)
+  return(
+  <div className={`absolute w-full min-h-screen h-screen bg-gradient-to-b from-orange-50 to-orange-100 ${noto.className}`}>
+    <div className='flex justify-center items-center h-full w-full '>
+      <p className='text-4xl font-bold'>אין כאן אירועים</p>
+    </div>
+  </div>
+  )
+
   return (
-    <div className='absolute w-full min-h-screen h-fit bg-gradient-to-b from-orange-50 to-orange-100'>
+    <div className={`absolute w-full min-h-screen h-fit bg-gradient-to-b from-orange-50 to-orange-100 ${noto.className}`}>
        {/* Pop-up */}
        {showPopup && (
                       <div className='absolute w-full h-screen flex bg-gray-400 items-center justify-center bg-opacity-70 z-40'>

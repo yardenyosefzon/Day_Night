@@ -23,7 +23,7 @@ function QrCode() {
     else
     console.log(nationalId, data?.event.eventName)
     return (
-      <div className='absolute min-h-screen bg-orange-100'>
+      <div className='absolute w-full min-h-screen bg-orange-100'>
         <div className='mt-24'>
           <div>{nationalId}</div>
           <div>{data?.event.eventName}</div>
