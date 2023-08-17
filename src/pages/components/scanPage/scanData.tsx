@@ -20,13 +20,13 @@ function ScanData({scannedTicketsNumber} : {scannedTicketsNumber: number}) {
   const {data: verifiedTicketsData} = api.boughtTickets.getManyVerifiedByEvent.useQuery({eventName: eventName as string})
   const {data: verifiedAndScannedTicketsData} = api.boughtTickets.getManyVerifiedAndScannedByEvent.useQuery({eventName: eventName as string})
   const [lastScanned, setLastScanned] = useState("")
-
+  const [showInfo, setShowInfo] = useState(true)
   useEffect(() => {
     
   }, [])
   
   return (
-    <div className={`absolute w-full h-28 bottom-0 ${noto.className} bg-orange-100`}>
+    <div className={`absolute w-full h-fit bottom-0 ${noto.className} bg-orange-100`}>
          <div className='flex flex-col items-center'>
             <div className='flex flex-row-reverse justify-between w-full p-2 border-b border-black'>
                 <div className='flex flex-col items-center w-1/3'>
@@ -45,6 +45,12 @@ function ScanData({scannedTicketsNumber} : {scannedTicketsNumber: number}) {
               <FontAwesomeIcon icon={faChevronUp} className='text-xs'/>
               <p>פרטים נוספים</p>
             </div>
+            {
+              showInfo &&
+              <div className='h-64'>
+
+              </div>
+            }
          </div>
     </div>
   )

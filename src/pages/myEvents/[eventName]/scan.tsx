@@ -37,7 +37,7 @@ function Scan() {
   
   else
   return (
-  <div className=' relative h-screen'>
+  <div className='absolute h-screen z-50'>
     <QRScanner/>
     <ScanData scannedTicketsNumber = {event?.scannedTicketsNumber as number}/>
   </div>
