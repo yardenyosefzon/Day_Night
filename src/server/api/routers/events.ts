@@ -68,7 +68,8 @@ export const eventsRouter = createTRPCRouter({
           }
         },
         select: {
-          eventName:true,
+          scannedTicketsNumber: true,
+          eventName: true,
           slug: true,
           eventCreator: {
             select: {

@@ -164,6 +164,65 @@ export const boughtTicketsRouter = createTRPCRouter({
             }
         })
     }),
+    getManyVerifiedByEvent: publicProcedure
+    .input(
+        z.object({
+            eventName: z.string()
+        })
+    )
+    .query(({ctx, input}) => {
+        return ctx.prisma.boughtTicket.findMany({
+            where: {
+                event: {
+                    eventName: input.eventName
+                },
+                verified: true
+            },
+            select: {
+                email: true,
+                gender: true,
+                birthDay: true,
+                verified: true,
+                instaUserName: true,
+                phoneNumber: true,
+                rejected: true,
+                slug: true,
+                ticketKind: true,
+                qrCode: true,
+                fullName: true
+            }
+        })
+    }),
+    getManyVerifiedAndScannedByEvent: publicProcedure
+    .input(
+        z.object({
+            eventName: z.string()
+        })
+    )
+    .query(({ctx, input}) => {
+        return ctx.prisma.boughtTicket.findMany({
+            where: {
+                event: {
+                    eventName: input.eventName
+                },
+                verified: true,
+                scanned: true
+            },
+            select: {
+                email: true,
+                gender: true,
+                birthDay: true,
+                verified: true,
+                instaUserName: true,
+                phoneNumber: true,
+                rejected: true,
+                slug: true,
+                ticketKind: true,
+                qrCode: true,
+                fullName: true
+            }
+        })
+    }),
     updateAprovelOfOneBySlug: publicProcedure
     .input(
         z.object({

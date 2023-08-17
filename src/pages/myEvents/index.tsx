@@ -153,6 +153,9 @@ function MyEvents(){
                           <button className='w-full p-1 px-2 rounded' onClick={() => openPopup(event.eventName)}>סרוק ברקודים</button>
                         </div>
                         <div className='w-11/12 hover:shadow-sm hover:bg-orange-100 sm:w-3/12'>
+                          <Link className='w-full p-1 px-2 rounded' href={`/myEvents/${event.eventName}/addPermited`}>מורשים לסריקה</Link>
+                        </div>
+                        <div className='w-11/12 hover:shadow-sm hover:bg-orange-100 sm:w-3/12'>
                           <Link className='w-full p-1 px-2 rounded' key={event.eventName} href={`/createAndModifyEvents?eventName=${event.eventName}`}>ערוך אירוע</Link>
                         </div>
                         </div>    

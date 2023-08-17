@@ -3,7 +3,6 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
@@ -13,22 +12,34 @@ datasource db {
 }
 
 model Event {
-  id                   String         @id @default(cuid())
-  eventName            String         @unique
-  slug                 String         @unique @default(uuid())
+  id                   String          @id @default(cuid())
+  eventName            String          @unique
+  slug                 String          @unique @default(uuid())
   date                 String
   artist               String
   image                String?
-  address              String         
-  description          String         @db.LongText
+  address              String
+  description          String          @db.LongText
   minAge               Int
-  scannedTicketsNumber Int            @default(0)
-  eventCreator         User           @relation(fields: [eventCreatorId], references: [id])
+  scannedTicketsNumber Int             @default(0)
+  eventCreator         User            @relation(fields: [eventCreatorId], references: [id])
   eventCreatorId       String
   boughtTicket         BoughtTicket[]
   schemaTicket         SchemaTicket[]
+  eventScanner         Event_Scanner[]
 
   @@index([eventCreatorId])
+}
+
+model Event_Scanner {
+  id      String @id @default(cuid())
+  event   Event  @relation(fields: [eventName], references: [eventName])
+  eventName String
+  user    User   @relation(fields: [userEmail], references: [email])
+  userEmail  String
+
+  @@index([eventName])
+  @@index([userEmail])
 }
 
 model BoughtTicket {
@@ -65,6 +76,8 @@ model SchemaTicket {
   notes           String?
   event           Event   @relation(fields: [eventId], references: [id])
   eventId         String
+
+  @@index([eventId])
 }
 
 // Necessary for Next auth
@@ -98,17 +111,18 @@ model Session {
 }
 
 model User {
-  id            String         @id @default(cuid())
+  id            String          @id @default(cuid())
   name          String?
-  email         String?        @unique
+  email         String?         @unique
   image         String?
   emailVerified DateTime?
-  rememberMe    Boolean        @default(false)
-  hideQrEx      Boolean        @default(false)
+  rememberMe    Boolean         @default(false)
+  hideQrEx      Boolean         @default(false)
   accounts      Account[]
   sessions      Session[]
   tickets       BoughtTicket[]
   events        Event[]
+  eventScanner  Event_Scanner[]
 
   @@map("user")
 }
