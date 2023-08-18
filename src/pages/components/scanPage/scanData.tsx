@@ -66,7 +66,9 @@ function ScanData({scannedTicketsNumber} : {scannedTicketsNumber: number}) {
               <div className={`flex flex-col ${showInfo ? 'h-10' : 'h-64'} p-3 transition-all`}>
               {
                 !showInfo ?
-                  ticketKind === 'verfiedTickets' ?
+                  <div>
+                    <div></div>
+                  {ticketKind === 'verfiedTickets' ?
                   verfiedTickets?.length === 0 ?
                     <p>אין כאן כרטיסים</p>
                   :
@@ -79,7 +81,8 @@ function ScanData({scannedTicketsNumber} : {scannedTicketsNumber: number}) {
                   :
                   scannedVerfiedTickets?.map(ticket => 
                     <div>{ticket.fullName}</div>
-                  )
+                  )}
+                  </div>
                   :
                 <p>פרטים נוספים</p>
               }
