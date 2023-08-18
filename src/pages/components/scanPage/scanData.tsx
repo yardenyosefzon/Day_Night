@@ -46,7 +46,7 @@ function ScanData({scannedTicketsNumber} : {scannedTicketsNumber: number}) {
   }, [])
   
   return (
-    <div className={`absolute flex flex-col items-center w-screen h-fit bottom-0 ${noto.className} bg-orange-100`}>
+    <div className={`sticky flex flex-col items-center w-screen h-fit bottom-0 ${noto.className} bg-orange-100`}>
             <div className='flex flex-row-reverse justify-between w-full p-2 border-b border-black'>
                 <div className='flex flex-col items-center w-1/3'>
                   <p>{scannedTicketsNumber}</p>
