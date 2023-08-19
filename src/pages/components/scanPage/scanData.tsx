@@ -55,10 +55,10 @@ function ScanData({scannedTicketsNumber, verifiedTicketsData} : {scannedTicketsN
                   {scannedVerifiedTickets && lastScanned === "" ? scannedVerifiedTickets[scannedVerifiedTickets.length - 1]?.fullName : lastScanned}
                 </div>
             </div>
-            <div className='flex w-full justify-center p-1 bg-gradient-to-b from-orange-50 via-yellow-50 to-orange-50 rounded-t-3xl'>
+            <div className={`flex w-full justify-center p-1 bg-gradient-to-b from-orange-50 via-yellow-50 to-orange-50 ${!showInfo && 'rounded-t-3xl'}`}>
               <FontAwesomeIcon icon={showInfo ? faChevronDown : faChevronUp} onClick={() => setShowInfo(bool => !bool)} className='text-xs p-7 -m-7'/>
             </div>
-              <div className={`flex flex-col ${!showInfo ? 'h-0' : 'h-80'} transition-all`}>
+              <div className={`flex flex-col ${!showInfo ? 'h-0' : 'h-60'} transition-all`}>
               {
                 showInfo &&
                   <div className='flex flex-col items-center w-screen h-full bg-gradient-to-b from-orange-100 to-orange-50 rounded-t-3xl p-2'>
