@@ -190,7 +190,8 @@ export const boughtTicketsRouter = createTRPCRouter({
                 ticketKind: true,
                 qrCode: true,
                 fullName: true,
-                scanned: true
+                scanned: true,
+                nationalId: true
             }
         })
     }),
