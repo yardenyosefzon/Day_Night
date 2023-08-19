@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import RememberMePopUp from "../components/rememberMePopUp";
 import BuyTicketsDetailsForm from "../components/forms/buy ticket form/detailsForm";
 import { Noto_Sans_Hebrew } from 'next/font/google';
+import AgeErrorPopup from "../components/ageErrorPopUp";
 
 const noto = Noto_Sans_Hebrew({subsets: ["hebrew"], weight:"400"})
 
@@ -18,6 +19,7 @@ function BuyTicketPage() {
   const event = eventsData?.find((event) => event.eventName === eventName);
  
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
+  const [showAgeErrorPopUp, setShowAgeErrorPopUp] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
   const [formState, setFormState] = useState({
@@ -384,9 +386,17 @@ function BuyTicketPage() {
       emailArray = formState.tickets.map((ticket) => (
          ticket.email
     ))
-      createBoughtTickets({ userId: sessionData? sessionData?.user.id as string : '' , eventName: event?.eventName as string, usersTicket: rememberMe, ticketsArray: formState.tickets, ticketKind: ticketKind as string})
+      createBoughtTickets({ userId: sessionData? sessionData?.user.id as string : '' , eventName: event?.eventName as string, eventMinAge: event?.minAge as number, usersTicket: rememberMe, ticketsArray: formState.tickets, ticketKind: ticketKind as string})
       .then(() => {
         changeNumberOfBoughtTickets({ticketName: ticketKind as string, eventName: event?.eventName as string})
+        if(rememberMe)
+        userRememberMeUpdate({rememberMe: rememberMe})
+        .then(()=>{
+          update()})
+        .catch((error)=>{
+          return error
+        });
+        replace('/')
         fetch('api/email/bought', {
           method: 'POST',
           headers: {
@@ -398,24 +408,12 @@ function BuyTicketPage() {
             if (!response.ok) {
               throw new Error('Network response was not ok');
             }
-            console.log(response) // Parse the JSON data returned by the server
           })
-          .catch(error => {
-            console.error('Error:', error);
-          });
       })
       .catch((error)=>{
-        return error
+        if(error.message.includes('Error: You are too young'))
+        setShowAgeErrorPopUp(() => true)
       });
-      if(rememberMe)
-      userRememberMeUpdate({rememberMe: rememberMe})
-      .then(()=>{
-        update()})
-      .catch((error)=>{
-        return error
-      });
-      replace('/')
-      
     }
   }
 
@@ -505,15 +503,16 @@ function BuyTicketPage() {
         </form>
       </div> 
         
-        {showRememberMePopup ? (
+        {showRememberMePopup && (
           <RememberMePopUp
             onSubmit={handleRememberMeSubmit}
             rememberMe={rememberMe}
             setRememberMe={setRememberMe}
           />
-        ) : (
-          <></>
         )}
+        {showAgeErrorPopUp && 
+        <AgeErrorPopup setShowAgeErrorPopUp= {setShowAgeErrorPopUp}/>
+        }
     </div>
   );
 }

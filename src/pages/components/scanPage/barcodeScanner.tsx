@@ -2,31 +2,50 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { useRouter } from 'next/router';
 import { api } from '~/utils/api';
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query';
 
-function MyQRScannerComponent() {
+type verifiedTicketsData = {
+  slug: string;
+  email: string;
+  ticketKind: string;
+  birthDay: String;
+  gender: string;
+  phoneNumber: string;
+  instaUserName: string;
+  fullName: string;
+  verified: boolean;
+  rejected: boolean;
+  qrCode: string;
+  nationalId: string;
+  scanned: boolean;
+}[] | undefined
+
+function MyQRScannerComponent({refetch} : {refetch: <TPageData>(
+  options?: RefetchOptions & RefetchQueryFilters<TPageData>,
+) => Promise<QueryObserverResult<verifiedTicketsData, unknown>>}) {
 
   const [slug, setSlug] = useState("")
-  const { replace } = useRouter()
   const qrReaderRef = useRef<HTMLDivElement | null>(null);
   let qrCodeScanner: Html5Qrcode | null = null;
   const {mutateAsync: boughtTicketsMutate} = api.boughtTickets.updateScannedOfOneBySlug.useMutation()
   const {mutateAsync: eventsMutate} = api.events.updateNumberOfScannedTicketsOfOneByName.useMutation()
   const {refetch: boughtTicketRefetch} = api.boughtTickets.getOneBySlug.useQuery({slug: slug}, {refetchOnMount: false, refetchOnWindowFocus: false})
 
-  const onScanSuccess = (decodedText: string, decodedResult: unknown) => {
+  const onScanSuccess = (decodedText: string) => {
 
     qrCodeScanner?.pause()
     const slugIndex = decodedText.indexOf("_");
     setSlug(decodedText.substr(slugIndex as number + 1))
     if(slug !== ""){
     boughtTicketRefetch()
-    .then((res) => {
-      console.log(res)
-      if(!res.data?.scanned){
-        boughtTicketsMutate({slug: slug})
-          .then((res) => {
-            eventsMutate({eventName: res?.event.eventName, scannedTicketsNumber: res?.event.scannedTicketsNumber})
-            replace(`${decodedText}+_+true`)
+      .then((res) => {
+        if(!res.data?.scanned){
+          boughtTicketsMutate({slug: slug})
+            .then((res) => {
+              eventsMutate({eventName: res?.event.eventName, scannedTicketsNumber: res?.event.scannedTicketsNumber})
+                .then((res) => {
+                  refetch()
+                })
           })
           .catch(err => {
             throw new Error(`Message: ${err.message}`)

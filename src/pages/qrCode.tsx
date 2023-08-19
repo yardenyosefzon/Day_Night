@@ -53,12 +53,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ctx: createInnerTRPCContext({session: await getServerAuthSession({req: context.req ,res: context.res}) }), 
       transformer: superjson
     });
-    console.log(typeof(slug) === 'string')
+
     if(typeof(slug) === 'string'){
         slug = slug.trimStart()
         await helpers.boughtTickets.getOneBySlug.prefetch({slug})
-
     }
+    
     return {
       props: {
         trpcState: helpers.dehydrate(),

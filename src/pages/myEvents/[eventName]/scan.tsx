@@ -24,22 +24,22 @@ function Scan() {
   const {data} = useSession()
   const { query: {eventName} } = useRouter()
   const [event, setEvent] = useState<Event>()
+  const {data: verifiedTicketsData, refetch} = api.boughtTickets.getManyVerifiedByEvent.useQuery({eventName: eventName as string})
   const {data: eventsData} = api.events.getManyByUserId.useQuery( undefined, { refetchOnMount: false, refetchOnWindowFocus: false })
   const {data: eventScannersData} = api.eventScanner.getOneByEventNameAndEmail.useQuery( {eventName: eventName as string, userEmail: data?.user.email as string}, { refetchOnMount: false, refetchOnWindowFocus: false })
 
   useEffect(() => {
     setEvent(eventsData?.find(event => event.eventName === eventName))
   }, [])
-  console.log(event, eventScannersData)
-
+console.log(verifiedTicketsData)
   if(!event && !eventScannersData)
    return<div className='absolute mt-24'>Go Away</div>
   
   else
   return (
   <div className='absolute z-50'>
-    <QRScanner/>
-    <ScanData scannedTicketsNumber = {event?.scannedTicketsNumber as number}/>
+    <QRScanner refetch = {refetch}/>
+    <ScanData scannedTicketsNumber = {event?.scannedTicketsNumber as number} verifiedTicketsData = {verifiedTicketsData}/>
   </div>
   )
 }
@@ -57,6 +57,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     transformer: superjson
   });
   
+  await helpers.boughtTickets.getManyVerifiedByEvent.prefetch({eventName: params?.eventName as string})
   await helpers.eventScanner.getOneByEventNameAndEmail.prefetch({eventName: params?.eventName as string, userEmail: session?.user.email as string})
   await helpers.events.getManyByUserId.prefetch()
 
