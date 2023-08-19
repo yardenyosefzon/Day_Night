@@ -281,8 +281,8 @@ export const boughtTicketsRouter = createTRPCRouter({
             slug: z.string()
         })
     )
-    .query(async({ctx, input}) => {
-        return await ctx.prisma.boughtTicket.findFirst({
+    .query(({ctx, input}) => {
+        return ctx.prisma.boughtTicket.findFirst({
             where: {
                 slug: input.slug
             },
