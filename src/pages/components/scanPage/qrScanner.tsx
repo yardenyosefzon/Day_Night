@@ -128,7 +128,7 @@ function QRScanner({event, isLoading, manyBoughtTicketsRefetch, eventsRefetch} :
   return (
     <div>
       {/* Element where the camera feed will be rendered */}
-      <div className='z-0' ref={qrReaderRef} id="qr-reader" style={{ width: '100%'}}></div>
+      <div className='z-0 bg-slate-800' ref={qrReaderRef} id="qr-reader" style={{ width: '100%'}}></div>
     </div>
   );
 }

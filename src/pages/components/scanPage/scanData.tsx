@@ -46,7 +46,7 @@ function ScanData({scannedTicketsNumber, verifiedTicketsData, showInfo, setShowI
   }, [])
   
   return (
-    <div className={`sticky flex flex-col-reverse items-center w-screen h-fit bottom-0 ${noto.className}`}>
+    <div className={`sticky flex flex-col-reverse items-center w-screen h-fit bottom-0 z-50 ${noto.className}`}>
             <div className='flex flex-row-reverse justify-between w-full p-2 bg-gradient-to-t from-orange-100 to-orange-50'>
                 <div className='flex flex-col items-center w-1/3'>
                   <p>{scannedTicketsNumber}</p>

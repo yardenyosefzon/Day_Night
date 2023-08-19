@@ -14,7 +14,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 
-
 export type Event = {
   scannedTicketsNumber: number,
   eventName: string;
@@ -36,7 +35,7 @@ function Scan() {
   useEffect(() => {
     setEvent(eventsData?.find(event => event.eventName === eventName))
     if (typeof document !== 'undefined') {
-      let scanPage = document.getElementsByClassName('z-50')
+      let scanPage = document.getElementsByClassName('bg-slate-800')
       scanPage.item(0)?.addEventListener('click', () => setShowInfo(false))
   }
   }, [event])
@@ -46,7 +45,7 @@ function Scan() {
   
   else
   return (
-  <div id={'scanpage'} className='absolute z-50'>
+  <div id={'scanpage'} className='absolute z-40'>
     <Link href={'/myEvents'} className='absolute top-0 right-0 z-50 rounded-full bg-white bg-opacity-90 py-1 px-3 m-2'>
       <FontAwesomeIcon icon={faChevronRight} className='text-2xl text-orange-300'/>
     </Link>
