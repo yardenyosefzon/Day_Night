@@ -4,7 +4,6 @@ import { Noto_Sans_Hebrew } from 'next/font/google'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import Link from 'next/link'
 
 const noto = Noto_Sans_Hebrew({subsets: ['hebrew'], weight:'400'})
 
@@ -25,11 +24,17 @@ type verifiedTicketsData = {
   age: number;
 }[] | undefined
 
-function ScanData({scannedTicketsNumber, verifiedTicketsData} : {scannedTicketsNumber: number, verifiedTicketsData: verifiedTicketsData}) {
+type ScanDatatProps = {
+  scannedTicketsNumber: number;
+  verifiedTicketsData: verifiedTicketsData
+  showInfo: boolean;
+  setShowInfo: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+function ScanData({scannedTicketsNumber, verifiedTicketsData, showInfo, setShowInfo} : ScanDatatProps) {
 
   const {query: {eventName}} = useRouter()
   const [lastScanned, setLastScanned] = useState("")
-  const [showInfo, setShowInfo] = useState(false)
   const [ticketKind, setTicketKind] = useState('scannedVerifiedTickets')
   const [verfiedTickets, setVerfiedTickets] = useState<verifiedTicketsData>()
   const [scannedVerifiedTickets, setScannedVerfiedTickets] = useState<verifiedTicketsData>()
@@ -52,7 +57,8 @@ function ScanData({scannedTicketsNumber, verifiedTicketsData} : {scannedTicketsN
                   <p className='font-semibold'>סה"כ</p>
                 </div>
                 <div className='flex flex-col items-center w-1/3'>
-                  {scannedVerifiedTickets && lastScanned === "" ? scannedVerifiedTickets[scannedVerifiedTickets.length - 1]?.fullName : lastScanned}
+                  <p>{scannedVerifiedTickets && lastScanned === "" ? scannedVerifiedTickets[scannedVerifiedTickets.length - 1]?.fullName : lastScanned}</p>
+                  <p className='font-semibold'>אחרון</p>
                 </div>
             </div>
             <div className={`flex w-full justify-center p-1 bg-gradient-to-b from-orange-50 via-yellow-50 to-orange-50 ${!showInfo && 'rounded-t-3xl'}`}>

@@ -38,7 +38,6 @@ type QRScannerComponentProps = {
           hideQrEx: boolean;
       };
   }[] | undefined, unknown>>
-
 }
 
 function QRScanner({event, isLoading, manyBoughtTicketsRefetch, eventsRefetch} : QRScannerComponentProps) {
