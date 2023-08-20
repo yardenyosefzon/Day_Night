@@ -36,6 +36,9 @@ export const env = createEnv({
    */
   client: {
   NEXT_PUBLIC_MY_SECRET_TOKEN: z.string(),
+  NEXT_PUBLIC_PAYPLUS_KEY: z.string(),
+  NEXT_PUBLIC_PAYPLUS_SECRET: z.string(),
+  NEXT_PUBLIC_PAYPLUS_UID: z.string()
   },
 
   /**
@@ -54,6 +57,9 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    NEXT_PUBLIC_PAYPLUS_KEY: process.env.NEXT_PUBLIC_PAYPLUS_KEY,
+    NEXT_PUBLIC_PAYPLUS_SECRET: process.env.NEXT_PUBLIC_PAYPLUS_SECRET,
+    NEXT_PUBLIC_PAYPLUS_UID: process.env.NEXT_PUBLIC_PAYPLUS_UID
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
