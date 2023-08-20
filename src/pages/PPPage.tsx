@@ -32,7 +32,7 @@ function PPPage() {
         const axios = require('axios');
 
 const headers = {
-  'Authorization': `Bearer ${process.env.NEXT_PUBLIC_PAYPLUS_KEY}`,
+  'Authorization': {"api_key":process.env.NEXT_PUBLIC_PAYPLUS_KEY,"secret_key":process.env.NEXT_PUBLIC_PAYPLUS_SECRET},
   'Origin': 'https://day-night-eight.vercel.app',
   'Content-Type': 'application/json'
 };
