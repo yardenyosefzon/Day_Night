@@ -43,7 +43,7 @@ function ScanData({scannedTicketsNumber, verifiedTicketsData, showInfo, setShowI
     const scannedVerifiedTickets = verifiedTicketsData?.filter( ticket => ticket.scanned === true)
     setVerfiedTickets(() => verifiedTickets)
     setScannedVerfiedTickets(() => scannedVerifiedTickets)
-  }, [])
+  }, [scannedTicketsNumber])
   
   return (
     <div className={`sticky flex flex-col-reverse items-center w-screen h-fit bottom-0 z-50 ${noto.className}`}>
@@ -85,7 +85,7 @@ function ScanData({scannedTicketsNumber, verifiedTicketsData, showInfo, setShowI
                       </div>
                       {
                       verfiedTickets?.map(ticket => 
-                        <div className='flex flex-row-reverse w-full text-center border-y-2 border-white py-2'>
+                        <div key={ticket.slug} className='flex flex-row-reverse w-full text-center border-y-2 border-white py-2'>
                           <div className='flex justify-center items-center w-1/3'>
                             <p>
                               {ticket.fullName}

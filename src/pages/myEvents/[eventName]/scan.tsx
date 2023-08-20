@@ -38,7 +38,7 @@ function Scan() {
       let scanPage = document.getElementsByClassName('bg-slate-800')
       scanPage.item(0)?.addEventListener('click', () => setShowInfo(false))
   }
-  }, [event])
+  }, [verifiedTicketsData])  
 
   if(!event && !eventScannersData)
    return<div className='absolute mt-24'>Go Away</div>
@@ -49,7 +49,7 @@ function Scan() {
     <Link href={'/myEvents'} className='absolute top-0 right-0 z-50 rounded-full bg-white bg-opacity-90 py-1 px-3 m-2'>
       <FontAwesomeIcon icon={faChevronRight} className='text-2xl text-orange-300'/>
     </Link>
-    <QRScanner event= {event as Event} isLoading= {isLoading} manyBoughtTicketsRefetch = {manyBoughtTicketsRefetch} eventsRefetch={eventsRefetch}/>
+    <QRScanner event= {event as Event} manyBoughtTicketsRefetch = {manyBoughtTicketsRefetch} eventsRefetch={eventsRefetch}/>
     <ScanData scannedTicketsNumber = {event?.scannedTicketsNumber as number} verifiedTicketsData = {verifiedTicketsData} showInfo= {showInfo} setShowInfo= {setShowInfo}/>
   </div>
   )

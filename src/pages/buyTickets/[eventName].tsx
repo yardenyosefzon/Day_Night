@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
-import RememberMePopUp from "../components/rememberMePopUp";
+import RememberMePopUp from "../components/popUps/rememberMePopUp";
 import BuyTicketsDetailsForm from "../components/forms/buy ticket form/detailsForm";
 import { Noto_Sans_Hebrew } from 'next/font/google';
-import AgeErrorPopup from "../components/ageErrorPopUp";
+import AgeErrorPopup from "../components/popUps/ageErrorPopUp";
 
 const noto = Noto_Sans_Hebrew({subsets: ["hebrew"], weight:"400"})
 

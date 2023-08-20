@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { useRouter } from 'next/router';
 import { api } from '~/utils/api';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query';
 import type { Event } from '~/pages/myEvents/[eventName]/scan';
-import Spinner from '../spinner';
+import TicketNotBelongPopUp from '../popUps/ticketNotBelongPopUp';
 
 type verifiedTicketsData = {
   slug: string;
@@ -24,7 +23,6 @@ type verifiedTicketsData = {
 
 type QRScannerComponentProps = {
   event: Event
-  isLoading: boolean;
   manyBoughtTicketsRefetch: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>,
     ) => Promise<QueryObserverResult<verifiedTicketsData, unknown>>
@@ -40,9 +38,10 @@ type QRScannerComponentProps = {
   }[] | undefined, unknown>>
 }
 
-function QRScanner({event, isLoading, manyBoughtTicketsRefetch, eventsRefetch} : QRScannerComponentProps) {
+function QRScanner({event, manyBoughtTicketsRefetch, eventsRefetch} : QRScannerComponentProps) {
 
   const [slug, setSlug] = useState("")
+  const [showNotBelongPopUp, setShowNotBelongPopUp] = useState(false)
   const qrReaderRef = useRef<HTMLDivElement | null>(null);
   let qrCodeScanner: Html5Qrcode | null = null;
   const {mutateAsync: boughtTicketsMutate, isLoading: boughtTicketMutateLoading} = api.boughtTickets.updateScannedOfOneBySlug.useMutation()
@@ -90,20 +89,23 @@ function QRScanner({event, isLoading, manyBoughtTicketsRefetch, eventsRefetch} :
       boughtTicketRefetch()
       .then((res) => {
         console.log(res)
-        if(!res.data?.scanned){
+        if(!res.data?.scanned && res.data?.event.eventName === event.eventName){
+            setShowNotBelongPopUp(() => false)
             boughtTicketsMutate({slug: slug})
+            .then((res) => {
+              manyBoughtTicketsRefetch().then((res)=> console.log(res))
+            })
             eventsMutate({eventName: event?.eventName, scannedTicketsNumber: event?.scannedTicketsNumber})
             .then((res) => { 
-              manyBoughtTicketsRefetch()
               eventsRefetch()
-              console.log(qrCodeScanner)
           })
             .catch(err => {
-              throw new Error(`Message: ${err.message}`)
+              console.log(err)
             }) 
         }
         else 
-        console.log(qrCodeScanner)
+        if(res.data?.event.eventName !== event.eventName)
+          setShowNotBelongPopUp(true)
       })
     }
     
@@ -128,6 +130,10 @@ function QRScanner({event, isLoading, manyBoughtTicketsRefetch, eventsRefetch} :
   return (
     <div>
       {/* Element where the camera feed will be rendered */}
+      {
+      showNotBelongPopUp &&
+      <TicketNotBelongPopUp/>
+      }
       <div className='z-0 bg-slate-800' ref={qrReaderRef} id="qr-reader" style={{ width: '100%'}}></div>
     </div>
   );
