@@ -7,7 +7,8 @@ import RejectedOrVerifiedTickets from "~/pages/components/eventTicketsButtons/re
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp } from "@fortawesome/free-regular-svg-icons";
 import { faThumbsDown } from "@fortawesome/free-regular-svg-icons";
-import { faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight, faQuestion } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 function EventTicketsCreatorPage() {
   const { query: { eventName } } = useRouter();
@@ -79,6 +80,11 @@ function EventTicketsCreatorPage() {
 
   return (
     <div className="absolute h-screen w-full bg-orange-50 overflow-hidden">
+      <div className="absolute right-0 top-0 mt-10 p-4 sm:p-14 sm:px-20">
+        <Link href={'/myEvents'}>
+          <FontAwesomeIcon icon={faChevronRight} className="text-xl sm:text-2xl"/>
+        </Link>
+      </div>
       <div className="flex flex-col w-full h-full items-center mt-16 pb-3">
         {isLoading && <Spinner />}
         <div className="flex justify-center">
