@@ -32,13 +32,12 @@ function PPPage() {
         const axios = require('axios');
 
 const headers = {
-  'Authorization': {"api_key":process.env.NEXT_PUBLIC_PAYPLUS_KEY,"secret_key":process.env.NEXT_PUBLIC_PAYPLUS_SECRET},
-  'Origin': 'https://day-night-eight.vercel.app',
-  'Content-Type': 'application/json'
+  'authorization': {"api_key":process.env.NEXT_PUBLIC_PAYPLUS_KEY,"secret_key":process.env.NEXT_PUBLIC_PAYPLUS_SECRET},
+  'content-type': 'application/json'
 };
 
 const data = {
-  "payment_page_uid": process.env.NEXT_PUBLIC_PAYPLUS_UID,
+  "payment-page-uid": process.env.NEXT_PUBLIC_PAYPLUS_UID,
   "expiry_datetime": "30",
   "more_info": "test1554423",
   "customer": {
