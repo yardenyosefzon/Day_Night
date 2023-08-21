@@ -6,13 +6,13 @@ export default async function (
 )
 {
     const headers = {
-        'Authorization': '{"api_key":"9816e5fb-6284-4086-a051-5e54bac6976f","secret_key":"2791156f-5a9d-4567-905c-f246e5127720"}',
+        'Authorization': '{"api_key":"9816e5fb-6284-4086-a051-5e54bac6976f","secret_key":"b81e7514-b646-45f7-a731-f16da7eeb0f5"}',
         'Content-Type': 'application/json'
       };
       console.log(headers)
     //   request.setRequestHeader('Authorization', '{"api_key":"a5f514de-c8c8-262a-ac31-31d609f3550a","secret_key":"404b1fd6-9fc5-1533-a121-126fa6cc0c8f"}');
       const data = {
-        "payment-page-uid": `"${process.env.NEXT_PUBLIC_PAYPLUS_UID}"`,
+        "payment-page-uid": "9816e5fb-6284-4086-a051-5e54bac6976f",
         "expiry_datetime": "30",
         "more_info": "test1554423",
         "customer": {
