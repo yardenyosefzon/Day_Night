@@ -7,6 +7,9 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
+    NEXT_PUBLIC_PAYPLUS_KEY: z.string(),
+    NEXT_PUBLIC_PAYPLUS_SECRET: z.string(),
+    NEXT_PUBLIC_PAYPLUS_UID: z.string(),
     RESEND_API_KEY: z.string(), 
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string(),
     NEXT_PUBLIC_CLOUDINARY_API_KEY: z.string(),
