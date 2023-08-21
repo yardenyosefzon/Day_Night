@@ -12,6 +12,8 @@ export default async function (
       console.log(headers)
     //   request.setRequestHeader('Authorization', '{"api_key":"a5f514de-c8c8-262a-ac31-31d609f3550a","secret_key":"404b1fd6-9fc5-1533-a121-126fa6cc0c8f"}');
       const data = {
+        "charge_method": "1",
+        "currency_code": "ILS",
         "payment-page-uid": "9816e5fb-6284-4086-a051-5e54bac6976f",
         "expiry_datetime": "30",
         "more_info": "test1554423",

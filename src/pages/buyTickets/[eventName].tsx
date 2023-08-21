@@ -419,8 +419,8 @@ function BuyTicketPage() {
         .catch((error)=>{
           return error
         });
-        replace('/')
-        fetch('api/email/bought', {
+        
+        fetch('/api/email/bought', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -431,6 +431,7 @@ function BuyTicketPage() {
             if (!response.ok) {
               throw new Error('Network response was not ok');
             }
+            replace('/')
           })
       })
       .catch((error)=>{
