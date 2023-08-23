@@ -6,15 +6,13 @@ export default async function (
 )
 {
     const headers = {
-        'Authorization': '{"api_key":"9816e5fb-6284-4086-a051-5e54bac6976f","secret_key":"b81e7514-b646-45f7-a731-f16da7eeb0f5"}',
+        'Authorization': '{"api_key":"0015139a-ccdc-4790-9d18-d1764266e67a","secret_key":"e8add8b6-1e63-4768-9fab-76691c2f8023"}',
         'Content-Type': 'application/json'
       };
-      console.log(headers)
-    //   request.setRequestHeader('Authorization', '{"api_key":"a5f514de-c8c8-262a-ac31-31d609f3550a","secret_key":"404b1fd6-9fc5-1533-a121-126fa6cc0c8f"}');
       const data = {
         "charge_method": "1",
         "currency_code": "ILS",
-        "payment-page-uid": "9816e5fb-6284-4086-a051-5e54bac6976f",
+        "payment-page-uid": "7a95d93f-82fe-4308-a5b5-57709701bb0e",
         "expiry_datetime": "30",
         "more_info": "test1554423",
         "customer": {
@@ -32,12 +30,13 @@ export default async function (
         body: JSON.stringify(data),
         headers: headers 
       })
-      const responseJson = await response.json()
-      console.log(responseJson)
-      return res.end(JSON.stringify({'result': responseJson}))
+      console.log(response)
+      res.end(JSON.stringify({'result': response}))
     }
     catch(err){
-        return res.end(JSON.stringify({'error': err}))
+        console.log('error',err)
+        
+         res.end(JSON.stringify({'error': err}))
     }
 
-}   
+ }  // yoyoyoanimetpo0

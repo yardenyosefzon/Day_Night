@@ -34,7 +34,7 @@ function PPPage() {
           res.json()
         })
         .then((res) => {
-          console.log('result:', res)
+          console.log(res)
         })
         .catch(err => {
           console.log('error:', err)
