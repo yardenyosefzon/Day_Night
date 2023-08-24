@@ -13,7 +13,7 @@ import { appRouter } from "~/server/api/root";
 import { createInnerTRPCContext } from "~/server/api/trpc";
 import { getServerAuthSession } from "~/server/auth";
 import superjson from "superjson";
-import { MyContext } from "../context/context";
+import { MyContext } from "../components/context/context";
 
 const noto = Noto_Sans_Hebrew({subsets: ["hebrew"], weight:"400"})
 

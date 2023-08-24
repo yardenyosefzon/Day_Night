@@ -7,7 +7,7 @@ import "~/styles/quill.snow.css"
 import NavBar from "./components/navBar";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from "next-themes";
-import MyContextProvider from "./context/context";
+import MyContextProvider from "./components/context/context";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
