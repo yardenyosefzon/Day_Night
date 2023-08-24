@@ -7,7 +7,7 @@ export default async function handler(
 {
     const {amount} = JSON.parse(req.body)
     const headers = {
-        'Authorization': '{"api_key":"0015139a-ccdc-4790-9d18-d1764266e67a","secret_key":"e8add8b6-1e63-4768-9fab-76691c2f8023"}',
+        'Authorization': `{"api_key":"${process.env.NEXT_PUBLIC_PAYPLUS_KEY}","secret_key":"${process.env.NEXT_PUBLIC_PAYPLUS_SECRET}"}`,
         'Content-Type': 'application/json'
       };
       const data = {
