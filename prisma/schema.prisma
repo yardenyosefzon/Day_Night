@@ -71,6 +71,7 @@ model BoughtTicket {
 
 model SchemaTicket {
   id              String  @id @default(cuid())
+  slug            String  @unique @default(uuid())
   ticketName      String
   price           Int
   numberOfTickets Int

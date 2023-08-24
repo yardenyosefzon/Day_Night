@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
@@ -7,60 +7,32 @@ import RememberMePopUp from "../components/popUps/rememberMePopUp";
 import BuyTicketsDetailsForm from "../components/forms/buy ticket form/detailsForm";
 import { Noto_Sans_Hebrew } from 'next/font/google';
 import AgeErrorPopup from "../components/popUps/ageErrorPopUp";
+import { GetServerSidePropsContext } from "next";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import { appRouter } from "~/server/api/root";
+import { createInnerTRPCContext } from "~/server/api/trpc";
+import { getServerAuthSession } from "~/server/auth";
+import superjson from "superjson";
+import { MyContext } from "../context/context";
 
 const noto = Noto_Sans_Hebrew({subsets: ["hebrew"], weight:"400"})
 
 function BuyTicketPage() {
+  const contextValue = useContext(MyContext)
+  const formState = contextValue?.formState
+  const setFormState = contextValue?.setFormState
   const { data: sessionData, update } = useSession();
   const { query: { eventName, ticketKind }, replace } = useRouter();
-  const { data: eventsData, isLoading } = api.events.getAll.useQuery();
-  const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery(undefined, {refetchOnWindowFocus: false});
-  const {data: ticketsData} = api.boughtTickets.getFirstById.useQuery(undefined, {refetchOnWindowFocus: false});
+  const { data: eventsData, isLoading } = api.events.getAll.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
+  const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
+  const {data: ticketsData} = api.boughtTickets.getFirstById.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
+  const {data: schemaTicketData} = api.schemaTickets.getOneBySlug.useQuery({slug: ticketKind as string}, {refetchOnWindowFocus: false, refetchOnMount: false})
   const event = eventsData?.find((event) => event.eventName === eventName);
  
+  const [sum, setSum] = useState()
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
   const [showAgeErrorPopUp, setShowAgeErrorPopUp] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-
-  const [formState, setFormState] = useState({
-    tickets: 
-     [
-      {
-        birthDay: "",
-        gender: "",
-        phoneNumber: "",
-        instaUserName: "",
-        nationalId: "",
-        email: "",
-        fullName: ""
-      }
-    ]
-  }
-  );
-
-  const [constErrors] = useState({
-    birthDay: {
-      value: "יש למלא את תאריך הלידה",
-    },
-    gender: {
-      value: "יש לבחור מגדר",
-    },
-    phoneNumber: {
-      value: "יש למלא את מספר הטלפון",
-    },
-    instaUserName: {
-      value: "יש למלא את שם המשתמש באינסטגרם",
-    },
-    nationalId: {
-      value: "יש למלא את שדה תעודת הזהות",
-    },
-    email: {
-      value: "יש למלא כתובת אימייל",
-    },
-    fullName: {
-      value: "יש למלא שם מלא",
-    },
-  });
   
   const [validErrors, setValidErrors] = useState(
     [
@@ -382,61 +354,21 @@ function BuyTicketPage() {
     resetValidation()
     e.preventDefault();
     if (validateForm()) {
-    //   fetch(`https://restapidev.payplus.co.il/api/v1.0/PaymentPages/generateLink`, 
-    //   {
-    //     //@ts-ignore
-    //     headers: {
-    //       'content-type': 'application/json',
-    //       'Authorization': {"api_key":process.env.NEXT_PUBLIC_PAYPLUS_KEY,"secret_key":process.env.NEXT_PUBLIC_PAYPLUS_SECRET}
-    //     },
-    //     body: JSON.stringify({
-    //       payment_page_uid: process.env.NEXT_PUBLIC_PAYPLUS_UID,
-    //       expiry_datetime: "30",
-    //       more_info: "test1554423",
-    //       customer: {
-    //         customer_name:"David Levi",
-    //         email:"david@gmail.com",
-    //         phone:"0509111111",
-    //         vat_number: "036534683"
-    //       },
-    //       amount: 30
-    //       })
-    // }
-    //   )
-    //   .then((res) => res.json())
-    //   .then((res) => console.log(res))
-      let emailArray: Array<string>
-      emailArray = formState.tickets.map((ticket) => (
-         ticket.email
-    ))
-      createBoughtTickets({ userId: sessionData? sessionData?.user.id as string : '' , eventName: event?.eventName as string, eventMinAge: event?.minAge as number, usersTicket: rememberMe, ticketsArray: formState.tickets, ticketKind: ticketKind as string})
-      .then(() => {
-        changeNumberOfBoughtTickets({ticketName: ticketKind as string, eventName: event?.eventName as string})
-        if(rememberMe)
-        userRememberMeUpdate({rememberMe: rememberMe})
-        .then(()=>{
-          update()})
-        .catch((error)=>{
-          return error
-        });
-        
-        fetch('/api/email/bought', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({userName: sessionData?.user.name, usersEmails: emailArray, eventName: eventName})
+      fetch('/api/getPaymentLink',{
+        method: 'POST',
+        body: JSON.stringify({
+          amount: Number(schemaTicketData?.price as number * formState.tickets.length) + Number((schemaTicketData?.price as number * 7 / 100 *formState.tickets.length).toFixed(2))
         })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            replace('/')
-          })
       })
-      .catch((error)=>{
-        if(error.message.includes('Error: You are too young'))
-        setShowAgeErrorPopUp(() => true)
+      .then((res) => {
+        return res.json(); 
+      })
+      .then((data) => {
+        console.log(data); 
+        replace(`/paymentPages/paymentPage?url=${data.data.payment_page_link}`)
+      })
+      .catch((error) => {
+        console.error('Error:', error);
       });
     }
   }
@@ -487,7 +419,7 @@ function BuyTicketPage() {
       else{
 
         if(ticketsData) setShowRememberMePopup(false)
-        else if(ticketsData === null) setShowRememberMePopup(true)
+        // else if(ticketsData === null) setShowRememberMePopup(true)
         setFormState(formState => 
           {
             const changedState = [...formState.tickets] 
@@ -510,19 +442,28 @@ function BuyTicketPage() {
     return <div>Loading...</div>;
   }
     return (
-    <div className="absolute w-full min-h-screen bg-orange-200 bg-gradient-to-tr from-orange-100">
+    <div className="absolute w-full h-fit min-h-screen bg-orange-200 bg-gradient-to-tr from-orange-100 py-5">
       <div className={`flex flex-col mt-16 h-fit ${noto.className}`}>
         <div className="flex justify-center mt-1 text-3xl">
           <h1 className="">{eventName}</h1>
         </div>
-        <form className="flex flex-col w-full mt-3" onSubmit={(e)=>handleSubmit(e)}>
+        <form className="flex flex-col items-center w-full" onSubmit={(e)=>handleSubmit(e)}>
           <div className="flex flex-col justify-center w-full items-center my-4">
           {formState.tickets.map((_, index) => 
-            <BuyTicketsDetailsForm  key={index} formState={formState} constErrors={constErrors} validErrors={validErrors} handleChange={handleChange} index={index} handleDeleteTicket={handleDeleteTicket} addTicket={addTicket}/>
+            <BuyTicketsDetailsForm  key={index} formState={formState} validErrors={validErrors} handleChange={handleChange} index={index} handleDeleteTicket={handleDeleteTicket} addTicket={addTicket}/>
           )}
           </div>
-          <div className="flex justify-center">
-            <button className="bg-yellow-500 p-2 -my-3 rounded-lg shadow-lg mb-2 text-white text-lg font-extralight" type="submit">לרכישה</button>
+          <div className="flex justify-between items-center w-4/5 px-5 sm:w-2/5">
+            <div className="flex flex-col items-center">
+              <p className="font-semibold text-xs">₪{(schemaTicketData?.price as number * 7 / 100 *formState.tickets.length).toFixed(2)} Online עמלת סליקה</p>
+              <p className="font-semibold text-sm">+</p>
+              <p className="font-semibold text-sm">₪{`${schemaTicketData?.price as number} x ${formState.tickets.length}`}</p>
+              <div className="flex gap-3 items-center mt-1">
+                <p className="font-semibold text-base">₪{Number(schemaTicketData?.price as number * formState.tickets.length) + Number((schemaTicketData?.price as number * 7 / 100 *formState.tickets.length).toFixed(2))}</p>
+                <p className="font-semibold text-base">סה"כ</p>
+              </div>
+            </div>
+            <button className="bg-yellow-500 px-2 py-1 -my-3 rounded-lg shadow-lg text-white text-lg font-extralight h-16" type="submit">לרכישה</button>
           </div>
         </form>
       </div> 
@@ -542,3 +483,26 @@ function BuyTicketPage() {
 }
 
 export default BuyTicketPage;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+
+  const {query} = context
+  
+  const helpers = createServerSideHelpers({
+    router: appRouter,
+    ctx: createInnerTRPCContext({session: await getServerAuthSession({req: context.req ,res: context.res}) }), 
+    transformer: superjson
+  });
+  await helpers.events.getAll.prefetch()
+  await helpers.boughtTickets.getFirstByIdAndUsersTicket.prefetch()
+  await helpers.boughtTickets.getFirstById.prefetch()
+  await helpers.schemaTickets.getOneBySlug.prefetch({slug: query?.ticketKind as string})
+  await helpers.events.getManyByUserId.prefetch()
+
+  return {
+    props: {
+      trpcState: helpers.dehydrate(),
+    },
+  };
+}
+

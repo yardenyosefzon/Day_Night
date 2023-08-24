@@ -71,7 +71,6 @@ interface FormState {
     addTicket: () => void,
     formState: FormState;
     validErrors: ValidErrors[];
-    constErrors: ConstErrors;
     index: number;
   }
 
@@ -120,9 +119,6 @@ interface FormState {
             placeholder="שם מלא"
             value={formState.tickets[index]?.fullName}
           />
-          {/* {!validErrors[index]?.fullName.valid && (
-            <p className="text-red-500">{constErrors.fullName.value}</p>
-          )} */}
         </div>
         <div className={`flex flex-col justify-center`}>
                 <label className="block" htmlFor="email">
@@ -140,9 +136,6 @@ interface FormState {
                   placeholder="כתובת אימייל"
                   value={formState.tickets[index]?.email}
                 />
-                {/* {!validErrors[index]?.email.valid && (
-                  <p className="text-red-500">{constErrors.email.value}</p>
-                )} */}
         </div>
       <div className={`flex flex-col justify-center`}>
         <label className="block" htmlFor="birthDay">
@@ -160,9 +153,6 @@ interface FormState {
           placeholder=""
           value={formState.tickets[index]?.birthDay}
         />
-        {/* {!validErrors[index]?.birthDay.valid && (
-          <p className="text-red-500">{constErrors.birthDay.value}</p>
-        )} */}
       </div>
       <div className={`flex flex-col justify-center`}>
         <label className="block">מגדר</label>
@@ -183,9 +173,6 @@ interface FormState {
           <option dir='rtl' value="זכר">זכר</option>
           <option dir='rtl' value="אחר">אחר</option>
         </select>
-        {/* {!validErrors[index]?.gender.valid && (
-          <p className="text-red-500">{constErrors.gender.value}</p>
-        )} */}
       </div>
       <div className={`flex flex-col justify-center`}>
         <label className="block" htmlFor="phoneNumber">
@@ -204,9 +191,6 @@ interface FormState {
           pattern="[0-9]{10}"
           value={formState.tickets[index]?.phoneNumber}
         />
-        {/* {!validErrors[index]?.phoneNumber.valid && (
-          <p className="text-red-500">{constErrors.phoneNumber.value}</p>
-        )} */}
         </div>
         <div className={`flex flex-col justify-center`}>
                 <label className="block" htmlFor="instaUserName">
@@ -224,9 +208,6 @@ interface FormState {
                   placeholder="שם משתמש באינסטגרם"
                   value={formState.tickets[index]?.instaUserName}
                 />
-                {/* {!validErrors[index]?.instaUserName.valid && (
-                  <p className="text-red-500">{constErrors.instaUserName.value}</p>
-                )} */}
         </div>
         <div className={`flex flex-col justify-center`}>
                 <label className="block" htmlFor="nationalId">
@@ -244,9 +225,6 @@ interface FormState {
                   placeholder="תעודת זהות"
                   value={formState.tickets[index]?.nationalId}
                 />
-                {/* {!validErrors[index]?.nationalId.valid && (
-                  <p className="text-red-500">{constErrors.nationalId.value}</p>
-                )} */}
         </div>
       </div>
     </>

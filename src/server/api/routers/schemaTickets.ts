@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { publicProcedure,createTRPCRouter, protectedProcedure } from "../trpc";
-import { api } from "~/utils/api";
 
 export const schemaTicketsRouter = createTRPCRouter({
     create: protectedProcedure
@@ -33,6 +32,23 @@ export const schemaTicketsRouter = createTRPCRouter({
             return err
         })
     }),
+    getOneBySlug : publicProcedure
+    .input(
+        z.object({
+            slug: z.string() 
+        })
+    )
+    .query(({ctx, input}) => {
+        return ctx.prisma.schemaTicket.findUnique({
+            where: {
+                slug: input.slug
+            },
+            select: {
+                price: true,
+                ticketName: true
+            }
+        })
+    }),
     getManyByEventName: publicProcedure
     .input(
         z.object({
@@ -57,7 +73,7 @@ export const schemaTicketsRouter = createTRPCRouter({
             }
         })
     }),
-    getManyBySlug: publicProcedure
+    getManyByEventSlug: publicProcedure
     .input(
         z.object({
             slug: z.string()
@@ -77,26 +93,23 @@ export const schemaTicketsRouter = createTRPCRouter({
                 numberOfTickets: true,
                 price: true, 
                 ticketName: true,
-                notes: true
+                notes: true,
+                slug:true
             }
         })
     }),
     changeNumberOfBoughtTicketsOfOneByEventAndTicketName: publicProcedure
     .input(
         z.object({
-            ticketName: z.string(),
-            eventName: z.string()
+            ticketSlug: z.string(),
         })
     )
     .mutation(async({ ctx, input }) => {
-        const ticketName = input.ticketName.replace('%20'," ")
+        const ticketSlug = input.ticketSlug
         // First, retrieve the current number of tickets for the specified event
         const schemaTicket = await ctx.prisma.schemaTicket.findFirst({
             where: {
-                ticketName: ticketName,
-                event: {
-                    eventName: input.eventName
-                }
+                slug: ticketSlug,
             }
         });
 
@@ -112,8 +125,7 @@ export const schemaTicketsRouter = createTRPCRouter({
         // Now update the schemaTicket with the new number of tickets
         return await ctx.prisma.schemaTicket.update({
             where: {
-                ticketName: ticketName,
-                id: schemaTicket.id
+                slug: ticketSlug,
             },
             data: {
                 numberOfTickets: updatedNumberOfTickets

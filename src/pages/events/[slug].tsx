@@ -19,7 +19,7 @@ const ibm = IBM_Plex_Sans_Hebrew({subsets: ['hebrew'], weight: '600'})
 export default function EventPage( props: InferGetStaticPropsType<typeof getStaticProps>){
   const { slug } = props;
   const {data: eventsData, isLoading} = api.events.getOneBySlug.useQuery({ slug: slug }, {refetchOnMount: false, refetchOnWindowFocus: false}); 
-  const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyBySlug.useQuery({slug: slug as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
+  const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyByEventSlug.useQuery({slug: slug as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
   if(isLoading) return <div>Loading...</div>
     return (
       <>
@@ -87,7 +87,7 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
                                 <div className="absolute rounded-full w-4 h-4 bg-orange-300 -mt-2 -right-2"></div>
                               </div>
                               <div className="flex justify-center">
-                                <Link className={`${notoSans.className} underline`} href={`/buyTickets/${eventsData?.eventName}?ticketKind=${schemaTicketsData[index]?.ticketName}`}>
+                                <Link className={`${notoSans.className} underline`} href={`/buyTickets/${eventsData?.eventName}?ticketKind=${schemaTicketsData[index]?.slug}`}>
                                   לרכישה
                                 </Link>
                               </div>
@@ -119,7 +119,7 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
     const slug = context.params?.slug as string;
   
     await helpers.events.getOneBySlug.prefetch({ slug });
-    await helpers.schemaTickets.getManyBySlug.prefetch({ slug })
+    await helpers.schemaTickets.getManyByEventSlug.prefetch({ slug })
 
     return {
       props: {
