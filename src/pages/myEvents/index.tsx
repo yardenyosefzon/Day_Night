@@ -7,8 +7,8 @@ import Link from 'next/link';
 import { getServerAuthSession } from '~/server/auth';
 import { GetServerSidePropsContext } from 'next';
 import { createInnerTRPCContext } from '~/server/api/trpc';
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import { Noto_Sans_Hebrew } from 'next/font/google';
 
@@ -71,6 +71,11 @@ function MyEvents(){
 
   return (
     <div className={`absolute w-full min-h-screen h-fit bg-gradient-to-b from-orange-50 to-orange-100 ${noto.className}`}>
+      <div className='absloute mt-11 sm:mr-32 sm:mt-32'>
+            <Link href={'/homePage'}>
+              <FontAwesomeIcon className='text-lg p-4 sm:text-2xl' icon={faChevronRight}/>
+            </Link>
+          </div>
        {/* Pop-up */}
        {showPopup && (
                       <div className='absolute w-full h-screen flex bg-gray-400 items-center justify-center bg-opacity-70 z-40'>
@@ -124,7 +129,7 @@ function MyEvents(){
                         </div>
                       </div>
                     )}
-      <div className='flex items-center h-fit mt-24 pb-2'>
+      <div className='flex items-center h-fit pb-2 '>
        
           <div className='flex flex-col w-full  items-center min-h-5/6 h-5/6 mx-3 rounded gap-9'>
             {
@@ -148,6 +153,9 @@ function MyEvents(){
                         </div>
                         <div className='w-11/12 hover:shadow-sm hover:bg-orange-100 sm:w-3/12'>
                           <Link className='w-full p-1 px-2 rounded' href={`/myEvents/${event.eventName}/tickets`}>כרטיסים</Link>
+                        </div>
+                        <div className='w-11/12 hover:shadow-sm hover:bg-orange-100 sm:w-3/12'>
+                          <Link className='w-full p-1 px-2 rounded' href={`/myEvents/${event.eventName}/eventData`}>נתונים</Link>
                         </div>
                         <div className='w-11/12 hover:shadow-sm hover:bg-orange-100 sm:w-3/12'>
                           <button className='w-full p-1 px-2 rounded' onClick={() => openPopup(event.eventName)}>סרוק ברקודים</button>

@@ -11,6 +11,7 @@ import { prisma } from '~/server/db';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { faCalendarDays, faClock } from '@fortawesome/free-regular-svg-icons';
+import { useEffect, useState } from 'react';
 
 const notoSerif = Noto_Serif_Hebrew({subsets: ['hebrew'], weight: '600'})
 const notoSans = Noto_Sans_Hebrew({subsets: ['hebrew'], weight: '300'})
@@ -20,6 +21,11 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
   const { slug } = props;
   const {data: eventsData, isLoading} = api.events.getOneBySlug.useQuery({ slug: slug }, {refetchOnMount: false, refetchOnWindowFocus: false}); 
   const {data: schemaTicketsData, isLoading: schemaTicketsLoading} = api.schemaTickets.getManyByEventSlug.useQuery({slug: slug as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
+  const {mutate} = api.events.updateViewsBySlug.useMutation()
+  useEffect(() => {
+   mutate({slug: slug as string})
+  }, [])
+  
   if(isLoading) return <div>Loading...</div>
     return (
       <>

@@ -2,7 +2,7 @@ import { createServerSideHelpers } from '@trpc/react-query/server';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react'
-import SuperJSON from 'superjson';
+import superjson from "superjson";
 import { appRouter } from '~/server/api/root';
 import { createInnerTRPCContext } from '~/server/api/trpc';
 import { getServerAuthSession } from '~/server/auth';
@@ -25,10 +25,10 @@ type Event = {
 
 function AddPermited() {
     const emailRef = useRef<HTMLInputElement>("" || null)
+    const { query: {eventName} } = useRouter()
     const [email, setEmail] = useState('')
     const [event, setEvent] = useState<Event>()
     const [showError, setShowError] = useState(false)
-    const { query: {eventName} } = useRouter()
     const {data: eventScannerData, refetch} = api.eventScanner.getManyByEventName.useQuery({eventName: eventName as string}, {refetchOnMount: false, refetchOnWindowFocus: false})
     const {mutateAsync: addEventScanner, isLoading: addEventLoading} = api.eventScanner.create.useMutation()
     const {mutateAsync: deleteEventScanner, isLoading: deleteEventLoading} = api.eventScanner.delete.useMutation()
@@ -111,7 +111,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const helpers = createServerSideHelpers({
       router: appRouter,
       ctx: createInnerTRPCContext({session: session }), 
-      transformer: SuperJSON
+      transformer: superjson
     });
     
     await helpers.events.getManyByUserId.prefetch()

@@ -22,6 +22,7 @@ model Event {
   description          String          @db.LongText
   minAge               Int
   scannedTicketsNumber Int             @default(0)
+  views Int             @default(0)
   eventCreator         User            @relation(fields: [eventCreatorId], references: [id])
   eventCreatorId       String
   boughtTicket         BoughtTicket[]

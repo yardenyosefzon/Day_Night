@@ -72,6 +72,7 @@ export const eventsRouter = createTRPCRouter({
           scannedTicketsNumber: true,
           eventName: true,
           slug: true,
+          views: true,
           eventCreator: {
             select: {
               hideQrEx: true
@@ -149,6 +150,27 @@ export const eventsRouter = createTRPCRouter({
         },
         select: {
           scannedTicketsNumber: true
+        }
+      })
+    }),
+    updateViewsBySlug: publicProcedure
+    .input(
+      z.object({
+        slug: z.string(),
+      })
+    )
+    .mutation(async({ctx, input}) => {
+      const event = await ctx.prisma.event.findFirst({
+        where: {
+          slug: input.slug
+        }
+      })
+      return ctx.prisma.event.update({
+        where: {
+          slug: input.slug
+        },
+        data: {
+          views: event?.views! + 1
         }
       })
     })
