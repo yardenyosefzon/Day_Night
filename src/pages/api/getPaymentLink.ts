@@ -14,6 +14,8 @@ export default async function handler(
         payment_page_uid: "cdd2d18d-31ff-4da5-874e-fe6536ffb65e",
         more_info: "test1554423",
         charge_method: 2,
+        hide_other_charge_methods: true,
+        refURL_success: "https://www.daynight.co.il/paymentPages/success",
         customer: {
             customer_name:"David Levi",
             email:"david@gmail.com",
