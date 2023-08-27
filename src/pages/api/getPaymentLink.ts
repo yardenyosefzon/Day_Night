@@ -15,7 +15,7 @@ export default async function handler(
         more_info: "test1554423",
         charge_method: 2,
         hide_other_charge_methods: true,
-        refURL_success: "https://www.daynight.co.il/paymentPages/success",
+        // refURL_success: "https://www.daynight.co.il/paymentPages/success",
         customer: {
             customer_name:"David Levi",
             email:"david@gmail.com",
