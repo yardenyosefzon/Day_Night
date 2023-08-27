@@ -141,7 +141,7 @@ export const schemaTicketsRouter = createTRPCRouter({
                     ticketName: z.string(),
                     price: z.number(),
                     numberOfTickets: z.number(),
-                    notes: z.string()
+                    notes: z.string() || z.null()
             }))               
         })
 )

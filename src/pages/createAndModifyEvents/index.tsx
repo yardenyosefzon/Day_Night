@@ -25,6 +25,13 @@ export type EventData = {
     slug: string
 };
 
+export type schemaTicketsData = {
+  ticketName: string;
+  price: number;
+  numberOfTickets: number;
+  notes: string;
+}[];
+
 const CreateEvents: React.FC = () => {
 
   const {replace, query} = useRouter()
@@ -43,7 +50,7 @@ const CreateEvents: React.FC = () => {
     slug: ""
   });
 
-  const [schemaTicketsData, setSchemaTicketsData] = useState([{
+  const [schemaTicketsData, setSchemaTicketsData] = useState<schemaTicketsData>([{
     ticketName: "",
     price: 80,
     numberOfTickets: 100,
@@ -105,7 +112,7 @@ const CreateEvents: React.FC = () => {
           },
           body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
         })
-        replace('/myEvents', undefined, {shallow:false})
+        replace('/myEvents')
       })
       .catch((error) => {
         console.log(error, '///////////////')

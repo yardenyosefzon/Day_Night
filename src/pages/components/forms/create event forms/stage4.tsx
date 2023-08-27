@@ -135,9 +135,6 @@ const NoSSRStage4: React.FC<Stage4Props> = ({ schemaTicketsData, setSchemaTicket
                 validErrors[index]?.nameError ? "border-red-500" : "border-black"
               } rounded p-2 mb-2 w-11/12`}
             />
-            {/* {validErrors[index]?.nameError && (
-              <span className="text-red-500">יש למלא את שם הכרטיס</span>
-            )} */}
           </div>
           <div>
             <label htmlFor={`price_${index}`}>מחיר</label>
@@ -169,7 +166,7 @@ const NoSSRStage4: React.FC<Stage4Props> = ({ schemaTicketsData, setSchemaTicket
               type="string"
               id={`notes_${index}`}
               name={`notes_${index}`}
-              value={ticket.notes}
+              value={ticket.notes ? ticket.notes : ""}
               onChange={onChange}
               dir="rtl"
               className="border rounded p-2 mb-2 w-11/12"

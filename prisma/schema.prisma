@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -22,7 +22,7 @@ model Event {
   description          String          @db.LongText
   minAge               Int
   scannedTicketsNumber Int             @default(0)
-  views Int             @default(0)
+  views                Int             @default(0)
   eventCreator         User            @relation(fields: [eventCreatorId], references: [id])
   eventCreatorId       String
   boughtTicket         BoughtTicket[]
@@ -33,11 +33,11 @@ model Event {
 }
 
 model Event_Scanner {
-  id      String @id @default(cuid())
-  event   Event  @relation(fields: [eventName], references: [eventName])
+  id        String @id @default(cuid())
+  event     Event  @relation(fields: [eventName], references: [eventName])
   eventName String
-  user    User   @relation(fields: [userEmail], references: [email])
-  userEmail  String
+  user      User   @relation(fields: [userEmail], references: [email])
+  userEmail String
 
   @@index([eventName])
   @@index([userEmail])
@@ -71,13 +71,13 @@ model BoughtTicket {
 }
 
 model SchemaTicket {
-  id              String  @id @default(cuid())
-  slug            String  @unique @default(uuid())
+  id              String @id @default(cuid())
+  slug            String @unique @default(uuid())
   ticketName      String
   price           Int
   numberOfTickets Int
-  notes           String?
-  event           Event   @relation(fields: [eventId], references: [id])
+  notes           String @default("")
+  event           Event  @relation(fields: [eventId], references: [id])
   eventId         String
 
   @@index([eventId])
