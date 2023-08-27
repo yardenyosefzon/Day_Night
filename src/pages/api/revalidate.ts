@@ -7,9 +7,9 @@ export default async function (
     res: NextApiResponse
 )
 {
-    if(req.body.secret !== process.env.NEXT_PUBLIC_MY_SECRET_TOKEN){
-        return res.status(401).json({message: 'Invalid token'})
-    }
+    // if(req.body.secret !== process.env.NEXT_PUBLIC_MY_SECRET_TOKEN){
+    //     return res.status(401).json({message: 'Invalid token'})
+    // }
     const path = req.query.path as string
     try{
         await res.revalidate(path)
