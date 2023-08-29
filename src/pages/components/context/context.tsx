@@ -13,9 +13,15 @@ interface MyContextType {
       fullName: string;
     }[];
   };
+  eventName: string;
+  ticketSlug: string;
+  ticketName: string;
   setFormState: React.Dispatch<
     React.SetStateAction<MyContextType['formState']>
   >;
+  setEventName: React.Dispatch<React.SetStateAction<string>>
+  setTicketSlug: React.Dispatch<React.SetStateAction<string>>
+  setTicketName: React.Dispatch<React.SetStateAction<string>>
 }
 
 const initialFormState: MyContextType['formState'] = {
@@ -34,7 +40,13 @@ const initialFormState: MyContextType['formState'] = {
 
 export const MyContext = createContext<MyContextType>({
   formState: initialFormState,
-  setFormState: () => {}, // This will be overridden by the provider
+  eventName: "",
+  ticketSlug: "",
+  ticketName: "",
+  setFormState: () => {},
+  setEventName: () => "",
+  setTicketSlug: () => "",
+  setTicketName: () => ""
 });
 
 // Create a context provider component
@@ -46,11 +58,20 @@ const MyContextProvider: React.FC<MyContextProviderProps> = ({ children }) => {
   const [formState, setFormState] = useState<MyContextType['formState']>(
     initialFormState
   );
-  
+  const [eventName, setEventName] = useState("")
+  const [ticketSlug, setTicketSlug] = useState("")
+  const [ticketName, setTicketName] = useState("")
+
 
   const contextValue: MyContextType = {
     formState,
+    eventName,
+    ticketSlug,
+    ticketName,
+    setEventName,
+    setTicketSlug,
     setFormState,
+    setTicketName
   };
 
   return (
@@ -61,3 +82,4 @@ const MyContextProvider: React.FC<MyContextProviderProps> = ({ children }) => {
 };
 
 export default MyContextProvider;
+

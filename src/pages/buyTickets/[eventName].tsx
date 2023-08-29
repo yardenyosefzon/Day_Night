@@ -18,16 +18,22 @@ import { MyContext } from "../components/context/context";
 const noto = Noto_Sans_Hebrew({subsets: ["hebrew"], weight:"400"})
 
 function BuyTicketPage() {
+
   const contextValue = useContext(MyContext)
   const formState = contextValue?.formState
+  const setEventName = contextValue.setEventName
+  const setTicketSlug = contextValue.setTicketSlug
   const setFormState = contextValue?.setFormState
+
   const { data: sessionData, update } = useSession();
   const { query: { eventName, ticketKind }, replace } = useRouter();
-  const { data: eventsData, isLoading } = api.events.getAll.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
+  setEventName(prev => eventName as string)
+  setTicketSlug(prev => ticketKind as string)
+
+  const { isLoading } = api.events.getAll.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
   const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
   const {data: ticketsData} = api.boughtTickets.getFirstById.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
   const {data: schemaTicketData} = api.schemaTickets.getOneBySlug.useQuery({slug: ticketKind as string}, {refetchOnWindowFocus: false, refetchOnMount: false})
-  const event = eventsData?.find((event) => event.eventName === eventName);
  
   const [sum, setSum] = useState()
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
@@ -481,7 +487,7 @@ function BuyTicketPage() {
     </div>
   );
 }
-// 5929742f-9938-4081-9b4d-5da8f5c5ea7b
+
 export default BuyTicketPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

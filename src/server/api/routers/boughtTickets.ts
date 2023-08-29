@@ -9,8 +9,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             userId: z.string(),
             usersTicket: z.boolean(),
             eventName: z.string(),
-            eventMinAge: z.number(),
-            ticketKind: z.string(),
+            ticketName: z.string(),
             ticketsArray: z.array(
                             z.object({
                                 email: z.string(),
@@ -47,7 +46,8 @@ export const boughtTicketsRouter = createTRPCRouter({
               eventName: input.eventName
             },
             select: {
-              id: true
+              id: true,
+              minAge: true
             }
           }) 
           let correctAge = true       
@@ -68,7 +68,7 @@ export const boughtTicketsRouter = createTRPCRouter({
                  age = yearsDiff;
             }
 
-            if(age < input.eventMinAge){
+            if(age < eventId?.minAge!){
                 correctAge = false
                 input.ticketsArray.length = 0
             } 
@@ -82,7 +82,7 @@ export const boughtTicketsRouter = createTRPCRouter({
               partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
               eventId: eventId?.id as string,
               usersTicket: index === 0 ? input.usersTicket : false,
-              ticketKind: input.ticketKind,
+              ticketKind: input.ticketName,
               slug: slug, // Use the generated slug here
               fullName: input.ticketsArray[index]?.fullName as string,
               qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://day-night-eight.vercel.app/qrCode/?params=${encodeURIComponent(nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string)}+_+${encodeURIComponent(slug)}`
@@ -95,7 +95,7 @@ export const boughtTicketsRouter = createTRPCRouter({
                 eventId: eventId?.id as string,
                 userId: input.userId,
                 usersTicket: index === 0 ? input.usersTicket : false,
-                ticketKind: input.ticketKind,
+                ticketKind: input.ticketName,
                 slug: slug, // Use the generated slug here
                 fullName: input.ticketsArray[index]?.fullName as string,
                 qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://day-night-eight.vercel.app/qrCode/?params=${encodeURIComponent(nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string)}+_+${encodeURIComponent(slug)}`
