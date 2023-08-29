@@ -18,7 +18,6 @@ interface MyContextType {
   >;
 }
 
-// Create a context with an initial value
 const initialFormState: MyContextType['formState'] = {
   tickets: [
     {
@@ -47,6 +46,7 @@ const MyContextProvider: React.FC<MyContextProviderProps> = ({ children }) => {
   const [formState, setFormState] = useState<MyContextType['formState']>(
     initialFormState
   );
+  
 
   const contextValue: MyContextType = {
     formState,

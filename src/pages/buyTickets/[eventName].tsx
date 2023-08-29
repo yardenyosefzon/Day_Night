@@ -33,6 +33,8 @@ function BuyTicketPage() {
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
   const [showAgeErrorPopUp, setShowAgeErrorPopUp] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+
+  const { mutateAsync: userRememberMeUpdate } = api.users.updateRememberProp.useMutation()
   
   const [validErrors, setValidErrors] = useState(
     [
@@ -61,12 +63,6 @@ function BuyTicketPage() {
       }
     ]
   )
-  
-  const { mutateAsync: createBoughtTickets } = api.boughtTickets.create.useMutation();
-
-  const { mutateAsync: userRememberMeUpdate } = api.users.updateRememberProp.useMutation()
-
-  const {mutate: changeNumberOfBoughtTickets} = api.schemaTickets.changeNumberOfBoughtTicketsOfOneByEventAndTicketName.useMutation()
 
   const validateForm = () => {
     let isValid = true;
@@ -364,7 +360,11 @@ function BuyTicketPage() {
         return res.json(); 
       })
       .then((data) => {
-        console.log(data); 
+        if(rememberMe)
+            userRememberMeUpdate({rememberMe: rememberMe})
+            .then(()=>{
+              update()
+            })
         replace(`/paymentPages/paymentPage?url=${data.data.payment_page_link}`)
       })
       .catch((error) => {
