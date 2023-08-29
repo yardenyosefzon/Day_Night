@@ -30,6 +30,7 @@ function Success({response}: {response: any}) {
     }
 
     useEffect(() => {
+      //@ts-ignore
       const transaction = response.transactions.filter( aprovNum => aprovNum.number === number )
       if(transaction && hasPassedMoreThanMinute(transaction[0].created_at)){
             let emailArray: Array<string>
