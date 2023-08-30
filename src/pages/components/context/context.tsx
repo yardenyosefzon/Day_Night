@@ -5,6 +5,7 @@ interface MyContextType {
   formState: {
     tickets: {
       birthDay: string;
+      age: number;
       gender: string;
       phoneNumber: string;
       instaUserName: string;
@@ -28,6 +29,7 @@ const initialFormState: MyContextType['formState'] = {
   tickets: [
     {
       birthDay: '',
+      age: 0,
       gender: '',
       phoneNumber: '',
       instaUserName: '',

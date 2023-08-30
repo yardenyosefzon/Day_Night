@@ -15,6 +15,7 @@ export const boughtTicketsRouter = createTRPCRouter({
                                 email: z.string(),
                                 nationalId: z.string(),
                                 birthDay: z.string(),
+                                age: z.number(),
                                 gender: z.string(),
                                 phoneNumber: z.string(),
                                 instaUserName: z.string(),
@@ -58,7 +59,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             return {
               ...boughtTicket,
               birthDay: input.ticketsArray[index]?.birthDay as string,
-            //   age: age,
+              age: input.ticketsArray[index]?.age as number,
               nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
               partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
               eventId: eventId?.id as string,
@@ -71,7 +72,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             return{
                 ...boughtTicket,
                 birthDay: input.ticketsArray[index]?.birthDay as string,
-                // age: age,
+                age: input.ticketsArray[index]?.age as number,
                 nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
                 partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
                 eventId: eventId?.id as string,
@@ -113,7 +114,8 @@ export const boughtTicketsRouter = createTRPCRouter({
               gender: true,
               phoneNumber: true,
               instaUserName: true,
-              partialNationalId: true
+              partialNationalId: true,
+              age: true
             }
         })
     }),
@@ -187,7 +189,7 @@ export const boughtTicketsRouter = createTRPCRouter({
                 email: true,
                 gender: true,
                 birthDay: true,
-                // age: true,
+                age: true,
                 verified: true,
                 instaUserName: true,
                 phoneNumber: true,

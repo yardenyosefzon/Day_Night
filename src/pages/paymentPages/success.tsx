@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 
 type TicketArr = {
   birthDay: string;
+  age: number;
   gender: string;
   phoneNumber: string;
   instaUserName: string;
@@ -46,12 +47,13 @@ function Success({response}: {response: any}) {
             ...ticketArr,
             {
               birthDay: infoArr[0],
-              gender: infoArr[2],
-              phoneNumber: infoArr[1],
-              instaUserName: infoArr[3],
-              nationalId: infoArr[4],
-              email: infoArr[5],
-              fullName: infoArr[6]
+              age: Number(infoArr[1]),
+              gender: infoArr[3],
+              phoneNumber: infoArr[2],
+              instaUserName: infoArr[4],
+              nationalId: infoArr[5],
+              email: infoArr[6],
+              fullName: infoArr[7]
             }
           ]
         }

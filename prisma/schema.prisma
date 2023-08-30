@@ -54,7 +54,7 @@ model BoughtTicket {
   nationalId        String
   partialNationalId String
   birthDay          String
-  // age               Int
+  age               Int
   gender            String
   phoneNumber       String
   instaUserName     String

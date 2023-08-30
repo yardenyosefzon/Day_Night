@@ -274,6 +274,7 @@ function BuyTicketPage() {
         ) {
           age--;
         }
+        
         if (event && age < event[0]?.minAge!) {
           setValidErrors((validErrors) => {
             const updatedErrors = [...validErrors];
@@ -292,7 +293,20 @@ function BuyTicketPage() {
             return updatedErrors;
           });
           isValid = false;
-          setShowAgeErrorPopUp(prev => !prev)
+          setShowAgeErrorPopUp(prev => !prev);
+        } else {
+          setFormState(prevState => {
+            const updatedTickets = [...prevState.tickets];
+            //@ts-ignore
+            updatedTickets[i] = {
+              ...updatedTickets[i],
+              age: age
+            };
+            return {
+              ...prevState,
+              tickets: updatedTickets
+            };
+          });
         }
       }
     }
@@ -349,6 +363,7 @@ function BuyTicketPage() {
       const changedState = [...formState.tickets]
       changedState.push({
         birthDay: "",
+        age: 0,
         gender: "",
         phoneNumber: "",
         instaUserName: "",
@@ -388,6 +403,7 @@ function BuyTicketPage() {
       return changedState
     })
   }
+  
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     resetValidation()
     e.preventDefault();
@@ -457,6 +473,7 @@ function BuyTicketPage() {
               fullName: name || "",
               nationalId: `XXXXXX${usersTicketsData?.partialNationalId}`,
               birthDay: usersTicketsData?.birthDay as string,
+              age: usersTicketsData?.age as number,
               gender: usersTicketsData?.gender as string,
               phoneNumber: usersTicketsData?.phoneNumber as string,
               instaUserName: usersTicketsData?.instaUserName as string
@@ -476,6 +493,7 @@ function BuyTicketPage() {
               fullName: name || "",
               nationalId: "",
               birthDay: "",
+              age: 0,
               gender: "",
               phoneNumber:"",
               instaUserName:""
