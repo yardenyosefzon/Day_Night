@@ -364,6 +364,7 @@ function BuyTicketPage() {
           ticketPrice: schemaTicketData?.price,
           eventName: eventName,
           ticketName: schemaTicketData?.ticketName,
+          ticketSlug: ticketKind,
           ticketArr: formState.tickets
         })
       })

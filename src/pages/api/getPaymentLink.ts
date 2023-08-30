@@ -6,7 +6,7 @@ export default async function handler(
 )
 {
     const body = JSON.parse(req.body)
-    const {amount, firstPayment, ticketPrice, eventName, ticketName, ticketArr} = body
+    const {amount, firstPayment, ticketPrice, eventName, ticketName, ticketSlug, ticketArr} = body
     const headers = {
         'Authorization': `{"api_key":"${process.env.NEXT_PUBLIC_PAYPLUS_KEY}","secret_key":"${process.env.NEXT_PUBLIC_PAYPLUS_SECRET}"}`,
         'Content-Type': 'application/json'
@@ -25,8 +25,7 @@ export default async function handler(
         "payments_first_amount": firstPayment,
         "items": [
           {
-            "name": eventName,
-            "product_invoice_extra_details": ticketName, 
+            "name": eventName+'_'+ticketName+'_'+ticketSlug,
             "quantity": ticketArr.length,
             "price": ticketPrice + firstPayment / ticketArr.length,
             "vat_type" : 0,

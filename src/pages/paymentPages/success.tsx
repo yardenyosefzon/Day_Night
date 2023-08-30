@@ -5,8 +5,17 @@ import { api } from '~/utils/api';
 import { MyContext } from '../components/context/context';
 import { useSession } from 'next-auth/react';
 
+type TicketArr = {
+  birthDay: string;
+  gender: string;
+  phoneNumber: string;
+  instaUserName: string;
+  nationalId: string;
+  email: string;
+  fullName: string;
+}[];
+
 function Success({response}: {response: any}) {
-  console.log(response)
   const {data: sessionData} = useSession()
   const {query: {number}, replace} = useRouter()
 
@@ -24,33 +33,53 @@ function Success({response}: {response: any}) {
     }
 
     useEffect(() => {
+      let ticketArr : TicketArr = []
       //@ts-ignore
       const transaction = response.transactions.filter( aprovNum => aprovNum.number === number )
+      console.log(transaction)
       if(transaction && hasPassedMoreThanMinute(transaction[0]?.created_at)){
-        console.log('sssssssss')
-          //   let emailArray: Array<string>
-          //   emailArray = formState.tickets.map((ticket) => (
-          //     ticket.email
-          // ))
-          //   createBoughtTickets({ userId: sessionData? sessionData?.user.id as string : '' , eventName: eventName as string, usersTicket: false, ticketsArray: formState.tickets, ticketName: ticketName as string})
-          //   .then(() => {
-          //     changeNumberOfBoughtTickets({ticketSlug: ticketSlug as string})
-          //     fetch('api/email/bought', {
-          //       method: 'POST',
-          //       headers: {
-          //         'Content-Type': 'application/json'
-          //       },
-          //       body: JSON.stringify({userName: sessionData?.user.name, usersEmails: emailArray, eventName: eventName})
-          //     })
-          //       .then(response => {
-          //         if (!response.ok) {
-          //           throw new Error('Network response was not ok');
-          //         }
-          //       })
-          //   })
-          //   .catch((error)=>{
-          //     return error
-          //   });
+        let eventName = transaction[0].items[0].name.split('_')[0]
+        let ticketName = transaction[0].items[0].name.split('_')[1]
+        let ticketSlug = transaction[0].items[0].name.split('_')[2]
+        for(let i = 0 ; i < transaction[0].items[0].quantity ; i++){
+          const infoArr = transaction[0].information.more_info_1.split('_')
+          ticketArr = [
+            ...ticketArr,
+            {
+              birthDay: infoArr[0],
+              gender: infoArr[2],
+              phoneNumber: infoArr[1],
+              instaUserName: infoArr[3],
+              nationalId: infoArr[4],
+              email: infoArr[5],
+              fullName: infoArr[6]
+            }
+          ]
+        }
+        
+            let emailArray: Array<string>
+            emailArray = ticketArr.map((ticket) => (
+              ticket.email
+          ))
+            createBoughtTickets({ userId: sessionData? sessionData?.user.id as string : '' , eventName: eventName as string, usersTicket: false, ticketsArray: ticketArr, ticketName: ticketName as string})
+            .then(() => {
+              changeNumberOfBoughtTickets({ticketSlug: ticketSlug as string})
+              fetch('api/email/bought', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({userName: sessionData?.user.name, usersEmails: emailArray, eventName: eventName})
+              })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                  }
+                })
+            })
+            .catch((error)=>{
+              return error
+            });
            
               }
     }, [])
