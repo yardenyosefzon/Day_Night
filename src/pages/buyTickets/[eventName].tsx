@@ -30,11 +30,12 @@ function BuyTicketPage() {
   setEventName(prev => eventName as string)
   setTicketSlug(prev => ticketKind as string)
 
-  const { isLoading } = api.events.getAll.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
+  const { data: eventsData, isLoading } = api.events.getAll.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
   const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
   const {data: ticketsData} = api.boughtTickets.getFirstById.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
   const {data: schemaTicketData} = api.schemaTickets.getOneBySlug.useQuery({slug: ticketKind as string}, {refetchOnWindowFocus: false, refetchOnMount: false})
- 
+  const event = eventsData?.filter(event => event.eventName === eventName)
+
   const [sum, setSum] = useState()
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
   const [showAgeErrorPopUp, setShowAgeErrorPopUp] = useState(false);
@@ -258,6 +259,41 @@ function BuyTicketPage() {
           return updatedErrors;
         });
         isValid = false;
+      }
+
+      if (formState.tickets[i]?.birthDay !== "") {
+        const birthDate = new Date(formState.tickets[i]?.birthDay as string);
+        const today = new Date();
+        
+        let age = today.getFullYear() - birthDate.getFullYear();
+        
+        if (
+          today.getMonth() < birthDate.getMonth() ||
+          (today.getMonth() === birthDate.getMonth() &&
+            today.getDate() < birthDate.getDate())
+        ) {
+          age--;
+        }
+        if (event && age < event[0]?.minAge!) {
+          setValidErrors((validErrors) => {
+            const updatedErrors = [...validErrors];
+            updatedErrors[i] = {
+              ...(updatedErrors[i] as {
+                birthDay: { valid: boolean };
+                gender: { valid: boolean };
+                phoneNumber: { valid: boolean };
+                instaUserName: { valid: boolean };
+                nationalId: { valid: boolean };
+                email: { valid: boolean };
+                fullName: { valid: boolean };
+              }),
+              birthDay: { valid: false },
+            };
+            return updatedErrors;
+          });
+          isValid = false;
+          setShowAgeErrorPopUp(prev => !prev)
+        }
       }
     }
   

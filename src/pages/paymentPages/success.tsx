@@ -2,7 +2,6 @@ import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect, useContext } from 'react'
 import { api } from '~/utils/api';
-import { MyContext } from '../components/context/context';
 import { useSession } from 'next-auth/react';
 
 type TicketArr = {

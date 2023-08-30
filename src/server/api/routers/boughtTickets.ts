@@ -54,54 +54,35 @@ export const boughtTicketsRouter = createTRPCRouter({
           const dbArray = input.ticketsArray.map((boughtTicket, index) => {
             const slug = uuid(); // Generate a unique slug for each iteration  
 
-            let age: number
-
-            const today = new Date();
-            const birthDate = new Date(input.ticketsArray[index]?.birthDay as string);
-            
-            const yearsDiff = today.getFullYear() - birthDate.getFullYear();
-            const monthsDiff = today.getMonth() - birthDate.getMonth();
-            
-            if (monthsDiff < 0 || (monthsDiff === 0 && today.getDate() < birthDate.getDate())) {
-                 age = yearsDiff - 1;
-            } else {
-                 age = yearsDiff;
-            }
-
-            if(age < eventId?.minAge!){
-                correctAge = false
-                input.ticketsArray.length = 0
-            } 
-          
-            else
             if(input.userId === "")
             return {
               ...boughtTicket,
-              age: age,
+              birthDay: input.ticketsArray[index]?.birthDay as string,
+            //   age: age,
               nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
               partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
               eventId: eventId?.id as string,
               usersTicket: index === 0 ? input.usersTicket : false,
               ticketKind: input.ticketName,
-              slug: slug, // Use the generated slug here
+              slug: slug,
               fullName: input.ticketsArray[index]?.fullName as string,
               qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://day-night-eight.vercel.app/qrCode/?params=${encodeURIComponent(nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string)}+_+${encodeURIComponent(slug)}`
             };
             return{
                 ...boughtTicket,
-                age: age,
+                birthDay: input.ticketsArray[index]?.birthDay as string,
+                // age: age,
                 nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
                 partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
                 eventId: eventId?.id as string,
                 userId: input.userId,
                 usersTicket: index === 0 ? input.usersTicket : false,
                 ticketKind: input.ticketName,
-                slug: slug, // Use the generated slug here
+                slug: slug,
                 fullName: input.ticketsArray[index]?.fullName as string,
                 qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://day-night-eight.vercel.app/qrCode/?params=${encodeURIComponent(nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string)}+_+${encodeURIComponent(slug)}`
         }
           });
-        if(!correctAge) throw new Error('Error: You are too young')
          return ctx.prisma.boughtTicket.createMany({
             data: dbArray,
         })
@@ -206,7 +187,7 @@ export const boughtTicketsRouter = createTRPCRouter({
                 email: true,
                 gender: true,
                 birthDay: true,
-                age: true,
+                // age: true,
                 verified: true,
                 instaUserName: true,
                 phoneNumber: true,
