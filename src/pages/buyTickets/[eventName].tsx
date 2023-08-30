@@ -359,7 +359,12 @@ function BuyTicketPage() {
       fetch('/api/getPaymentLink',{
         method: 'POST',
         body: JSON.stringify({
-          amount: Number(schemaTicketData?.price as number * formState.tickets.length) + Number((schemaTicketData?.price as number * 7 / 100 *formState.tickets.length).toFixed(2))
+          amount: Number(schemaTicketData?.price as number * formState.tickets.length) + Number((schemaTicketData?.price as number * 7 / 100 *formState.tickets.length).toFixed(2)),
+          firstPayment: schemaTicketData?.price as number * 7 / 100 *formState.tickets.length,
+          ticketPrice: schemaTicketData?.price,
+          eventName: eventName,
+          ticketName: schemaTicketData?.ticketName,
+          ticketArr: formState.tickets
         })
       })
       .then((res) => {
@@ -406,7 +411,7 @@ function BuyTicketPage() {
     if (sessionData) {
       const { email, name } = sessionData.user;
       if(sessionData.user.rememberMe){
-        console.log(usersTicketsData, ticketsData)
+        
       setFormState(formState => 
           {
             const changedState = [...formState.tickets] 
@@ -425,7 +430,7 @@ function BuyTicketPage() {
       else{
 
         if(ticketsData) setShowRememberMePopup(false)
-        // else if(ticketsData === null) setShowRememberMePopup(true)
+       
         setFormState(formState => 
           {
             const changedState = [...formState.tickets] 
@@ -447,6 +452,7 @@ function BuyTicketPage() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
     return (
     <div className="absolute w-full h-fit min-h-screen bg-orange-200 bg-gradient-to-tr from-orange-100 py-5">
       <div className={`flex flex-col mt-16 h-fit ${noto.className}`}>
