@@ -1,8 +1,13 @@
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { api } from '~/utils/api';
 import { useSession } from 'next-auth/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
+import { Noto_Sans_Hebrew } from 'next/font/google';
+
+const nont = Noto_Sans_Hebrew({subsets: ["hebrew"], weight:"400"})
 
 type TicketArr = {
   birthDay: string;
@@ -17,10 +22,12 @@ type TicketArr = {
 
 function Success({response}: {response: any}) {
   const {data: sessionData} = useSession()
-  const {query: {number}, replace} = useRouter()
+  const {query: {number, amount, method, four_digits, number_of_payments}, replace} = useRouter()
 
   const { mutateAsync: createBoughtTickets } = api.boughtTickets.create.useMutation();
   const { mutate: changeNumberOfBoughtTickets } = api.schemaTickets.changeNumberOfBoughtTicketsOfOneByEventAndTicketName.useMutation()
+
+  const [date, setDate] = useState(new Date(Date.now()))
 
     function hasPassedMoreThanMinute(targetDateStr: string) {
       const targetDate = new Date(targetDateStr);
@@ -33,6 +40,7 @@ function Success({response}: {response: any}) {
     }
 
     useEffect(() => {
+    
       let ticketArr : TicketArr = []
       //@ts-ignore
       const transaction = response.transactions.filter( aprovNum => aprovNum.number === number )
@@ -62,6 +70,7 @@ function Success({response}: {response: any}) {
             emailArray = ticketArr.map((ticket) => (
               ticket.email
           ))
+          console.log(sessionData)
             createBoughtTickets({ userId: sessionData? sessionData?.user.id as string : '' , eventName: eventName as string, usersTicket: false, ticketsArray: ticketArr, ticketName: ticketName as string})
             .then(() => {
               changeNumberOfBoughtTickets({ticketSlug: ticketSlug as string})
@@ -86,7 +95,37 @@ function Success({response}: {response: any}) {
     }, [])
     
   return (
-    <div className='absolute z-50'>This is a success</div>
+    <div className={`absolute flex justify-center items-center min-h-screen h-screen bg-orange-50 w-screen ${nont.className}`}>
+      <div className='flex flex-col gap-24 justify-center items-center w-screen'>
+        <div className='flex flex-col gap-3 items-center '>
+          <FontAwesomeIcon icon={faCircleCheck} className='text-9xl text-orange-300 '/>
+          <p className='text-black text-2xl font-semibold'>העסקה בוצעה בהצלחה</p>
+          <p className='text-black text-md font-semibold -mt-2 mb-3'>מדי תועברו בחזרה אל דף הבית</p>
+          <p className='text-6xl'>₪{amount}</p>
+        </div>
+        <div className='flex flex-col w-3/4 border-t border-b py-2 text-lg'>
+          <div className='flex justify-between border-b w-full p-2 pt-0'>
+            <p>{number}</p>
+            <p>מספר אישור</p>
+          </div>
+          <div className='flex justify-between border-b w-full p-2'>
+            <p>{date.toLocaleString().slice(0, -3).replace(',','')}</p>
+            <p>תאריך ושעה</p>
+          </div>
+          <div className='flex justify-between border-b w-full p-2'>
+            <div className='flex gap-2'>
+              <p>{method}</p>
+              <p>{four_digits}</p>
+            </div>
+            <p>אמצעי תשלום</p>
+          </div>
+          <div className='flex justify-between w-full p-2 pb-0'>
+            <p>{number_of_payments}</p>
+            <p>תשלומים</p>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
