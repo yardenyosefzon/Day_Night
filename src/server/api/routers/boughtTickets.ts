@@ -6,7 +6,6 @@ export const boughtTicketsRouter = createTRPCRouter({
     create: publicProcedure
     .input(
         z.object({
-            userId: z.string(),
             usersTicket: z.boolean(),
             eventName: z.string(),
             ticketName: z.string(),
@@ -51,11 +50,11 @@ export const boughtTicketsRouter = createTRPCRouter({
               minAge: true
             }
           }) 
-          let correctAge = true       
+       
           const dbArray = input.ticketsArray.map((boughtTicket, index) => {
             const slug = uuid(); // Generate a unique slug for each iteration  
 
-            if(input.userId === "")
+            if(ctx.session?.user.id === undefined)
             return {
               ...boughtTicket,
               birthDay: input.ticketsArray[index]?.birthDay as string,
@@ -76,7 +75,7 @@ export const boughtTicketsRouter = createTRPCRouter({
                 nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
                 partialNationalId: nationalId?.nationalId ? (nationalId.nationalId).slice(nationalId.nationalId.length - 3, nationalId.nationalId.length) : input.ticketsArray[index]?.nationalId.slice(input.ticketsArray[index]?.nationalId.length! - 3, input.ticketsArray[index]?.nationalId.length) as string,
                 eventId: eventId?.id as string,
-                userId: input.userId,
+                userId: ctx.session?.user.id,
                 usersTicket: index === 0 ? input.usersTicket : false,
                 ticketKind: input.ticketName,
                 slug: slug,

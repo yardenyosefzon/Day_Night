@@ -40,7 +40,7 @@ function Success({response}: {response: any}) {
     }
 
     useEffect(() => {
-    
+      console.log(sessionData)
       let ticketArr : TicketArr = []
       //@ts-ignore
       const transaction = response.transactions.filter( aprovNum => aprovNum.number === number )
@@ -70,8 +70,8 @@ function Success({response}: {response: any}) {
             emailArray = ticketArr.map((ticket) => (
               ticket.email
           ))
-          console.log(sessionData)
-            createBoughtTickets({ userId: sessionData? sessionData?.user.id as string : '' , eventName: eventName as string, usersTicket: false, ticketsArray: ticketArr, ticketName: ticketName as string})
+          
+            createBoughtTickets({ eventName: eventName as string, usersTicket: false, ticketsArray: ticketArr, ticketName: ticketName as string})
             .then(() => {
               changeNumberOfBoughtTickets({ticketSlug: ticketSlug as string})
               fetch('api/email/bought', {
@@ -90,7 +90,6 @@ function Success({response}: {response: any}) {
             .catch((error)=>{
               return error
             });
-           
               }
     }, [])
     
@@ -103,7 +102,7 @@ function Success({response}: {response: any}) {
           <p className='text-black text-md font-semibold -mt-2 mb-3'>מדי תועברו בחזרה אל דף הבית</p>
           <p className='text-6xl'>₪{amount}</p>
         </div>
-        <div className='flex flex-col w-3/4 border-t border-b py-2 text-lg'>
+        <div className='flex flex-col w-3/4 border-t border-b py-2 text-lg sm:w-1/3'>
           <div className='flex justify-between border-b w-full p-2 pt-0'>
             <p>{number}</p>
             <p>מספר אישור</p>
