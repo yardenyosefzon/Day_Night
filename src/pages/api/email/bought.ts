@@ -5,14 +5,14 @@ import { NextApiRequest, NextApiResponse } from "next";
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    // const {userName, usersEmails, eventName} = req.body
+    const {userName, usersEmails, eventName} = req.body
 try{
    
     await resend.sendEmail({
-        from: 'yarden.yosefzon@gmail.com',
-        to: 'yardenyo@gmail.com',
+        from: 'support@daynight.co.il',
+        to: usersEmails,
         subject: 'Ticket purchase',
-        react: BoughtTicketEmail({userName: 'userName', eventName:'eventName'})
+        react: BoughtTicketEmail({userName: userName, eventName:eventName})
       },
       );
 

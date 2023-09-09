@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { publicProcedure,createTRPCRouter, protectedProcedure } from "../trpc";
-
 export const schemaTicketsRouter = createTRPCRouter({
     create: protectedProcedure
     .input(
@@ -12,24 +11,24 @@ export const schemaTicketsRouter = createTRPCRouter({
                         price: z.number(),
                         numberOfTickets: z.number(),
                         notes: z.string()
-                }))               
+                })),
+                uids: z.array(
+                    z.object({
+                        tax: z.string(),
+                        product: z.string()
+                    })
+                )            
             })
     )
     .mutation(({ctx,input}) => {  
-        const dbArray = input.schemaTicketsData.map((schemaTicket) => ({
+        const dbArray = input.schemaTicketsData.map((schemaTicket, index) => ({
             ...schemaTicket,
+            payPlusUid: input.uids[index]?.product as string,
+            payPlusTaxUid: input.uids[index]?.tax as string,
             eventId: input.eventId
         }))
-        ctx.prisma.schemaTicket.createMany({
+        return ctx.prisma.schemaTicket.createMany({
             data: dbArray
-        })
-        .then((res) => {
-            console.log( res.count )
-            return res
-        })
-        .catch((err) => {
-            console.log(err)
-            return err
         })
     }),
     getOneBySlug : publicProcedure
@@ -45,7 +44,9 @@ export const schemaTicketsRouter = createTRPCRouter({
             },
             select: {
                 price: true,
-                ticketName: true
+                ticketName: true,
+                payPlusUid: true,
+                payPlusTaxUid: true
             }
         })
     }),
@@ -69,7 +70,9 @@ export const schemaTicketsRouter = createTRPCRouter({
                 numberOfTickets: true,
                 price: true, 
                 ticketName: true,
-                notes: true
+                notes: true,
+                payPlusUid: true,
+                payPlusTaxUid: true,
             }
         })
     }),
@@ -101,31 +104,32 @@ export const schemaTicketsRouter = createTRPCRouter({
     changeNumberOfBoughtTicketsOfOneByEventAndTicketName: publicProcedure
     .input(
         z.object({
-            ticketSlug: z.string(),
+            eventName: z.string(),
+            ticketName: z.string()
         })
     )
     .mutation(async({ ctx, input }) => {
-        const ticketSlug = input.ticketSlug
         // First, retrieve the current number of tickets for the specified event
         const schemaTicket = await ctx.prisma.schemaTicket.findFirst({
             where: {
-                slug: ticketSlug,
+                event: {
+                    eventName: input.eventName
+                },
+                ticketName: input.ticketName
             }
         });
 
         if (!schemaTicket) {
-            return ('event not found');
+            return ('schemaTicket not found');
         }
 
-        // Decrement the number of tickets by 1
         if(schemaTicket?.numberOfTickets == 0) return "ran out of tickets"
         
         const updatedNumberOfTickets = schemaTicket?.numberOfTickets - 1;
 
-        // Now update the schemaTicket with the new number of tickets
         return await ctx.prisma.schemaTicket.update({
             where: {
-                slug: ticketSlug,
+                slug: schemaTicket.slug,
             },
             data: {
                 numberOfTickets: updatedNumberOfTickets
@@ -141,11 +145,17 @@ export const schemaTicketsRouter = createTRPCRouter({
                     ticketName: z.string(),
                     price: z.number(),
                     numberOfTickets: z.number(),
-                    notes: z.string()
-            }))               
+                    notes: z.string(),
+            }))                   
         })
 )
-    .mutation( async({ctx, input}) => {
+    .mutation(async ({ctx, input}) => {
+    
+        const headers = {
+            'Authorization': `{"api_key":"${process.env.NEXT_PUBLIC_PAYPLUS_KEY}","secret_key":"${process.env.NEXT_PUBLIC_PAYPLUS_SECRET}"}`,
+            'Content-Type': 'application/json'
+        };
+
         const schemaTickets = await ctx.prisma.schemaTicket.findMany({
             where: {
                 event: {
@@ -155,17 +165,26 @@ export const schemaTicketsRouter = createTRPCRouter({
         })
 
         if(schemaTickets.length == 0) return new Error("no tickets were found")
-
         if(input.schemaTicketsData.length < schemaTickets.length){
-            const deleteArr: string[] = []
-            for(let i = 0; i < input.schemaTicketsData.length ; i++){
-                for(let j = 0; j < schemaTickets.length ; j++){
-                    if (input.schemaTicketsData[j]?.notes === schemaTickets[i]?.notes && input.schemaTicketsData[j]?.numberOfTickets === schemaTickets[i]?.numberOfTickets && input.schemaTicketsData[j]?.price === schemaTickets[i]?.price && input.schemaTicketsData[i]?.ticketName === schemaTickets[i]?.ticketName)
-                    return
-                    else if(j === input.schemaTicketsData.length - 1)
-                    deleteArr.push(schemaTickets[i]?.id as string)
+                const deleteArr: string[] = [];
+                for (let i = 0; i < schemaTickets.length; i++) {
+                  let found = false; // Flag to track if a match is found
+                  for (let j = 0; j < input.schemaTicketsData.length; j++) {
+                    if (
+                      input.schemaTicketsData[j]?.notes === schemaTickets[i]?.notes &&
+                      input.schemaTicketsData[j]?.numberOfTickets === schemaTickets[i]?.numberOfTickets &&
+                      input.schemaTicketsData[j]?.price === schemaTickets[i]?.price &&
+                      input.schemaTicketsData[j]?.ticketName === schemaTickets[i]?.ticketName
+                    ) {
+                      found = true; // Match found, no need to continue searching
+                      break;
+                    }
+                  }
+                  if (!found) {
+                    deleteArr.push(schemaTickets[i]?.id as string);
+                  }
                 }
-            }
+
             deleteArr.map(async(_, index) =>
             await ctx.prisma.schemaTicket.delete(
                 {
@@ -175,10 +194,11 @@ export const schemaTicketsRouter = createTRPCRouter({
                 }) 
             )
         }
-             return input.schemaTicketsData.map(async(_, index) => 
+        
+             const schemaTicketsAfterUpsert = input.schemaTicketsData.map(async(_, index) => 
               await ctx.prisma.schemaTicket.upsert({
                 where: {
-                  id: schemaTickets[index]?.id ? schemaTickets[index]?.id : "s" 
+                  id: schemaTickets[index]?.id ? schemaTickets[index]?.id : "" 
                 },
                 update: {
                     ticketName: input.schemaTicketsData[index]?.ticketName,
@@ -195,5 +215,101 @@ export const schemaTicketsRouter = createTRPCRouter({
                 }
               })
         )
+
+        for (const schemaTicket of schemaTicketsAfterUpsert){
+            if((await schemaTicket).payPlusTaxUid == null){
+                try{
+                const [ticketResponse, taxResponse] = await Promise.all([
+                    fetch('https://restapidev.payplus.co.il/api/v1.0/Products/Add', {
+                      method: 'POST',
+                      body: JSON.stringify({
+                        'category_uid': '33f2d30a-72b9-4f35-aee2-f1974c9980e6',
+                        'name': input.eventName + '_' + (await schemaTicket)?.ticketName,
+                        'price': (await schemaTicket)?.price,
+                        'currency_code': 'ILS',
+                        'vat_type': 0,
+                      }),
+                      headers: headers
+                    }),
+                    fetch('https://restapidev.payplus.co.il/api/v1.0/Products/Add', {
+                      method: 'POST',
+                      headers: headers,
+                      body: JSON.stringify({
+                        'category_uid': 'd1647bb1-7d8f-48e1-b660-c94fa99ac3a4',
+                        'name': input.eventName + '_' + (await schemaTicket)?.ticketName + '_tax',
+                        'price': ((await schemaTicket)?.price as number * 7 / 100).toFixed(2),
+                        'currency_code': 'ILS',
+                        'vat_type': 0,
+                      })
+                    })
+                  ]);
+                  
+                  if(!ticketResponse.ok && !taxResponse.ok){
+                    throw new Error('faild to add products')
+                }
+                
+                const ticketResult = await ticketResponse.json();
+                const taxResult = await taxResponse.json();
+
+                const schema = await ctx.prisma.schemaTicket.update({
+                    where: {
+                        id: (await schemaTicket).id
+                    },
+                    data: {
+                        payPlusUid: ticketResult.data.product_uid,
+                        payPlusTaxUid: taxResult.data.product_uid
+                    }
+                })
+                console.log(schema)
+            }
+            catch(error){
+                console.log(error)
+                throw new Error('this is an update error')
+            }  
+            }
+            else{
+                console.log((await schemaTicket).payPlusUid)
+                try{
+                    const ticketResponse = await fetch(`https://restapidev.payplus.co.il/api/v1.0/Products/Update/${(await schemaTicket).payPlusUid}`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            "category_uid": "33f2d30a-72b9-4f35-aee2-f1974c9980e6",
+                            "name": input.eventName+'_'+(await schemaTicket).ticketName,
+                            "price": (await schemaTicket).price,
+                            "currency_code": "ILS",
+                            "vat_type": 1
+                        }),
+                        headers: headers,
+                    });
+        
+                    const taxResponse = await fetch(`https://restapidev.payplus.co.il/api/v1.0/Products/Update/${(await schemaTicket).payPlusTaxUid}`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            'category_uid': 'd1647bb1-7d8f-48e1-b660-c94fa99ac3a4',
+                            'name': input.eventName + '_' + (await schemaTicket).ticketName + '_tax',
+                            'price': ((await schemaTicket).price * 7 / 100).toFixed(2),
+                            'currency_code': 'ILS',
+                            'vat_type': 0,
+                        }),
+                        headers: headers,
+                    });
+                    
+                    if(!ticketResponse.ok || !taxResponse.ok){
+                        throw new Error('this is an update error')
+                    }
+
+                    const ticketResult = await ticketResponse.json()
+                    const taxResult = await taxResponse.json()
+
+                    console.log(ticketResult)
+                    console.log(taxResult)
+                }
+                catch(error){
+                    console.log(error)
+                    throw new Error('this is an update error')
+                }    
+            }
+        }
+        return schemaTicketsAfterUpsert
     })
 })

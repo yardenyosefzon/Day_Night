@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 try{
 
     await resend.sendEmail({
-        from: 'onboarding@resend.dev',
+        from: 'support@daynight.co.il',
         to: email,
         subject: 'Ticket aprovel',
         react: AprovedTicketEmail({qrCode: qrCode, eventName: eventName})

@@ -45,10 +45,13 @@ model Event_Scanner {
 
 model BoughtTicket {
   id                String  @id @default(cuid())
+  transaction_uid   String  
   event             Event   @relation(fields: [eventId], references: [id])
   eventId           String
   user              User?   @relation(fields: [userId], references: [id])
   userId            String?
+  // schemaTicket      SchemaTicket @relation(fields: [schemaTicketId], references: [id])
+  // schemaTicketId    String
   ticketKind        String
   email             String
   nationalId        String
@@ -68,17 +71,21 @@ model BoughtTicket {
 
   @@index([userId])
   @@index([eventId])
+  // @@index([schemaTicketId])
 }
 
 model SchemaTicket {
   id              String @id @default(cuid())
   slug            String @unique @default(uuid())
+  payPlusUid      String? 
+  payPlusTaxUid   String?
   ticketName      String
   price           Int
   numberOfTickets Int
   notes           String @default("")
   event           Event  @relation(fields: [eventId], references: [id])
   eventId         String
+  // boughtTickets   BoughtTicket []
 
   @@index([eventId])
 }

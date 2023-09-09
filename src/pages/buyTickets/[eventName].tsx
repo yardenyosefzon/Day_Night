@@ -13,22 +13,25 @@ import { appRouter } from "~/server/api/root";
 import { createInnerTRPCContext } from "~/server/api/trpc";
 import { getServerAuthSession } from "~/server/auth";
 import superjson from "superjson";
-import { MyContext } from "../components/context/context";
+
+type FormState = {
+  tickets: {
+    birthDay: string;
+    age: number;
+    gender: string;
+    phoneNumber: string;
+    instaUserName: string;
+    nationalId: string;
+    email: string;
+    fullName: string;
+  }[];
+};
 
 const noto = Noto_Sans_Hebrew({subsets: ["hebrew"], weight:"400"})
 
 function BuyTicketPage() {
-
-  const contextValue = useContext(MyContext)
-  const formState = contextValue?.formState
-  const setEventName = contextValue.setEventName
-  const setTicketSlug = contextValue.setTicketSlug
-  const setFormState = contextValue?.setFormState
-
   const { data: sessionData, update } = useSession();
   const { query: { eventName, ticketKind }, replace } = useRouter();
-  setEventName(prev => eventName as string)
-  setTicketSlug(prev => ticketKind as string)
 
   const { data: eventsData, isLoading } = api.events.getAll.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
   const {data: usersTicketsData} = api.boughtTickets.getFirstByIdAndUsersTicket.useQuery(undefined, {refetchOnWindowFocus: false, refetchOnMount: false});
@@ -36,6 +39,20 @@ function BuyTicketPage() {
   const {data: schemaTicketData} = api.schemaTickets.getOneBySlug.useQuery({slug: ticketKind as string}, {refetchOnWindowFocus: false, refetchOnMount: false})
   const event = eventsData?.filter(event => event.eventName === eventName)
 
+  const [formState, setFormState] = useState<FormState>({
+    tickets: [
+      {
+        birthDay: '',
+        age: 0,
+        gender: '',
+        phoneNumber: '',
+        instaUserName: '',
+        nationalId: '',
+        email: '',
+        fullName: '',
+      },
+    ]
+  })
   const [sum, setSum] = useState()
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
   const [showAgeErrorPopUp, setShowAgeErrorPopUp] = useState(false);
@@ -411,9 +428,11 @@ function BuyTicketPage() {
       fetch('/api/getPaymentLink',{
         method: 'POST',
         body: JSON.stringify({
-          amount: Number(schemaTicketData?.price as number * formState.tickets.length) + Number((schemaTicketData?.price as number * 7 / 100 *formState.tickets.length).toFixed(2)),
-          firstPayment: schemaTicketData?.price as number * 7 / 100 *formState.tickets.length,
+          amount: Number(schemaTicketData?.price as number * formState.tickets.length) + Number((schemaTicketData?.price as number * 7 / 100 * formState.tickets.length)),
+          firstPayment: schemaTicketData?.price as number * 7 / 100 * formState.tickets.length,
           ticketPrice: schemaTicketData?.price,
+          ticketUid: schemaTicketData?.payPlusUid,
+          taxUid: schemaTicketData?.payPlusTaxUid,
           eventName: eventName,
           ticketName: schemaTicketData?.ticketName,
           ticketSlug: ticketKind,

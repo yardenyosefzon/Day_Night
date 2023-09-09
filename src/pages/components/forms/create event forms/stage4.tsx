@@ -8,6 +8,8 @@ type TicketData = {
   price: number;
   numberOfTickets: number;
   notes: string;
+  payPlusUid: string | undefined,
+  payPlusTaxUid: string | undefined
 };
 
 type Stage4Props = {
@@ -84,7 +86,9 @@ const NoSSRStage4: React.FC<Stage4Props> = ({ schemaTicketsData, setSchemaTicket
           ticketName: "",
           price: 80,
           numberOfTickets: 100,
-          notes: ""
+          notes: "",
+          payPlusUid: undefined,
+          payPlusTaxUid: undefined
         },
       ]);
 

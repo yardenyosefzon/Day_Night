@@ -39,31 +39,59 @@ function EventTicketsCreatorPage() {
     }
   }, [ticketsData]);
 
-  const handleButtonClick = async (action: string, slug: string, email: string, qrCode: string) => {
+  const handleButtonClick = async (action: string, slug: string, email: string, qrCode: string, transaction_uid: string) => {
     setIsLoading(true);
 
     try {
       await ticketMutation.mutateAsync({ action: action, slug: slug });
-      if(action === "verified" )
-      fetch('/api/email/aprove', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: email, qrCode: qrCode, eventName: eventName })
-    })
-    .then((res)=>{
-    if(res.ok)
-    console.log("mail sent")
-    else
-    console.log("somthing went wrong")
-  })
+      if(action === "verified"){
+        fetch('/api/getTransactionByUid',{
+          method:'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            "transaction_uid": transaction_uid
+          })
+        })
+        .then(res => {
+          if(res.ok)
+          return res.json()
+          else
+          throw new Error('Somthing went wrong with getting your transaction')
+        })
+        .then(res => {
+          const price = res.data[0].data.items[0].quantity_price
+          fetch('/api/chargeByUid',{
+            method:'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              "transaction_uid": transaction_uid,
+              "amount": price
+            })  
+          })
+          fetch('/api/email/aprove', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email, qrCode: qrCode, eventName: eventName })
+          })
+          .then((res)=>{
+          if(res.ok)
+          console.log("mail sent")
+          else
+          console.log("somthing went wrong")
+          })    
+        })
+  }
       eventsRefetch();
     } catch (error) {
       console.log("Something went wrong");
     }
-
-    setIsLoading(false);
+      setIsLoading(false);
   };
 
   // Filter the tickets based on the current category
@@ -114,7 +142,7 @@ function EventTicketsCreatorPage() {
               </div>
               <div className={`${currentCategory === "verified" ? "text-orange-400" : ""}`}>
                 <p>
-                כרטיסים שאושרו 
+                  כרטיסים שאושרו 
                 </p>
               </div>
               <div className="bg-orange-100 p-1 px-3 rounded-full">

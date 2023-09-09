@@ -30,6 +30,8 @@ export type schemaTicketsData = {
   price: number;
   numberOfTickets: number;
   notes: string;
+  payPlusUid: string | undefined,
+  payPlusTaxUid: string | undefined 
 }[];
 
 const CreateEvents: React.FC = () => {
@@ -54,7 +56,9 @@ const CreateEvents: React.FC = () => {
     ticketName: "",
     price: 80,
     numberOfTickets: 100,
-    notes: ""
+    notes: "",
+    payPlusUid: undefined,
+    payPlusTaxUid: undefined
   }])
 
   const { refetch: eventRefetch } = api.events.getOneByName.useQuery({eventName: eventName as string}, {refetchOnMount: false, refetchOnWindowFocus: false, retry: false, enabled: false})
@@ -67,22 +71,37 @@ const CreateEvents: React.FC = () => {
     
     if(!eventName){
     eventMutate(eventsData)
-    .then((res) => {
-      //@ts-ignore
-      schemaTicketCreate({schemaTicketsData: schemaTicketsData, eventId: res.id})
+    .then(async (res) => {
+      const uids = await Promise.all(
+        schemaTicketsData.map(async (schemaTicket) => {
+          const res = await fetch(`api/addProduct`, {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: eventsData.eventName + '_' + schemaTicket.ticketName,
+              price: schemaTicket.price,
+              action: 'both'
+            }),
+          });
+      
+          const data = await res.json();
+          return {tax: data.tax.data.product_uid, product: data.ticket.data.product_uid};
+        })
+      );
+      
+      schemaTicketCreate({schemaTicketsData: schemaTicketsData, uids: uids,  eventId: res.id})
       .then((res) => {
         fetch(`api/revalidate?path=/homePage`, {
           method: 'POST',
           headers: {
             'content-type': 'application/json'
           },
-          body: JSON.stringify({secret: env.NEXT_PUBLIC_MY_SECRET_TOKEN})
         })
-        replace('/myEvents', undefined, {shallow:false})
+
+        replace('/myEvents')
         
-      })
-      .catch((error) => {
-        console.log(error)
       })
     })
     .catch((error) => {
@@ -94,7 +113,7 @@ const CreateEvents: React.FC = () => {
   }
   else{
     eventMutate(eventsData)
-    .then((res) => {
+    .then(async (res) => {
       //@ts-ignore
       schemaTicketUpdate({schemaTicketsData: schemaTicketsData, eventName: res.eventName})
       .then((res) => {
@@ -114,11 +133,9 @@ const CreateEvents: React.FC = () => {
         })
         replace('/myEvents')
       })
-      .catch((error) => {
-        console.log(error, '///////////////')
-      })
     })
     .catch((error) => {
+      console.log(error)
       if (error.message.includes('Unique constraint failed on the')) {
         setShowErrorPopup(true);
         setStage(1);
@@ -161,6 +178,7 @@ useEffect(() => {
         //@ts-ignore
         setSchemaTicketsData(() => res.data )
     });
+
     })
   }
 }, [])

@@ -6,6 +6,7 @@ export const boughtTicketsRouter = createTRPCRouter({
     create: publicProcedure
     .input(
         z.object({
+            transaction_uid: z.string(),
             usersTicket: z.boolean(),
             eventName: z.string(),
             ticketName: z.string(),
@@ -57,6 +58,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             if(ctx.session?.user.id === undefined)
             return {
               ...boughtTicket,
+              transaction_uid: input.transaction_uid,
               birthDay: input.ticketsArray[index]?.birthDay as string,
               age: input.ticketsArray[index]?.age as number,
               nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
@@ -70,6 +72,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             };
             return{
                 ...boughtTicket,
+                transaction_uid: input.transaction_uid,
                 birthDay: input.ticketsArray[index]?.birthDay as string,
                 age: input.ticketsArray[index]?.age as number,
                 nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
@@ -87,7 +90,14 @@ export const boughtTicketsRouter = createTRPCRouter({
             data: dbArray,
         })
     }),
-    getFirstById: publicProcedure.query(({ ctx }) => {
+    getFirstOneHundred: publicProcedure
+    .query(({ctx}) => {
+        return ctx.prisma.boughtTicket.findMany({
+            take: 100
+        })
+    }),
+    getFirstById: publicProcedure
+    .query(({ ctx }) => {
         return ctx.prisma.boughtTicket.findFirst({
           where: {
             userId: ctx.session?.user.id,
@@ -166,7 +176,8 @@ export const boughtTicketsRouter = createTRPCRouter({
                 slug: true,
                 ticketKind: true,
                 qrCode: true,
-                fullName: true
+                fullName: true,
+                transaction_uid: true
             }
         })
     }),

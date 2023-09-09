@@ -1,11 +1,11 @@
-import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { api } from '~/utils/api';
 import { useSession } from 'next-auth/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 import { Noto_Sans_Hebrew } from 'next/font/google';
+import Link from 'next/link';
 
 const nont = Noto_Sans_Hebrew({subsets: ["hebrew"], weight:"400"})
 
@@ -22,35 +22,37 @@ type TicketArr = {
 
 function Success({response}: {response: any}) {
   const {data: sessionData} = useSession()
-  const {query: {number, amount, method, four_digits, number_of_payments}, replace} = useRouter()
+  const {query: {number, amount, method, four_digits, number_of_payments, transaction_uid}} = useRouter()
+
+  const shouldCreate = useRef(true)
 
   const { mutateAsync: createBoughtTickets } = api.boughtTickets.create.useMutation();
   const { mutate: changeNumberOfBoughtTickets } = api.schemaTickets.changeNumberOfBoughtTicketsOfOneByEventAndTicketName.useMutation()
 
   const [date, setDate] = useState(new Date(Date.now()))
 
-    function hasPassedMoreThanMinute(targetDateStr: string) {
+    function hasPassedMoreThanTenSec(targetDateStr: string) {
       const targetDate = new Date(targetDateStr);
       const currentDate = new Date();
       const timeDifference = currentDate.getTime() - targetDate.getTime();
       console.log(timeDifference)
-      const oneMinuteInMillis = 60000; 
+      const tenSecondsInMillis = 10000; 
 
-      return timeDifference < oneMinuteInMillis;
+      return timeDifference < tenSecondsInMillis;
     }
 
     useEffect(() => {
-      console.log(sessionData)
       let ticketArr : TicketArr = []
       //@ts-ignore
-      const transaction = response.transactions.filter( aprovNum => aprovNum.number === number )
-      console.log(transaction)
-      if(transaction && hasPassedMoreThanMinute(transaction[0]?.created_at)){
-        let eventName = transaction[0].items[0].name.split('_')[0]
-        let ticketName = transaction[0].items[0].name.split('_')[1]
-        let ticketSlug = transaction[0].items[0].name.split('_')[2]
-        for(let i = 0 ; i < transaction[0].items[0].quantity ; i++){
-          const infoArr = transaction[0].information.more_info_1.split('_')
+      const transactionDetails = response.transactions.filter( transaction => transaction.number === number )[0]
+      
+      if(shouldCreate.current && transactionDetails && hasPassedMoreThanTenSec(transactionDetails?.created_at)){
+        shouldCreate.current = false
+        let eventName = transactionDetails.items[0].name.split('_')[0]
+        let ticketName = transactionDetails.items[0].name.split('_')[1]
+      
+        for(let i = 1 ; i < transactionDetails.items[0].quantity + 1 ; i++){
+          const infoArr = transactionDetails.information[`more_info_${i}`].split('_')
           ticketArr = [
             ...ticketArr,
             {
@@ -70,25 +72,31 @@ function Success({response}: {response: any}) {
             emailArray = ticketArr.map((ticket) => (
               ticket.email
           ))
-          
-            createBoughtTickets({ eventName: eventName as string, usersTicket: false, ticketsArray: ticketArr, ticketName: ticketName as string})
-            .then(() => {
-              changeNumberOfBoughtTickets({ticketSlug: ticketSlug as string})
-              fetch('api/email/bought', {
-                method: 'POST',
+            createBoughtTickets({ transaction_uid: transaction_uid as string, eventName: eventName as string, usersTicket: false, ticketsArray: ticketArr, ticketName: ticketName as string})
+            .then(async () => {
+              changeNumberOfBoughtTickets({eventName: eventName as string, ticketName: ticketName as string})
+              // fetch('/api/email/bought', {
+              //   method: 'POST',
+              //   headers: {
+              //     'Content-Type': 'application/json'
+              //   },
+              //   body: JSON.stringify({userName: sessionData?.user.name, usersEmails: emailArray, eventName: eventName})
+              // })
+
+              fetch('/api/chargeByUid',{
+                method:'POST',
                 headers: {
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({userName: sessionData?.user.name, usersEmails: emailArray, eventName: eventName})
+                body: JSON.stringify({
+                  "transaction_uid": transaction_uid,
+                  //@ts-ignore
+                  "amount": (transactionDetails.information.amount_by_currency / 100 - transactionDetails.items[0].total_price / 100).toFixed(2) * transactionDetails.items[0].quantity
+                })  
               })
-                .then(response => {
-                  if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                  }
-                })
             })
             .catch((error)=>{
-              return error
+              console.log(error)
             });
               }
     }, [])
@@ -99,7 +107,7 @@ function Success({response}: {response: any}) {
         <div className='flex flex-col gap-3 items-center '>
           <FontAwesomeIcon icon={faCircleCheck} className='text-9xl text-orange-300 '/>
           <p className='text-black text-2xl font-semibold'>העסקה בוצעה בהצלחה</p>
-          <p className='text-black text-md font-semibold -mt-2 mb-3'>מדי תועברו בחזרה אל דף הבית</p>
+          <Link href={'/homePage'} className='text-black text-md font-semibold -mt-2 mb-3 p-2 bg-amber-300 rounded-md'>חזרו אל דף הבית</Link>
           <p className='text-6xl'>₪{amount}</p>
         </div>
         <div className='flex flex-col w-3/4 border-t border-b py-2 text-lg sm:w-1/3'>
@@ -130,14 +138,14 @@ function Success({response}: {response: any}) {
 
 export default Success
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export async function getServerSideProps() {
   const headers = {
     'Authorization': `{"api_key":"${process.env.NEXT_PUBLIC_PAYPLUS_KEY}","secret_key":"${process.env.NEXT_PUBLIC_PAYPLUS_SECRET}"}`,
     'Content-Type': 'application/json'
   };
   let parsedResponse;
   try{
-  const response = await fetch('https://restapidev.payplus.co.il/api/v1.0/TransactionReports/TransactionsHistory',{
+  const response = await fetch('https://restapidev.payplus.co.il/api/v1.0/TransactionReports/TransactionsApproval',{
     method: 'POST',
     body: JSON.stringify({
     terminal_uid: '12075a0f-ea0c-4e1d-ab9a-98b7f119d7d4',
@@ -152,7 +160,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   return {
     props: {
-      response: parsedResponse,
+      response: parsedResponse
     },
   };  
 }

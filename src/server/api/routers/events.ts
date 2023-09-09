@@ -81,7 +81,7 @@ export const eventsRouter = createTRPCRouter({
         }
       })
     }),
-  getOneById: publicProcedure
+    getOneById: publicProcedure
     .input(z.object({id: z.string()}))
     .query( async ({ input,ctx }) => {
       return await ctx.prisma.event.findUnique({
