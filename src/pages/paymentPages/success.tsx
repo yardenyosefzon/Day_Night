@@ -75,14 +75,13 @@ function Success({response}: {response: any}) {
             createBoughtTickets({ approval_transaction_uid: transaction_uid as string, eventName: eventName as string, usersTicket: false, ticketsArray: ticketArr, ticketName: ticketName as string})
             .then(async () => {
               changeNumberOfBoughtTickets({eventName: eventName as string, ticketName: ticketName as string, number: 1})
-              // fetch('/api/email/bought', {
-              //   method: 'POST',
-              //   headers: {
-              //     'Content-Type': 'application/json'
-              //   },
-              //   body: JSON.stringify({userName: sessionData?.user.name, usersEmails: emailArray, eventName: eventName})
-              // })
-
+              fetch('/api/email/bought', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({userName: sessionData?.user.name, usersEmails: emailArray, eventName: eventName})
+              })
               fetch('/api/chargeByApprovalUid',{
                 method:'POST',
                 headers: {

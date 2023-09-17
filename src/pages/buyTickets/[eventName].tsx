@@ -53,7 +53,6 @@ function BuyTicketPage() {
       },
     ]
   })
-  const [sum, setSum] = useState()
   const [showRememberMePopup, setShowRememberMePopup] = useState(false);
   const [showAgeErrorPopUp, setShowAgeErrorPopUp] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
