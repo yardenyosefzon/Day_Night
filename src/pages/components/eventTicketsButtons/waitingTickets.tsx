@@ -6,7 +6,7 @@ import { faTicket } from '@fortawesome/free-solid-svg-icons';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 
 type WaitingTicketsProps = {
-    handleButtonClick: (action: string, slug: string, email: string, qrCode: string, transaction_uid: string) => Promise<void>
+    handleButtonClick: (action: string, verified: boolean, slug: string, fullName: string, email: string, qrCode: string, ticketKind: string, approval_transaction_uid: string, charge_transaction_uid: string | null) => Promise<void>
     ticket: {
         email: string;
         gender: string;
@@ -19,7 +19,8 @@ type WaitingTicketsProps = {
         ticketKind: string;
         qrCode: string;
         fullName: string;
-        transaction_uid: string;
+        approval_transaction_uid: string;
+        charge_transaction_uid: string | null;
     }
 }
 
@@ -57,7 +58,7 @@ function NoSSRWaitingTickets({ticket, handleButtonClick}: WaitingTicketsProps) {
                     <FontAwesomeIcon icon={faThumbsUp} className='text-green-400'/>
                   </div>
                   <div className='sm:w-20'>
-                    <button onClick={() => handleButtonClick("verified", ticket.slug, ticket.email, ticket.qrCode, ticket.transaction_uid)}>אשר כרטיס</button>
+                    <button onClick={() => handleButtonClick("verified", false, ticket.slug, ticket.fullName, ticket.email, ticket.qrCode, ticket.ticketKind, ticket.approval_transaction_uid, ticket.charge_transaction_uid)}>אשר כרטיס</button>
                   </div>
                 </div>
                 <div className="flex flex-row-reverse gap-2 bg-gradient-to-l from-white to-red-50 p-1 rounded-md">
@@ -65,7 +66,7 @@ function NoSSRWaitingTickets({ticket, handleButtonClick}: WaitingTicketsProps) {
                     <FontAwesomeIcon icon={faThumbsDown} className='text-red-400'/>
                   </div>
                   <div className='sm:w-20'>
-                    <button onClick={() => handleButtonClick("rejected", ticket.slug, ticket.email, ticket.qrCode, ticket.transaction_uid)}>דחה כרטיס</button>
+                    <button onClick={() => handleButtonClick("rejected", false, ticket.slug, ticket.fullName, ticket.email, ticket.qrCode, ticket.ticketKind, ticket.approval_transaction_uid, ticket.charge_transaction_uid)}>דחה כרטיס</button>
                   </div>
                 </div>
               </div>

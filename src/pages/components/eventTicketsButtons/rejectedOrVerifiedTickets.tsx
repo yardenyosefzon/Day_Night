@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import React from 'react'
 
 type RejectedOrVerifiedTicketsProps = {
-    handleButtonClick: (action: string, slug: string, email: string, qrCode: string, transaction_uid: string) => Promise<void>
+    handleButtonClick: (action: string, verified: boolean, slug: string, fullName: string, email: string, qrCode: string, ticketKind: string, approval_transaction_uid: string, charge_transaction_uid: string | null) => Promise<void>
     ticket: {
         email: string;
         gender: string;
@@ -18,7 +18,8 @@ type RejectedOrVerifiedTicketsProps = {
         ticketKind: string;
         qrCode: string;
         fullName: string;
-        transaction_uid: string;
+        approval_transaction_uid: string;
+        charge_transaction_uid: string | null;
     }
 }
 
@@ -51,7 +52,7 @@ function NoSSRRejectedOrVerifiedTickets({ticket, handleButtonClick}: RejectedOrV
               </div>
              </div>
               <div className="flex flex-row-reverse justify-center mt-3 p-2 bg-gradient-to-r from-red-100 to-green-100 rounded sm:w-2/5 sm:mt-0">
-                <button onClick={() => handleButtonClick("waiting", ticket.slug, ticket.email, ticket.qrCode, ticket.transaction_uid)}>
+                <button onClick={() => handleButtonClick("waiting", ticket.verified, ticket.slug, ticket.fullName, ticket.email, ticket.qrCode, ticket.ticketKind, ticket.approval_transaction_uid, ticket.charge_transaction_uid)}>
                     בטל סטטוס זה
                 </button>
               </div>

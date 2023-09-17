@@ -5,29 +5,30 @@ import { Section } from '@react-email/section';
 import { Container } from '@react-email/container';
 import { Text } from '@react-email/text';
 import { Preview } from '@react-email/preview';
-import { Img } from '@react-email/img';
 import { Body } from '@react-email/body';
 import { Hr } from '@react-email/hr';
   import * as React from 'react';
   
-  interface DayNNightBoughtTicketEmailProps {
+  interface DayNNightGenericEmailProps {
     userName: string;
-    eventName: string;
+    mainText: string;
+    seconderyText: string;
   }
   
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : '';
   
-  export const BoughtTicketEmail = ({
+  export const Generic = ({
     userName,
-    eventName
-  }: DayNNightBoughtTicketEmailProps) => (
+    mainText,
+    seconderyText,
+  }: DayNNightGenericEmailProps) => (
     <Html>
      <Tailwind>   
       <Head />
       <Preview className='text-right'>
-      !רכשת כרטיס
+        דחיית כרטיס
       </Preview>
       <Body style={main}>
         <Container style={container} className='flex justify-end text-right'>
@@ -40,9 +41,17 @@ import { Hr } from '@react-email/hr';
           /> */}
           <Text style={paragraph}>שלום {userName}</Text>
           <Text style={paragraph}>
-      מייל זה נשלח על ידי אפליקציית Day&Night.
-          <Text style={paragraph}>אנו מודים לכם על רכישת כרטיס לאירוע {eventName}.</Text>
-          <Text style={paragraph}>אתם תקבלו הודעה למייל זה ברגע שהמפיק יאשר או ידחה את כרטיסכם</Text>
+            מייל זה נשלח על ידי אפליקציית Day&Night.
+          <Text style={paragraph}>
+            {mainText}
+          </Text>
+          {
+            seconderyText != ""
+            ? null
+            : <Text style={paragraph}>
+                {seconderyText}
+              </Text>
+          }
           </Text>
           <Section style={btnContainer}>
           </Section>
@@ -61,7 +70,7 @@ import { Hr } from '@react-email/hr';
     </Html>
   );
   
-  export default BoughtTicketEmail;
+  export default Generic;
   
   const main = {
     backgroundColor: '#ffffff',

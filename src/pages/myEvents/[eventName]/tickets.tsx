@@ -13,7 +13,9 @@ import Link from "next/link";
 function EventTicketsCreatorPage() {
   const { query: { eventName } } = useRouter();
   const { data: ticketsData, refetch: eventsRefetch } = api.boughtTickets.getManyByEvent.useQuery({ eventName: eventName as string });
-  const ticketMutation = api.boughtTickets.updateAprovelOfOneBySlug.useMutation();
+  const ticketApprovelMutation = api.boughtTickets.updateAprovelOfOneBySlug.useMutation();
+  const ticketChargeMutation = api.boughtTickets.updateChargeTransactionUidofOneBySlug.useMutation();
+  const { mutate: changeNumberOfBoughtTickets } = api.schemaTickets.changeNumberOfBoughtTicketsOfOneByEventAndTicketName.useMutation()
   const [isLoading, setIsLoading] = useState(false);
   const [ticketCounts, setTicketCounts] = useState({
     verified: 0,
@@ -39,60 +41,143 @@ function EventTicketsCreatorPage() {
     }
   }, [ticketsData]);
 
-  const handleButtonClick = async (action: string, slug: string, email: string, qrCode: string, transaction_uid: string) => {
-    setIsLoading(true);
+  const handleButtonClick = async (action: string, verified: boolean, slug: string, fullName: string, email: string, qrCode: string, ticketKind:string, approval_transaction_uid: string, charge_transaction_uid: string | null) => {
 
-    try {
-      await ticketMutation.mutateAsync({ action: action, slug: slug });
-      if(action === "verified"){
+    setIsLoading(true);
+ 
+    if(action === "verified"){
+      fetch('/api/getTransactionByUid',{
+        method:'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "transaction_uid": approval_transaction_uid
+        })
+      })
+        .then(res => {
+          if(res.ok)  return res.json()
+          else throw new Error('Somthing went wrong with getting your transaction')
+        })
+          .then(res => {
+            const price = res.data[0].data.items[0].quantity_price
+            fetch('/api/chargeByApprovalUid',{
+              method:'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                "approval_transaction_uid": approval_transaction_uid,
+                "amount": price
+              })  
+            })
+              .then(res => {
+                if(res.ok) return res.json()
+              })
+                .then(res => {
+                  ticketChargeMutation.mutate({charge_transaction_uid: res.data.transaction.uid, slug: slug})
+                  ticketApprovelMutation.mutateAsync({ action: action, slug: slug })
+                    .then(_ => {
+                      setIsLoading(false);
+                      eventsRefetch();
+                    })
+                })
+        .catch(error => {
+          console.log('error:', error)
+        })
+        fetch('/api/email/aprove', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: email, qrCode: qrCode, eventName: eventName })
+        })
+        .then((res)=>{
+        if(res.ok)
+        console.log("mail sent")
+        else
+        console.log("somthing went wrong")
+        })    
+      })
+    }
+    else if(action === 'waiting'){
+      if(verified){
         fetch('/api/getTransactionByUid',{
           method:'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            "transaction_uid": transaction_uid
+            "transaction_uid": charge_transaction_uid
           })
         })
-        .then(res => {
-          if(res.ok)
-          return res.json()
-          else
-          throw new Error('Somthing went wrong with getting your transaction')
-        })
-        .then(res => {
-          const price = res.data[0].data.items[0].quantity_price
-          fetch('/api/chargeByUid',{
+          .then(res => {
+            if(res.ok) return res.json()
+          })
+            .then(res => {
+              const amount = res.data[0].transaction.amount
+              fetch('/api/refundByChargeUid',{
+                method:'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  "charge_transaction_uid": charge_transaction_uid,
+                  "amount": amount
+                })
+              })
+                .then(res => {
+                  if(res.ok) return res.json()
+                })
+                  .then(res => {
+                    ticketApprovelMutation.mutateAsync({ action: action, slug: slug })
+                      .then(_ => {
+                        fetch('/api/email/approvelCancel',{
+                          method:'POST',
+                          headers: {
+                            'Content-Type': 'application/json'
+                          },
+                          body: JSON.stringify({
+                            "userName": fullName,
+                            "usersEmails": email,
+                            "eventName": eventName,
+                          })
+                        })
+                        setIsLoading(false)
+                        eventsRefetch();
+                      })
+                  })
+            })
+    }
+    else{
+      ticketApprovelMutation.mutateAsync({ action: action, slug: slug })
+      .then(_ => {
+        changeNumberOfBoughtTickets({eventName: eventName as string, ticketName: ticketKind, number: 1 })
+        setIsLoading(false)
+        eventsRefetch();
+      })
+    }
+    }
+    else{
+      ticketApprovelMutation.mutateAsync({ action: action, slug: slug })
+        .then(_ => {
+          fetch('/api/email/denied',{
             method:'POST',
             headers: {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              "transaction_uid": transaction_uid,
-              "amount": price
-            })  
+              "userName": fullName,
+              "usersEmails": email,
+              "eventName": eventName,
+            })
           })
-          fetch('/api/email/aprove', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email: email, qrCode: qrCode, eventName: eventName })
-          })
-          .then((res)=>{
-          if(res.ok)
-          console.log("mail sent")
-          else
-          console.log("somthing went wrong")
-          })    
+          changeNumberOfBoughtTickets({eventName: eventName as string, ticketName: ticketKind, number: -1 })
+          setIsLoading(false);
+          eventsRefetch();
         })
-  }
-      eventsRefetch();
-    } catch (error) {
-      console.log("Something went wrong");
     }
-      setIsLoading(false);
-  };
+ };
 
   // Filter the tickets based on the current category
   const filteredTickets = ticketsData?.filter((ticket) => {
@@ -114,7 +199,7 @@ function EventTicketsCreatorPage() {
         </Link>
       </div>
       <div className="flex flex-col w-full h-full items-center mt-16 pb-3">
-        {isLoading && <Spinner />}
+        {isLoading && <Spinner/>}
         <div className="flex justify-center">
           <p dir="rtl" className="text-2xl mb-4">
              כרטיסים עבור {eventName} 

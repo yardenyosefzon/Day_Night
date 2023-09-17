@@ -11,11 +11,11 @@ try{
     await resend.sendEmail({
         from: 'support@daynight.co.il',
         to: usersEmails,
-        subject: 'Ticket purchase',
+        subject: 'ביטול של אישור הכרטיס',
         react: Generic({
-            userName: userName,
-            mainText: `אנו מודים לכם על רכישת כרטיס לאירוע ${eventName}.`,
-            seconderyText: `אתם תקבלו הודעה למייל זה ברגע שהמפיק יאשר או ידחה את כרטיסכם`
+          userName: userName,
+          mainText: `כרטיס הנרכש עבור האירוע ${eventName} ואושר בעבר חזר לרשימת הממתינים`,
+          seconderyText: ` כעת לא ניתן להשתמש בברקוד ככרטיס כניסה לאירוע. מייל ישלח מיד עם אישור או דחיית ההזמנה`,
         })
       },
       );

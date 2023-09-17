@@ -105,7 +105,8 @@ export const schemaTicketsRouter = createTRPCRouter({
     .input(
         z.object({
             eventName: z.string(),
-            ticketName: z.string()
+            ticketName: z.string(),
+            number: z.number(),
         })
     )
     .mutation(async({ ctx, input }) => {
@@ -123,16 +124,16 @@ export const schemaTicketsRouter = createTRPCRouter({
             return ('schemaTicket not found');
         }
 
-        if(schemaTicket?.numberOfTickets == 0) return "ran out of tickets"
+        if(schemaTicket?.numberOfTickets == schemaTicket?.numberOfBoughtTickets) return "ran out of tickets"
         
-        const updatedNumberOfTickets = schemaTicket?.numberOfTickets - 1;
+        const updatedNumberOfTickets = schemaTicket?.numberOfBoughtTickets + input.number;
 
         return await ctx.prisma.schemaTicket.update({
             where: {
                 slug: schemaTicket.slug,
             },
             data: {
-                numberOfTickets: updatedNumberOfTickets
+                numberOfBoughtTickets: updatedNumberOfTickets
             }
         });
     }),
@@ -195,37 +196,38 @@ export const schemaTicketsRouter = createTRPCRouter({
             )
         }
         
-             const schemaTicketsAfterUpsert = input.schemaTicketsData.map(async(_, index) => 
-              await ctx.prisma.schemaTicket.upsert({
-                where: {
-                  id: schemaTickets[index]?.id ? schemaTickets[index]?.id : "" 
-                },
-                update: {
-                    ticketName: input.schemaTicketsData[index]?.ticketName,
-                    price: input.schemaTicketsData[index]?.price,
-                    numberOfTickets: input.schemaTicketsData[index]?.numberOfTickets,
-                    notes: input.schemaTicketsData[index]?.notes
-                },
-                create: {
-                    eventId: schemaTickets[0]?.eventId as string,
-                    ticketName: input.schemaTicketsData[index]?.ticketName as string,
-                    price: input.schemaTicketsData[index]?.price as number,
-                    numberOfTickets: input.schemaTicketsData[index]?.numberOfTickets as number,
-                    notes: input.schemaTicketsData[index]?.notes as string
-                }
-              })
-        )
+            const schemaTicketsAfterUpsert = input.schemaTicketsData.map(async(_, index) => 
+                await ctx.prisma.schemaTicket.upsert({
+                    where: {
+                    id: schemaTickets[index]?.id ? schemaTickets[index]?.id : "" 
+                    },
+                    update: {
+                        ticketName: input.schemaTicketsData[index]?.ticketName,
+                        price: input.schemaTicketsData[index]?.price,
+                        numberOfTickets: input.schemaTicketsData[index]?.numberOfTickets,
+                        notes: input.schemaTicketsData[index]?.notes
+                    },
+                    create: {
+                        eventId: schemaTickets[0]?.eventId as string,
+                        ticketName: input.schemaTicketsData[index]?.ticketName as string,
+                        price: input.schemaTicketsData[index]?.price as number,
+                        numberOfTickets: input.schemaTicketsData[index]?.numberOfTickets as number,
+                        notes: input.schemaTicketsData[index]?.notes as string
+                    }
+                })
+            )
 
         for (const schemaTicket of schemaTicketsAfterUpsert){
-            if((await schemaTicket).payPlusTaxUid == null){
+            const schemaTicketRes = await schemaTicket
+            if(schemaTicketRes?.payPlusTaxUid == null){
                 try{
                 const [ticketResponse, taxResponse] = await Promise.all([
                     fetch('https://restapidev.payplus.co.il/api/v1.0/Products/Add', {
                       method: 'POST',
                       body: JSON.stringify({
                         'category_uid': '33f2d30a-72b9-4f35-aee2-f1974c9980e6',
-                        'name': input.eventName + '_' + (await schemaTicket)?.ticketName,
-                        'price': (await schemaTicket)?.price,
+                        'name': input.eventName + '_' + schemaTicketRes?.ticketName,
+                        'price': schemaTicketRes?.price,
                         'currency_code': 'ILS',
                         'vat_type': 0,
                       }),
@@ -236,8 +238,8 @@ export const schemaTicketsRouter = createTRPCRouter({
                       headers: headers,
                       body: JSON.stringify({
                         'category_uid': 'd1647bb1-7d8f-48e1-b660-c94fa99ac3a4',
-                        'name': input.eventName + '_' + (await schemaTicket)?.ticketName + '_tax',
-                        'price': ((await schemaTicket)?.price as number * 7 / 100).toFixed(2),
+                        'name': input.eventName + '_' + schemaTicketRes?.ticketName + '_tax',
+                        'price': (schemaTicketRes?.price as number * 7 / 100).toFixed(2),
                         'currency_code': 'ILS',
                         'vat_type': 0,
                       })
@@ -253,7 +255,7 @@ export const schemaTicketsRouter = createTRPCRouter({
 
                 const schema = await ctx.prisma.schemaTicket.update({
                     where: {
-                        id: (await schemaTicket).id
+                        id: schemaTicketRes.id
                     },
                     data: {
                         payPlusUid: ticketResult.data.product_uid,
@@ -268,26 +270,25 @@ export const schemaTicketsRouter = createTRPCRouter({
             }  
             }
             else{
-                console.log((await schemaTicket).payPlusUid)
                 try{
-                    const ticketResponse = await fetch(`https://restapidev.payplus.co.il/api/v1.0/Products/Update/${(await schemaTicket).payPlusUid}`, {
+                    const ticketResponse = await fetch(`https://restapidev.payplus.co.il/api/v1.0/Products/Update/${schemaTicketRes.payPlusUid}`, {
                         method: 'POST',
                         body: JSON.stringify({
                             "category_uid": "33f2d30a-72b9-4f35-aee2-f1974c9980e6",
-                            "name": input.eventName+'_'+(await schemaTicket).ticketName,
-                            "price": (await schemaTicket).price,
+                            "name": input.eventName+'_'+schemaTicketRes.ticketName,
+                            "price": schemaTicketRes.price,
                             "currency_code": "ILS",
                             "vat_type": 1
                         }),
                         headers: headers,
                     });
         
-                    const taxResponse = await fetch(`https://restapidev.payplus.co.il/api/v1.0/Products/Update/${(await schemaTicket).payPlusTaxUid}`, {
+                    const taxResponse = await fetch(`https://restapidev.payplus.co.il/api/v1.0/Products/Update/${schemaTicketRes.payPlusTaxUid}`, {
                         method: 'POST',
                         body: JSON.stringify({
                             'category_uid': 'd1647bb1-7d8f-48e1-b660-c94fa99ac3a4',
-                            'name': input.eventName + '_' + (await schemaTicket).ticketName + '_tax',
-                            'price': ((await schemaTicket).price * 7 / 100).toFixed(2),
+                            'name': input.eventName + '_' + schemaTicketRes.ticketName + '_tax',
+                            'price': (schemaTicketRes.price * 7 / 100).toFixed(2),
                             'currency_code': 'ILS',
                             'vat_type': 0,
                         }),

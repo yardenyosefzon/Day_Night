@@ -5,7 +5,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     try {
-        const { transaction_uid, amount } = req.body;
+        const { charge_transaction_uid, amount } = req.body;
 
         const headers = {
             'Authorization': `{"api_key":"${process.env.NEXT_PUBLIC_PAYPLUS_KEY}","secret_key":"${process.env.NEXT_PUBLIC_PAYPLUS_SECRET}"}`,
@@ -13,22 +13,22 @@ export default async function handler(
         };
 
         const data= {
-            "transaction_uid": transaction_uid,
-            "amount": amount
+            "transaction_uid": charge_transaction_uid,
+            "amount" : amount
         }
 
-        const chargeResponse = await fetch('https://restapidev.payplus.co.il/api/v1.0/Transactions/ChargeByTransactionUID',{
+        const refundResponse = await fetch('https://restapidev.payplus.co.il/api/v1.0/Transactions/RefundByTransactionUID',{
                 method:'POST',
                 headers: headers,
                 body: JSON.stringify(data)  
               })
             
-        if (!chargeResponse.ok) {
-            throw new Error('Failed to add products.');
+        if (!refundResponse.ok) {
+            throw new Error('Failed to refund');
         }
 
-        const chargeResult = await chargeResponse.json()
-        res.status(200).json(chargeResult);
+        const refundResult = await refundResponse.json()
+        res.status(200).json(refundResult);
 
     } catch (error) {
         //@ts-ignore

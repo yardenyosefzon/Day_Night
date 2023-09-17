@@ -6,7 +6,7 @@ export const boughtTicketsRouter = createTRPCRouter({
     create: publicProcedure
     .input(
         z.object({
-            transaction_uid: z.string(),
+            approval_transaction_uid: z.string(),
             usersTicket: z.boolean(),
             eventName: z.string(),
             ticketName: z.string(),
@@ -58,7 +58,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             if(ctx.session?.user.id === undefined)
             return {
               ...boughtTicket,
-              transaction_uid: input.transaction_uid,
+              approval_transaction_uid: input.approval_transaction_uid,
               birthDay: input.ticketsArray[index]?.birthDay as string,
               age: input.ticketsArray[index]?.age as number,
               nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
@@ -72,7 +72,7 @@ export const boughtTicketsRouter = createTRPCRouter({
             };
             return{
                 ...boughtTicket,
-                transaction_uid: input.transaction_uid,
+                approval_transaction_uid: input.approval_transaction_uid,
                 birthDay: input.ticketsArray[index]?.birthDay as string,
                 age: input.ticketsArray[index]?.age as number,
                 nationalId: nationalId?.nationalId ? nationalId.nationalId : input.ticketsArray[index]?.nationalId as string,
@@ -177,7 +177,8 @@ export const boughtTicketsRouter = createTRPCRouter({
                 ticketKind: true,
                 qrCode: true,
                 fullName: true,
-                transaction_uid: true
+                approval_transaction_uid: true, 
+                charge_transaction_uid: true,
             }
         })
     }),
@@ -243,6 +244,30 @@ export const boughtTicketsRouter = createTRPCRouter({
             }
         })
     }),
+    getOneBySlug: publicProcedure
+    .input(
+        z.object({
+            slug: z.string()
+        })
+    )
+    .query(({ctx, input}) => {
+        return ctx.prisma.boughtTicket.findFirst({
+            where: {
+                slug: input.slug
+            },
+            select: {
+                verified: true,
+                qrCode:true,
+                fullName: true,
+                scanned: true,
+                event: {
+                    select: {
+                        eventName: true
+                    }
+                }
+            }
+        })
+    }),
     updateAprovelOfOneBySlug: publicProcedure
     .input(
         z.object({
@@ -268,28 +293,28 @@ export const boughtTicketsRouter = createTRPCRouter({
               data: data
         })
     }),
-    getOneBySlug: publicProcedure
+    updateChargeTransactionUidofOneBySlug: publicProcedure
     .input(
         z.object({
-            slug: z.string()
+            slug: z.string(),
+            charge_transaction_uid: z.string()
         })
     )
-    .query(({ctx, input}) => {
-        return ctx.prisma.boughtTicket.findFirst({
+    .mutation(async({ctx,input})=> { 
+        const boughtTicket = await ctx.prisma.boughtTicket.findFirst({
             where: {
                 slug: input.slug
-            },
-            select: {
-                verified: true,
-                qrCode:true,
-                fullName: true,
-                scanned: true,
-                event: {
-                    select: {
-                        eventName: true
-                    }
-                }
             }
+        })
+      
+        return ctx.prisma.boughtTicket.update({
+            where: {
+                slug: input.slug,
+                id: boughtTicket?.id
+              },
+              data: {
+                charge_transaction_uid: input.charge_transaction_uid
+              }
         })
     }),
     updateScannedOfOneBySlug: publicProcedure

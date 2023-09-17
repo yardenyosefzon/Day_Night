@@ -48,13 +48,10 @@ function MyEvents(){
     useEffect(() => {
       return () => {
         if(eventsData){
-          console.log(eventsData[0]?.eventCreator.hideQrEx)
-          console.log(hidePopupForever)
-        console.log(eventsData[0]?.eventCreator.hideQrEx !== hidePopupForever)
-        if(eventsData[0]?.eventCreator.hideQrEx !== hidePopupForever){
-          mutate({hideQrEx: hidePopupForever as boolean})
+          if(eventsData[0]?.eventCreator.hideQrEx !== hidePopupForever){
+            mutate({hideQrEx: hidePopupForever as boolean})
+          }
         }
-      }
       }
     }, [hidePopupForever])
     

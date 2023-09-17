@@ -72,9 +72,9 @@ function Success({response}: {response: any}) {
             emailArray = ticketArr.map((ticket) => (
               ticket.email
           ))
-            createBoughtTickets({ transaction_uid: transaction_uid as string, eventName: eventName as string, usersTicket: false, ticketsArray: ticketArr, ticketName: ticketName as string})
+            createBoughtTickets({ approval_transaction_uid: transaction_uid as string, eventName: eventName as string, usersTicket: false, ticketsArray: ticketArr, ticketName: ticketName as string})
             .then(async () => {
-              changeNumberOfBoughtTickets({eventName: eventName as string, ticketName: ticketName as string})
+              changeNumberOfBoughtTickets({eventName: eventName as string, ticketName: ticketName as string, number: 1})
               // fetch('/api/email/bought', {
               //   method: 'POST',
               //   headers: {
@@ -83,13 +83,13 @@ function Success({response}: {response: any}) {
               //   body: JSON.stringify({userName: sessionData?.user.name, usersEmails: emailArray, eventName: eventName})
               // })
 
-              fetch('/api/chargeByUid',{
+              fetch('/api/chargeByApprovalUid',{
                 method:'POST',
                 headers: {
                   'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                  "transaction_uid": transaction_uid,
+                  "approval_transaction_uid": transaction_uid,
                   //@ts-ignore
                   "amount": (transactionDetails.information.amount_by_currency / 100 - transactionDetails.items[0].total_price / 100).toFixed(2) * transactionDetails.items[0].quantity
                 })  
