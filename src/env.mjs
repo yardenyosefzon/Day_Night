@@ -7,7 +7,9 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
+    NEXT_PUBLIC_MY_SECRET_TOKEN: z.string(),
     NEXT_PUBLIC_PAYMENT_PAGE_UID: z.string(),
+    NEXT_PUBLIC_TERMINAL_UID: z.string(),
     NEXT_PUBLIC_TAX_UID: z.string(),
     NEXT_PUBLIC_TICKETS_UID: z.string(),
     NEXT_PUBLIC_PROD: z.string(),
@@ -49,7 +51,8 @@ export const env = createEnv({
     NEXT_PUBLIC_PAYPLUS_KEY: z.string(),
     NEXT_PUBLIC_PAYPLUS_SECRET: z.string(),
     NEXT_PUBLIC_PAYPLUS_UID: z.string(),
-    NEXT_PUBLIC_TERMINAL_UID: z.string()
+    NEXT_PUBLIC_TERMINAL_UID: z.string(),
+    NEXT_PUBLIC_TAX_UID: z.string()
   },
 
   /**
