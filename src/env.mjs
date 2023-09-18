@@ -12,7 +12,6 @@ export const env = createEnv({
     NEXT_PUBLIC_TERMINAL_UID: z.string(),
     NEXT_PUBLIC_TAX_UID: z.string(),
     NEXT_PUBLIC_TICKETS_UID: z.string(),
-    NEXT_PUBLIC_PROD: z.string(),
     NEXT_PUBLIC_PAYPLUS_URL: z.string(),
     NEXT_PUBLIC_PAYPLUS_KEY: z.string(),
     NEXT_PUBLIC_PAYPLUS_SECRET: z.string(),
@@ -45,7 +44,6 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_PROD: z.string(),
     NEXT_PUBLIC_PAYPLUS_URL: z.string(),
     NEXT_PUBLIC_MY_SECRET_TOKEN: z.string(),
     NEXT_PUBLIC_PAYPLUS_KEY: z.string(),
@@ -64,7 +62,6 @@ export const env = createEnv({
     NEXT_PUBLIC_TERMINAL_UID: process.env.NEXT_PUBLIC_TERMINAL_UID,
     NEXT_PUBLIC_TAX_UID: process.env.NEXT_PUBLIC_TAX_UID,
     NEXT_PUBLIC_TICKETS_UID: process.env.NEXT_PUBLIC_TICKETS_UID,
-    NEXT_PUBLIC_PROD: process.env.NEXT_PUBLIC_PROD,
     NEXT_PUBLIC_PAYPLUS_URL: process.env.NEXT_PUBLIC_PAYPLUS_URL,
     NEXT_PUBLIC_MY_SECRET_TOKEN: process.env.NEXT_PUBLIC_MY_SECRET_TOKEN,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
