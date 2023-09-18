@@ -12,7 +12,7 @@ export default async function handler(
         };
 
         const ticketData = {
-            'category_uid': '33f2d30a-72b9-4f35-aee2-f1974c9980e6',
+            'category_uid': `${process.env.NEXT_PUBLIC_TICKETS_UID}`,
             'name': name,
             'price': price,
             'currency_code': 'ILS',
@@ -20,19 +20,19 @@ export default async function handler(
         };
 
         const taxData = {
-            'category_uid': 'd1647bb1-7d8f-48e1-b660-c94fa99ac3a4',
+            'category_uid': `${process.env.NEXT_PUBLIC_TAX_UID}`,
             'name': name + '_tax',
             'price': (price * 7 / 100).toFixed(2),
             'currency_code': 'ILS',
             'vat_type': 0,
         };
         const [ticketUpdateResponse, taxUpdateResponse] = await Promise.all([
-            fetch(`https://restapidev.payplus.co.il/api/v1.0/Products/Update/:${ticketUid}`, {
+            fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Update/:${ticketUid}`, {
                 method: 'POST',
                 body: JSON.stringify(ticketData),
                 headers: headers
             }),
-            fetch(`https://restapidev.payplus.co.il/api/v1.0/Products/Update/:${taxUid}`, {
+            fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Update/:${taxUid}`, {
                 method: 'POST',
                 body: JSON.stringify(taxData),
                 headers: headers

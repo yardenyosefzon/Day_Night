@@ -17,7 +17,7 @@ export default async function handler(
             "amount": amount
         }
 
-        const chargeResponse = await fetch('https://restapidev.payplus.co.il/api/v1.0/Transactions/ChargeByTransactionUID',{
+        const chargeResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Transactions/ChargeByTransactionUID`,{
                 method:'POST',
                 headers: headers,
                 body: JSON.stringify(data)  

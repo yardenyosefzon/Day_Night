@@ -144,10 +144,10 @@ export async function getServerSideProps() {
   };
   let parsedResponse;
   try{
-  const response = await fetch('https://restapidev.payplus.co.il/api/v1.0/TransactionReports/TransactionsApproval',{
+  const response = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}TransactionReports/TransactionsApproval`,{
     method: 'POST',
     body: JSON.stringify({
-    terminal_uid: '12075a0f-ea0c-4e1d-ab9a-98b7f119d7d4',
+    terminal_uid: `${process.env.NEXT_PUBLIC_TERMINAL_UID}`,
     currency_code: 'ILS',
     skip: '0',
     take: '5'

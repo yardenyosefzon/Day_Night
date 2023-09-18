@@ -6,13 +6,13 @@ export default async function handler(
 )
 {
     const body = JSON.parse(req.body)
-    const {amount, ticketPrice, eventName, ticketName, ticketUid, taxUid, ticketArr} = body
+    const {amount, ticketPrice, ticketUid, taxUid, ticketArr} = body
     const headers = {
         'Authorization': `{"api_key":"${process.env.NEXT_PUBLIC_PAYPLUS_KEY}","secret_key":"${process.env.NEXT_PUBLIC_PAYPLUS_SECRET}"}`,
         'Content-Type': 'application/json'
       };
       const data = {
-        "payment_page_uid": "cdd2d18d-31ff-4da5-874e-fe6536ffb65e",
+        "payment_page_uid": `${process.env.NEXT_PUBLIC_PAYMENT_PAGE_UID}`,
         "charge_method": 2,
         "more_info_1": ticketArr[0] ? `${ticketArr[0].birthDay+'_'+ticketArr[0].age+'_'+ticketArr[0].gender+'_'+ticketArr[0].phoneNumber+'_'+ticketArr[0].instaUserName+'_'+ticketArr[0].nationalId+'_'+ticketArr[0].email+'_'+ticketArr[0].fullName}` : "",
         "more_info_2": ticketArr[1] ? `${ticketArr[1].birthDay+'_'+ticketArr[1].age+'_'+ticketArr[1].gender+'_'+ticketArr[1].phoneNumber+'_'+ticketArr[1].instaUserName+'_'+ticketArr[1].nationalId+'_'+ticketArr[1].email+'_'+ticketArr[1].fullName}` : "",
@@ -20,7 +20,7 @@ export default async function handler(
         "more_info_4": ticketArr[3] ? `${ticketArr[3].birthDay+'_'+ticketArr[3].age+'_'+ticketArr[3].gender+'_'+ticketArr[3].phoneNumber+'_'+ticketArr[3].instaUserName+'_'+ticketArr[3].nationalId+'_'+ticketArr[3].email+'_'+ticketArr[3].fullName}` : "",
         "more_info_5": ticketArr[4] ? `${ticketArr[4].birthDay+'_'+ticketArr[4].age+'_'+ticketArr[4].gender+'_'+ticketArr[4].phoneNumber+'_'+ticketArr[4].instaUserName+'_'+ticketArr[4].nationalId+'_'+ticketArr[4].email+'_'+ticketArr[4].fullName}` : "",
         "refURL_success": "http://www.daynight.co.il/paymentPages/success",
-        "refURL_failure": "http://localhost:3000/paymentPages/reject",
+        "refURL_failure": "http://www.daynight.co.il/paymentPages/reject",
         "refURL_callback": "https://www.domain.com/callback/",
         "items": [
           {
@@ -44,7 +44,7 @@ export default async function handler(
         "hide_payments_field": true
     }
     try{
-      const linkResponse = await fetch('https://restapidev.payplus.co.il/api/v1.0/PaymentPages/generateLink',
+      const linkResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}PaymentPages/generateLink`,
       {
         method:'POST',
         body: JSON.stringify(data),

@@ -222,10 +222,10 @@ export const schemaTicketsRouter = createTRPCRouter({
             if(schemaTicketRes?.payPlusTaxUid == null){
                 try{
                 const [ticketResponse, taxResponse] = await Promise.all([
-                    fetch('https://restapidev.payplus.co.il/api/v1.0/Products/Add', {
+                    fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Add`, {
                       method: 'POST',
                       body: JSON.stringify({
-                        'category_uid': '33f2d30a-72b9-4f35-aee2-f1974c9980e6',
+                        'category_uid': `${process.env.NEXT_PUBLIC_TICKETS_UID}`,
                         'name': input.eventName + '_' + schemaTicketRes?.ticketName,
                         'price': schemaTicketRes?.price,
                         'currency_code': 'ILS',
@@ -233,11 +233,11 @@ export const schemaTicketsRouter = createTRPCRouter({
                       }),
                       headers: headers
                     }),
-                    fetch('https://restapidev.payplus.co.il/api/v1.0/Products/Add', {
+                    fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Add`, {
                       method: 'POST',
                       headers: headers,
                       body: JSON.stringify({
-                        'category_uid': 'd1647bb1-7d8f-48e1-b660-c94fa99ac3a4',
+                        'category_uid': `${process.env.NEXT_PUBLIC_TAX_UID}`,
                         'name': input.eventName + '_' + schemaTicketRes?.ticketName + '_tax',
                         'price': (schemaTicketRes?.price as number * 7 / 100).toFixed(2),
                         'currency_code': 'ILS',
@@ -271,10 +271,10 @@ export const schemaTicketsRouter = createTRPCRouter({
             }
             else{
                 try{
-                    const ticketResponse = await fetch(`https://restapidev.payplus.co.il/api/v1.0/Products/Update/${schemaTicketRes.payPlusUid}`, {
+                    const ticketResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Update/${schemaTicketRes.payPlusUid}`, {
                         method: 'POST',
                         body: JSON.stringify({
-                            "category_uid": "33f2d30a-72b9-4f35-aee2-f1974c9980e6",
+                            "category_uid": `${process.env.NEXT_PUBLIC_TICKETS_UID}`,
                             "name": input.eventName+'_'+schemaTicketRes.ticketName,
                             "price": schemaTicketRes.price,
                             "currency_code": "ILS",
@@ -283,10 +283,10 @@ export const schemaTicketsRouter = createTRPCRouter({
                         headers: headers,
                     });
         
-                    const taxResponse = await fetch(`https://restapidev.payplus.co.il/api/v1.0/Products/Update/${schemaTicketRes.payPlusTaxUid}`, {
+                    const taxResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Update/${schemaTicketRes.payPlusTaxUid}`, {
                         method: 'POST',
                         body: JSON.stringify({
-                            'category_uid': 'd1647bb1-7d8f-48e1-b660-c94fa99ac3a4',
+                            'category_uid': `${process.env.NEXT_PUBLIC_TAX_UID}`,
                             'name': input.eventName + '_' + schemaTicketRes.ticketName + '_tax',
                             'price': (schemaTicketRes.price * 7 / 100).toFixed(2),
                             'currency_code': 'ILS',
