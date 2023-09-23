@@ -15,6 +15,19 @@ const config = {
       }
     ]
   },
+  async headers() {
+    return [
+      {
+        source: '/path-to-your-page',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "script-src 'self' https://payments.payplus.co.il",
+          },
+        ],
+      },
+    ];
+  },
   reactStrictMode: true,
   images: {
     domains: ['res.cloudinary.com'],
