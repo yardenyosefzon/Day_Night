@@ -6,7 +6,7 @@ export default async function handler(
 ) {
     try {
         const { name, price, action } = req.body;
-        console.log(req.body)
+   
         const headers = {
             'Authorization': `{"api_key":"${process.env.NEXT_PUBLIC_PAYPLUS_KEY}","secret_key":"${process.env.NEXT_PUBLIC_PAYPLUS_SECRET}"}`,
             'Content-Type': 'application/json'
@@ -50,8 +50,8 @@ export default async function handler(
             ticketResponse.json(),
             taxResponse.json()
         ]);
-console.log(ticketResult, taxResult)
-        // res.status(200).json({ ticket: ticketResult, tax: taxResult });
+
+        res.status(200).json({ ticket: ticketResult, tax: taxResult });
     }
     else if(action === 'ticket'){
         const ticketResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Add`, {
@@ -78,7 +78,7 @@ console.log(ticketResult, taxResult)
         }
 
         const taxResult = await taxResponse.json()
-console.log(taxResult)
+
         res.status(200).json(taxResult);
     }
     } catch (error) {
