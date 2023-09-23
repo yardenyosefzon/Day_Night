@@ -172,6 +172,9 @@ export const eventsRouter = createTRPCRouter({
         },
         data: {
           views: event?.views! + 1
+        },
+        select:{
+          eventName: true
         }
       })
     })

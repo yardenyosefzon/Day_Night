@@ -15,14 +15,12 @@ import { prisma } from "~/server/db";
 const ibm = IBM_Plex_Sans_Hebrew({subsets: ['hebrew'], weight: '600'})
 
 export default function Home() {
-
-  const {data, isLoading} = api.events.getAll.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false});
-  if(isLoading)return <div>Loading...</div>
+  const {data} = api.events.getAll.useQuery(undefined, {refetchOnMount: false, refetchOnWindowFocus: false});
 
   return (
     <div className="absolute w-full min-h-screen bg-orange-50">
       <div className={`flex flex-col mt-28 mx-9 ${ibm.className} sm:grid sm:grid-cols-4`}>
-        {data?.map((event, index) => (
+        {data?.map((event) => (
           <div key={event.slug} className="mb-14 h-72 flex flex-col items-end  rounded-b-3xl rounded-t-xl w-full sm:w-11/12 sm:h-72 sm:place-self-center shadow-xl p-1 2xl:w-8/12 bg-white">
             <div className="relative w-full h-4/6">
             <Link href={`/events/${event.slug}`}>

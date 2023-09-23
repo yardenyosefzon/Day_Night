@@ -120,7 +120,7 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
     const helpers = createServerSideHelpers({
       router: appRouter,
       ctx: {session: null, prisma: prisma},
-      transformer: superjson, // optional - adds superjson serialization
+      transformer: superjson,
     });
     const slug = context.params?.slug as string;
   
@@ -147,7 +147,6 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
           slug: event.slug,
         },
       })),
-      // https://nextjs.org/docs/pages/api-reference/functions/get-static-paths#fallback-blocking
       fallback: true
     };
   };
