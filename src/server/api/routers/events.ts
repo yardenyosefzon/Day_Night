@@ -56,7 +56,8 @@ export const eventsRouter = createTRPCRouter({
           eventName: true,
           image: true,
           date: true,
-          minAge: true
+          minAge: true,
+          id: true
         }
       });
     }),
