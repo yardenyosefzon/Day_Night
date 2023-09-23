@@ -47,7 +47,7 @@ export default async function handler(
         body: JSON.stringify(data),
         headers: headers 
       })
-      console.log(await linkResponse.json());
+      res.status(200).json(await linkResponse.json())
     }
     catch(err){
         console.log('error',err)
