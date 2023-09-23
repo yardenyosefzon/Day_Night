@@ -6,6 +6,7 @@ export default async function handler(
 ) {
     try {
         const { name, price, action } = req.body;
+        console.log(req.body)
         const headers = {
             'Authorization': `{"api_key":"${process.env.NEXT_PUBLIC_PAYPLUS_KEY}","secret_key":"${process.env.NEXT_PUBLIC_PAYPLUS_SECRET}"}`,
             'Content-Type': 'application/json'
@@ -29,18 +30,19 @@ export default async function handler(
 
         if(action === 'both'){
         const [ticketResponse, taxResponse] = await Promise.all([
-            fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Add`, {
+            fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Add`, {
                 method: 'POST',
                 body: JSON.stringify(ticketData),
                 headers: headers
             }),
-            fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Add`, {
+            fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Add`, {
                 method: 'POST',
                 body: JSON.stringify(taxData),
                 headers: headers
             })
         ]);
         if (!ticketResponse.ok || !taxResponse.ok) {
+            console.log(ticketResponse, taxResponse)
             throw new Error('Failed to add products.');
         }
 
@@ -48,11 +50,11 @@ export default async function handler(
             ticketResponse.json(),
             taxResponse.json()
         ]);
-
-        res.status(200).json({ ticket: ticketResult, tax: taxResult });
+console.log(ticketResult, taxResult)
+        // res.status(200).json({ ticket: ticketResult, tax: taxResult });
     }
     else if(action === 'ticket'){
-        const ticketResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Add`, {
+        const ticketResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Add`, {
             method: 'POST',
             body: JSON.stringify(ticketData),
             headers: headers
@@ -66,7 +68,7 @@ export default async function handler(
         res.status(200).json(ticketResult);
     }
     else{
-        const taxResponse = await  fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Add`, {
+        const taxResponse = await  fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Add`, {
             method: 'POST',
             body: JSON.stringify(taxData),
             headers: headers
@@ -76,13 +78,13 @@ export default async function handler(
         }
 
         const taxResult = await taxResponse.json()
-
+console.log(taxResult)
         res.status(200).json(taxResult);
     }
     } catch (error) {
         //@ts-ignore
         console.error('Error:', error.message);
-        res.status(500).json({ error: 'Internal Server Error' });
+        // res.status(500).json({ error: 'Internal Server Error' });
     }
 }// yoyoyoanimetpo0
 
