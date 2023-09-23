@@ -147,7 +147,7 @@ export const schemaTicketsRouter = createTRPCRouter({
                     price: z.number(),
                     numberOfTickets: z.number(),
                     notes: z.string(),
-            }))                   
+                }))                   
         })
 )
     .mutation(async ({ctx, input}) => {
@@ -222,7 +222,7 @@ export const schemaTicketsRouter = createTRPCRouter({
             if(schemaTicketRes?.payPlusTaxUid == null){
                 try{
                 const [ticketResponse, taxResponse] = await Promise.all([
-                    fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Add`, {
+                    fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Add`, {
                       method: 'POST',
                       body: JSON.stringify({
                         'category_uid': `${process.env.NEXT_PUBLIC_TICKETS_UID}`,
@@ -233,7 +233,7 @@ export const schemaTicketsRouter = createTRPCRouter({
                       }),
                       headers: headers
                     }),
-                    fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Add`, {
+                    fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Add`, {
                       method: 'POST',
                       headers: headers,
                       body: JSON.stringify({
@@ -271,7 +271,7 @@ export const schemaTicketsRouter = createTRPCRouter({
             }
             else{
                 try{
-                    const ticketResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Update/${schemaTicketRes.payPlusUid}`, {
+                    const ticketResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Update/${schemaTicketRes.payPlusUid}`, {
                         method: 'POST',
                         body: JSON.stringify({
                             "category_uid": `${process.env.NEXT_PUBLIC_TICKETS_UID}`,
@@ -283,7 +283,7 @@ export const schemaTicketsRouter = createTRPCRouter({
                         headers: headers,
                     });
         
-                    const taxResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Update/${schemaTicketRes.payPlusTaxUid}`, {
+                    const taxResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Update/${schemaTicketRes.payPlusTaxUid}`, {
                         method: 'POST',
                         body: JSON.stringify({
                             'category_uid': `${process.env.NEXT_PUBLIC_TAX_UID}`,
