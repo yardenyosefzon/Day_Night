@@ -16,7 +16,7 @@ export default async function handler(
             'name': name,
             'price': price,
             'currency_code': 'ILS',
-            'vat_type': 0,
+            'vat_type': 2,
         };
 
         const taxData = {
@@ -24,7 +24,7 @@ export default async function handler(
             'name': name + '_tax',
             'price': (price * 7 / 100).toFixed(2),
             'currency_code': 'ILS',
-            'vat_type': 0,
+            'vat_type': 2,
         };
         const [ticketUpdateResponse, taxUpdateResponse] = await Promise.all([
             fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Update/:${ticketUid}`, {
