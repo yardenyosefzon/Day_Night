@@ -17,7 +17,7 @@ export default async function handler(
             "amount" : amount
         }
 
-        const refundResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Transactions/RefundByTransactionUID`,{
+        const refundResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Transactions/RefundByTransactionUID`,{
                 method:'POST',
                 headers: headers,
                 body: JSON.stringify(data)  

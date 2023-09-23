@@ -16,7 +16,7 @@ export default async function handler(
             "transaction_uid": transaction_uid
         }
 
-        const viewResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Transactions/View`,{
+        const viewResponse = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Transactions/View`,{
                 method:'POST',
                 headers: headers,
                 body: JSON.stringify(data)  

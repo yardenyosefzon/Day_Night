@@ -5,7 +5,7 @@ export default async function handler(
 )
 {
     const body = JSON.parse(req.body)
-    const {amount, ticketPrice, eventName, ticketName, ticketUid, taxUid, ticketArr} = body
+    const {amount, ticketPrice, ticketUid, taxUid, ticketArr} = body
     const headers = {
         'Authorization': `{"api_key":"${process.env.NEXT_PUBLIC_PAYPLUS_KEY}","secret_key":"${process.env.NEXT_PUBLIC_PAYPLUS_SECRET}"}`,
         'Content-Type': 'application/json'

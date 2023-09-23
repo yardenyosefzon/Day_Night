@@ -27,12 +27,12 @@ export default async function handler(
             'vat_type': 0,
         };
         const [ticketUpdateResponse, taxUpdateResponse] = await Promise.all([
-            fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Update/:${ticketUid}`, {
+            fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Update/:${ticketUid}`, {
                 method: 'POST',
                 body: JSON.stringify(ticketData),
                 headers: headers
             }),
-            fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}Products/Update/:${taxUid}`, {
+            fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/Products/Update/:${taxUid}`, {
                 method: 'POST',
                 body: JSON.stringify(taxData),
                 headers: headers
