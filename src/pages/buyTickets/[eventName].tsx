@@ -447,6 +447,7 @@ function BuyTicketPage() {
             .then(()=>{
               update()
             })
+            console.log(data.data.payment_page_link)
         replace(`/paymentPages/paymentPage?url=${data.data.payment_page_link}`)
       })
       .catch((error) => {

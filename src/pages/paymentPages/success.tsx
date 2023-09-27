@@ -144,7 +144,7 @@ export async function getServerSideProps() {
   };
   let parsedResponse;
   try{
-  const response = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}TransactionReports/TransactionsApproval`,{
+  const response = await fetch(`${process.env.NEXT_PUBLIC_PAYPLUS_URL}/TransactionReports/TransactionsApproval`,{
     method: 'POST',
     body: JSON.stringify({
     terminal_uid: `${process.env.NEXT_PUBLIC_TERMINAL_UID}`,

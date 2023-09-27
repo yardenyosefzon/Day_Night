@@ -18,8 +18,8 @@ export default async function handler(
         "more_info_3": ticketArr[2] ? `${ticketArr[2].birthDay+'_'+ticketArr[2].age+'_'+ticketArr[2].gender+'_'+ticketArr[2].phoneNumber+'_'+ticketArr[2].instaUserName+'_'+ticketArr[2].nationalId+'_'+ticketArr[2].email+'_'+ticketArr[2].fullName}` : "",
         "more_info_4": ticketArr[3] ? `${ticketArr[3].birthDay+'_'+ticketArr[3].age+'_'+ticketArr[3].gender+'_'+ticketArr[3].phoneNumber+'_'+ticketArr[3].instaUserName+'_'+ticketArr[3].nationalId+'_'+ticketArr[3].email+'_'+ticketArr[3].fullName}` : "",
         "more_info_5": ticketArr[4] ? `${ticketArr[4].birthDay+'_'+ticketArr[4].age+'_'+ticketArr[4].gender+'_'+ticketArr[4].phoneNumber+'_'+ticketArr[4].instaUserName+'_'+ticketArr[4].nationalId+'_'+ticketArr[4].email+'_'+ticketArr[4].fullName}` : "",
-        "refURL_success": `${process.env.NEXT_PUBLIC_SITE_URL}/paymentPages/success`,
-        "refURL_failure": `${process.env.NEXT_PUBLIC_SITE_URL}/paymentPages/reject`,
+        "refURL_success": `${process.env.NEXT_PUBLIC_SITE_URL}/paymentPages/success/`,
+        "refURL_failure": `${process.env.NEXT_PUBLIC_SITE_URL}/paymentPages/reject/`,
         "refURL_callback": "https://www.domain.com/callback/",
         "items": [
           {
