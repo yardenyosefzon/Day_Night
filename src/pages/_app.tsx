@@ -7,6 +7,7 @@ import "~/styles/quill.snow.css"
 import NavBar from "./components/navBar";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider } from "next-themes";
+import Script from "next/script";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -14,6 +15,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
+      <Script src="https://daynight.co.il/src/assets/nagishLi/nagishli.js?v=2.3" defer></Script>
       <ThemeProvider enableSystem={false} attribute="class">
           <NavBar/>
           <Component {...pageProps} />
