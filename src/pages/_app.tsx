@@ -15,7 +15,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Script src="https://daynight.co.il/src/assets/nagishLi/nagishli.js?v=2.3" defer></Script>
+      <Script src="https://daynight.co.il/src/pages/nagishLi/nagishli.js?v=2.3" defer></Script>
       <ThemeProvider enableSystem={false} attribute="class">
           <NavBar/>
           <Component {...pageProps} />
