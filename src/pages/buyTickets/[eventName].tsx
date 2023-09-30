@@ -87,6 +87,21 @@ function BuyTicketPage() {
     ]
   )
 
+  const calcAge = (value: string) => {
+    const birthDate = new Date(value);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    
+    if (
+      today.getMonth() < birthDate.getMonth() ||
+      (today.getMonth() === birthDate.getMonth() &&
+        today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    return age
+  }
+
   const validateForm = () => {
     let isValid = true;
   
@@ -277,53 +292,25 @@ function BuyTicketPage() {
         isValid = false;
       }
 
-      if (formState.tickets[i]?.birthDay !== "") {
-        const birthDate = new Date(formState.tickets[i]?.birthDay as string);
-        const today = new Date();
-        
-        let age = today.getFullYear() - birthDate.getFullYear();
-        
-        if (
-          today.getMonth() < birthDate.getMonth() ||
-          (today.getMonth() === birthDate.getMonth() &&
-            today.getDate() < birthDate.getDate())
-        ) {
-          age--;
-        }
-        
-        if (event && age < event[0]?.minAge!) {
-          setValidErrors((validErrors) => {
-            const updatedErrors = [...validErrors];
-            updatedErrors[i] = {
-              ...(updatedErrors[i] as {
-                birthDay: { valid: boolean };
-                gender: { valid: boolean };
-                phoneNumber: { valid: boolean };
-                instaUserName: { valid: boolean };
-                nationalId: { valid: boolean };
-                email: { valid: boolean };
-                fullName: { valid: boolean };
-              }),
-              birthDay: { valid: false },
-            };
-            return updatedErrors;
-          });
-          isValid = false;
-          setShowAgeErrorPopUp(prev => !prev);
-        } else {
-          setFormState(prevState => {
-            const updatedTickets = [...prevState.tickets];
-            //@ts-ignore
-            updatedTickets[i] = {
-              ...updatedTickets[i],
-              age: age
-            };
-            return {
-              ...prevState,
-              tickets: updatedTickets
-            };
-          });
-        }
+      if (formState.tickets[i]?.birthDay !== "" && event && formState.tickets[i]?.age as number < event[0]?.minAge!) {
+        setValidErrors((validErrors) => {
+          const updatedErrors = [...validErrors];
+          updatedErrors[i] = {
+            ...(updatedErrors[i] as {
+              birthDay: { valid: boolean };
+              gender: { valid: boolean };
+              phoneNumber: { valid: boolean };
+              instaUserName: { valid: boolean };
+              nationalId: { valid: boolean };
+              email: { valid: boolean };
+              fullName: { valid: boolean };
+            }),
+            birthDay: { valid: false },
+          };
+          return updatedErrors;
+        });
+        isValid = false;
+        setShowAgeErrorPopUp(prev => !prev);
       }
     }
   
@@ -447,7 +434,6 @@ function BuyTicketPage() {
             .then(()=>{
               update()
             })
-            console.log(data.data.payment_page_link)
         replace(`/paymentPages/paymentPage?url=${data.data.payment_page_link}`)
       })
       .catch((error) => {
@@ -466,11 +452,20 @@ function BuyTicketPage() {
 
     setFormState((prevFormState) => {
       const updatedFormState = prevFormState.tickets.map((ticket, i) => {
-        if (i === index ) {
-          return {
-            ...ticket,
-            [name]: value,
-          };
+        if (i === index) {
+          if(name === 'birthDay'){
+            const age = calcAge(value);
+            return {
+              ...ticket,
+              [name]: value,
+              age: age
+            };
+          } else{
+            return {
+              ...ticket,
+              [name]: value,
+            };
+          }
         }
         return ticket;
       });
@@ -526,7 +521,7 @@ function BuyTicketPage() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
+console.log(formState.tickets)
     return (
     <div className="absolute w-full h-fit min-h-screen bg-orange-200 bg-gradient-to-tr from-orange-100 py-5">
       <div className={`flex flex-col mt-16 h-fit ${noto.className}`}>

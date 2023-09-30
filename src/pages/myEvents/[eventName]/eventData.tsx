@@ -107,6 +107,7 @@ function EventData() {
   };
 
   useEffect(() => {
+    console.log(eventsData)
     setEvent(eventsData?.find(event => event.eventName === eventName))
     const boughtTicketsgenderCount = {
       male: 0,
@@ -119,6 +120,7 @@ function EventData() {
       other: 0
     }
     for(let ticket of boughtTicketsData!){
+      console.log(boughtTicketsData)
       if(ticket.gender === "זכר")
         if(ticket.verified === true)
           verifiedTicketsgenderCount.male += 1

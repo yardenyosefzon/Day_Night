@@ -25,7 +25,7 @@ export const boughtTicketsRouter = createTRPCRouter({
         })
     )
     .mutation(async({ctx,input}) => {
-
+console.log(input.ticketsArray)
         let nationalId: {
             nationalId: string;
         } | null

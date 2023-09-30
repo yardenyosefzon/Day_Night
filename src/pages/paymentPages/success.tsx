@@ -35,7 +35,6 @@ function Success({response}: {response: any}) {
       const targetDate = new Date(targetDateStr);
       const currentDate = new Date();
       const timeDifference = currentDate.getTime() - targetDate.getTime();
-      console.log(timeDifference)
       const tenSecondsInMillis = 10000; 
 
       return timeDifference < tenSecondsInMillis;
@@ -58,8 +57,8 @@ function Success({response}: {response: any}) {
             {
               birthDay: infoArr[0],
               age: Number(infoArr[1]),
-              gender: infoArr[3],
-              phoneNumber: infoArr[2],
+              gender: infoArr[2],
+              phoneNumber: infoArr[3],
               instaUserName: infoArr[4],
               nationalId: infoArr[5],
               email: infoArr[6],

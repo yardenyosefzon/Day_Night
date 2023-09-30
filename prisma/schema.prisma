@@ -51,8 +51,6 @@ model BoughtTicket {
   eventId                  String
   user                     User?   @relation(fields: [userId], references: [id])
   userId                   String?
-  // schemaTicket      SchemaTicket @relation(fields: [schemaTicketId], references: [id])
-  // schemaTicketId    String
   ticketKind               String
   email                    String
   nationalId               String
