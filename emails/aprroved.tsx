@@ -48,7 +48,6 @@ import { Hr } from '@react-email/hr';
         </Container>
         <Container className='text-right'>
           <Hr style={hr} />
-          <Text style={footer}>טללים, טללים</Text>
         </Container>
       </Body>
       </Tailwind>

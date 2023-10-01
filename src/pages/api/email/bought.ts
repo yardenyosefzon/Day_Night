@@ -11,7 +11,7 @@ try{
     await resend.sendEmail({
         from: 'support@daynight.co.il',
         to: usersEmails,
-        subject: 'Ticket purchase',
+        subject: 'רכישת כרטיס',
         react: Generic({
             userName: userName,
             mainText: `אנו מודים לכם על רכישת כרטיס לאירוע ${eventName}.`,

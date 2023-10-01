@@ -27,9 +27,6 @@ import { Hr } from '@react-email/hr';
     <Html>
      <Tailwind>   
       <Head />
-      <Preview className='text-right'>
-        דחיית כרטיס
-      </Preview>
       <Body style={main}>
         <Container style={container} className='flex justify-end text-right'>
           {/* <Img
@@ -58,12 +55,11 @@ import { Hr } from '@react-email/hr';
           <Text style={paragraph}>
             בתודה
             <br />
-            Day&Night צוות
+            צוות Day&Night 
           </Text>
         </Container>
         <Container className='text-right'>
           <Hr style={hr} />
-          <Text style={footer}>טללים, טללים</Text>
         </Container>
       </Body>
       </Tailwind>
