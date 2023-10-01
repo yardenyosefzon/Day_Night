@@ -37,8 +37,11 @@ import { Hr } from '@react-email/hr';
             style={logo}
           /> */}
           <Text style={paragraph}>שלום {userName}</Text>
-          <Text style={paragraph}>
-            מייל זה נשלח על ידי אפליקציית Day&Night.
+          <Text dir="ltr" style={paragraph}>
+            <span className='m-1'>
+              .Day&Night
+            </span>
+            מייל זה נשלח על ידי אפליקציית
           <Text style={paragraph}>
             {mainText}
           </Text>
@@ -54,8 +57,12 @@ import { Hr } from '@react-email/hr';
           </Section>
           <Text style={paragraph}>
             בתודה
-            <br />
-            צוות Day&Night 
+          </Text>
+          <Text dir='ltr'>
+            <span className='m-1'>
+              Day&Night
+            </span>  
+            צוות  
           </Text>
         </Container>
         <Container className='text-right'>

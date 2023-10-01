@@ -55,9 +55,9 @@ export default function EventPage( props: InferGetStaticPropsType<typeof getStat
                 <FontAwesomeIcon className="mt-1" icon={faCalendarDays}/>
               </div>
         </div>
-        <div className='flex text-2xl mr-2 justify-center'>
-          <p >אמן: {eventsData?.artist} </p>
-        </div>
+        {/* <div className='flex text-2xl mr-2 justify-center'> */}
+          {/* <p >אמן: {eventsData?.artist} </p> */}
+        {/* </div> */}
         <div className='mx-3 my-9'>
           <QuillNoSSRWrapper className='border-0' readOnly={true} modules={{toolbar: false}}  value={eventsData?.description}/>
         </div>

@@ -16,7 +16,7 @@ model Event {
   eventName            String          @unique
   slug                 String          @unique @default(uuid())
   date                 String
-  artist               String
+  // artist               String
   image                String?
   address              String
   description          String          @db.LongText
@@ -85,7 +85,6 @@ model SchemaTicket {
   notes                 String  @default("")
   event                 Event   @relation(fields: [eventId], references: [id])
   eventId               String
-  // boughtTickets   BoughtTicket []
 
   @@index([eventId])
 }

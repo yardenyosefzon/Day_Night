@@ -32,17 +32,30 @@ import { Hr } from '@react-email/hr';
       <Body style={main}>
         <Container style={container} className='flex justify-end text-right'>
           <Text style={paragraph}>שלום</Text>
-          <Text style={paragraph}>
-      מייל זה נשלח על ידי אפליקציית Day&Night.
-          <Text style={paragraph}>אנו מודים לכם על רכישת כרטיס לאירוע {eventName} ושמחים לעדכן כי המפיק אישר את הכרטיס</Text>
-          <Text style={paragraph}>בתחתית הדף מופיע מופיע קוד שהוא הכרטיס ואותו יסרקו בכניסה לאירוע</Text>
+          <Text dir='ltr'>
+            <span className='m-1'>
+              .Day&Night
+            </span>
+              מייל זה נשלח על ידי אפליקציית
           </Text>
+          <Text dir='ltr' style={paragraph}>
+            אנו מודים לכם על רכישת כרטיס לאירוע
+            <span className='m-1'>
+              {eventName} 
+            </span>
+            ושמחים לעדכן כי המפיק אישר את הכרטיס
+          </Text>
+          <Text style={paragraph}>בתחתית הדף מופיע מופיע קוד שהוא הכרטיס ואותו יסרקו בכניסה לאירוע</Text>
           <Section style={btnContainer}>
           </Section>
           <Text style={paragraph}>
             בתודה
-            <br />
-             צוות Day&Night
+          </Text>
+          <Text dir='ltr'>
+            <span className='m-1'>
+              Day&Night  
+            </span> 
+            צוות 
           </Text>
           <Img alt='qrCode' src={qrCode} width={150} height={150}></Img>
         </Container>

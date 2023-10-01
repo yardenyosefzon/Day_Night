@@ -11,7 +11,7 @@ type Stage1Props = {
 type ValidErrors = {
   eventNameError: { message: string; valid: boolean };
   dateError: { message: string; valid: boolean };
-  artistError: { message: string; valid: boolean };
+  // artistError: { message: string; valid: boolean };
   minAgeError: { message: string; valid: boolean };
   addressError: { message: string; valid: boolean };
 };
@@ -27,10 +27,10 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
       message: "יש למלא תאריך",
       valid: true,
     },
-    artistError: {
-      message: "יש למלא את שם האומן/האמן",
-      valid: true,
-    },
+    // artistError: {
+    //   message: "יש למלא את שם האומן/האמן",
+    //   valid: true,
+    // },
     minAgeError: {
       message: "יש להזין גיל מינימלי",
       valid: true,
@@ -76,17 +76,17 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
       isFormValid = false;
     }
 
-    // Validate artist
-    if (eventsData.artist.trim() === "") {
-      setValidErrors((prevErrors) => ({
-        ...prevErrors,
-        artistError: {
-          ...prevErrors.artistError,
-          valid: false,
-        },
-      }));
-      isFormValid = false;
-    }
+    // // Validate artist
+    // if (eventsData.artist.trim() === "") {
+    //   setValidErrors((prevErrors) => ({
+    //     ...prevErrors,
+    //     artistError: {
+    //       ...prevErrors.artistError,
+    //       valid: false,
+    //     },
+    //   }));
+    //   isFormValid = false;
+    // }
 
     // Validate minAge
     if (eventsData.minAge === 0) {
@@ -171,7 +171,7 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
           />
           {/* {!validErrors.dateError.valid && <span className="text-red-500">{validErrors.dateError.message}</span>} */}
         </div>
-        <div className="flex flex-col items-center">
+        {/* <div className="flex flex-col items-center">
           <label htmlFor="artist">שם האומן/האמן</label>
           <input
             type="text"
@@ -181,9 +181,9 @@ const NoSSRStage1: React.FC<Stage1Props> = ({ eventsData, setEventsData, setStag
             onChange={onChange}
             dir="rtl"
             className={`border ${validErrors.artistError.valid ? "border-black" : "border-red-500"} rounded p-2 mb-2 w-11/12`}
-          />
+          /> */}
           {/* {!validErrors.artistError.valid && <span className="text-red-500">{validErrors.artistError.message}</span>} */}
-        </div>
+        {/* </div> */}
         <div className="flex flex-col items-center">
           <label htmlFor="minAge">גיל מינימלי</label>
           <input

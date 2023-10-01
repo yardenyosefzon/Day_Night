@@ -11,7 +11,7 @@ export const eventsRouter = createTRPCRouter({
     z.object({
       eventName: z.string(),
       date: z.string(),
-      artist: z.string(),
+      // artist: z.string(),
       image: z.string(),
       address: z.string(),
       description: z.string(),
@@ -28,7 +28,7 @@ export const eventsRouter = createTRPCRouter({
       update: {
         eventName: input.eventName,
         date: input.date,
-        artist: input.artist,
+        // artist: input.artist,
         image: input.image,
         address: input.address,
         description: input.description,
@@ -38,7 +38,7 @@ export const eventsRouter = createTRPCRouter({
       create: {
         eventName: input.eventName,
         date: input.date,
-        artist: input.artist,
+        // artist: input.artist,
         image: input.image,
         address: input.address,
         description: input.description,
@@ -103,7 +103,7 @@ export const eventsRouter = createTRPCRouter({
           select: {
             eventName: true,
             date: true,
-            artist: true,
+            // artist: true,
             image: true,
             description: true,
             minAge: true,
@@ -125,7 +125,7 @@ export const eventsRouter = createTRPCRouter({
           select: {
             eventName: true,
             date: true,
-            artist: true,
+            // artist: true,
             image: true,
             description: true,
             minAge: true,
