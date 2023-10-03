@@ -14,7 +14,8 @@ try{
         subject: 'רכישת כרטיס',
         react: Generic({
             userName: userName,
-            mainText: `אנו מודים לכם על רכישת כרטיס לאירוע ${eventName}.`,
+            eventName: eventName,
+            mainText: `אנו מודים לכם על רכישת כרטיס לאירוע`,
             seconderyText: `אתם תקבלו הודעה למייל זה ברגע שהמפיק יאשר או ידחה את כרטיסכם`
         })
       },

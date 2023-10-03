@@ -39,11 +39,13 @@ import { Hr } from '@react-email/hr';
               מייל זה נשלח על ידי אפליקציית
           </Text>
           <Text dir='ltr' style={paragraph}>
-            אנו מודים לכם על רכישת כרטיס לאירוע
             <span className='m-1'>
               {eventName} 
             </span>
-            ושמחים לעדכן כי המפיק אישר את הכרטיס
+            אנו מודים לכם על רכישת כרטיס לאירוע
+            <span className='m-1'>
+              ושמחים לעדכן כי המפיק אישר את הכרטיס  
+            </span>
           </Text>
           <Text style={paragraph}>בתחתית הדף מופיע מופיע קוד שהוא הכרטיס ואותו יסרקו בכניסה לאירוע</Text>
           <Section style={btnContainer}>

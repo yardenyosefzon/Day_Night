@@ -11,6 +11,7 @@ import { Hr } from '@react-email/hr';
   
   interface DayNNightGenericEmailProps {
     userName: string;
+    eventName: string | null;
     mainText: string;
     seconderyText: string;
   }
@@ -21,6 +22,7 @@ import { Hr } from '@react-email/hr';
   
   export const Generic = ({
     userName,
+    eventName,
     mainText,
     seconderyText,
   }: DayNNightGenericEmailProps) => (
@@ -36,23 +38,35 @@ import { Hr } from '@react-email/hr';
             alt="Koala"
             style={logo}
           /> */}
-          <Text style={paragraph}>שלום {userName}</Text>
+          <Text style={paragraph}>
+            שלום
+            {userName}
+          </Text>
+
           <Text dir="ltr" style={paragraph}>
             <span className='m-1'>
               .Day&Night
             </span>
             מייל זה נשלח על ידי אפליקציית
+          </Text>  
+
           <Text style={paragraph}>
+            <span>
+              {
+                eventName ? eventName : ""
+              }
+            </span>
             {mainText}
           </Text>
-          {
-            seconderyText != ""
-            ? null
-            : <Text style={paragraph}>
-                {seconderyText}
-              </Text>
-          }
+          
+          <Text style={paragraph}>
+            {
+              seconderyText != ""
+              ? null
+              : seconderyText
+            }
           </Text>
+         
           <Section style={btnContainer}>
           </Section>
           <Text style={paragraph}>
