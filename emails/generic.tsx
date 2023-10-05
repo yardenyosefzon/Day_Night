@@ -50,7 +50,7 @@ import { Hr } from '@react-email/hr';
             מייל זה נשלח על ידי אפליקציית
           </Text>  
 
-          <Text style={paragraph}>
+          <Text dir='ltr' style={paragraph}>
             <span>
               {
                 eventName ? eventName : ""
