@@ -97,8 +97,8 @@ interface FormState {
         {
          formState.tickets.length !== 5 && index === formState.tickets.length-1 &&
          <div className='flex flex-col items-center'>
-           <FontAwesomeIcon icon={faPersonCirclePlus} className='text-3xl text-yellow-600' onClick={() => addTicket()}></FontAwesomeIcon> 
-           <p className='text-sm text-yellow-600'>הוסף כרטיס</p>
+           {/* <FontAwesomeIcon icon={faPersonCirclePlus} className='text-3xl text-yellow-600' onClick={() => addTicket()}></FontAwesomeIcon>  */}
+           {/* <p className='text-sm text-yellow-600'>הוסף כרטיס</p> */}
          </div>
         }
        
